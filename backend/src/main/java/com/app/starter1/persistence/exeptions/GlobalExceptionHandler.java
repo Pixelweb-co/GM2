@@ -1,4 +1,4 @@
-package com.app.starter1.exception;
+package com.app.starter1.persistence.exeptions;
 
 import com.app.starter1.persistence.exeptions.ErrorResponse;
 import org.springframework.http.HttpStatus;
