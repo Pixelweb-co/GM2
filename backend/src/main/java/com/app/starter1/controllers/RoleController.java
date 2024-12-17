@@ -1,4 +1,4 @@
-package com.app.starter1.controller;
+package com.app.starter1.controllers;
 
 import com.app.starter1.persistence.entity.PermissionEntity;
 import com.app.starter1.persistence.entity.RoleEntity;
