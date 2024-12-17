@@ -1,0 +1,98 @@
+[
+  {
+    "label": "Equipos",
+    "icon": "box",
+    "route": "/productos/list",
+    "roles": [
+      "SUPERADMIN",
+      "ADMIN"
+    ]
+  },
+  {
+    "label": "Solicitudes",
+    "icon": "clock",
+    "route": "/solicitudes/list",
+    "roles": [
+      "SUPERADMIN",
+      "ADMIN"
+    ]
+  },
+  {
+    "label": "Reportes",
+    "icon": "report",
+    "roles": [
+      "SUPERADMIN"
+    ]
+  },
+  {
+    "label": "Cronograma",
+    "icon": "calendar",
+    "roles": [
+      "SUPERADMIN"
+    ]
+  },
+  {
+    "label": "Usuarios y Roles",
+    "icon": "users",
+    "roles": [
+      "SUPERADMIN",
+      "ADMIN"
+    ],
+    "children": [
+      {
+        "label": "Gestión de Usuarios",
+        "route": "/accounts/user/list",
+        "roles": [
+          "SUPERADMIN",
+          "ADMIN"
+        ]
+      },
+      {
+        "label": "Roles",
+        "route": "/accounts/roles/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      },
+      {
+        "label": "Permisos",
+        "route": "/accounts/permissions/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Parametrización",
+    "icon": "settings",
+    "roles": [
+      "SUPERADMIN"
+    ],
+    "children": [
+      {
+        "label": "Parámetros Generales",
+        "route": "/parametrizacion/generales",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Administracion",
+    "icon": "settings",
+    "roles": [
+      "SUPERADMIN"
+    ],
+    "children": [
+      {
+        "label": "Clientes",
+        "route": "/administracion/clientes/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      }
+    ]
+  }
+]
