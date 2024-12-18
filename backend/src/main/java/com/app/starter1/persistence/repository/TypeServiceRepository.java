@@ -1,8 +1,8 @@
 package com.app.starter1.persistence.repository;
 
-import com.app.starter1.persistence.entity.TypeDevice;
+import com.app.starter1.persistence.entity.TipoServicio;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface TypeDeviceRepository extends JpaRepository<TypeDevice, Long> {
+public interface TypeServiceRepository extends JpaRepository<TipoServicio, Long> {
     }

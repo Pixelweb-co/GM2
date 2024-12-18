@@ -3,16 +3,20 @@ package com.app.starter1.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class SolicitudDTO {
     private Long idSolicitud;
     private String fecha;
     private String hora;
-    private String usuario;
-    private String estado;
-    private String equipo;
+    private String asig;
+    private Long status;
+    private Long idEquipo;
     private String entidad;
     private String tipoServicio;
+    private String desc;
+    private List<Long> productsToInsert;
 }
 

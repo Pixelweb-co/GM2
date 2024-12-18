@@ -7,15 +7,15 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class TypeDeviceDTO {
+public class TypeServiceDTO {
     private Long id;
-    private String typeDevice;
+    private String typeService;
 
 
     // Constructor con todos los campos
-    public TypeDeviceDTO(Long id, String typeDevice) {
+    public TypeServiceDTO(Long id, String typeService) {
         this.id = id;
-        this.typeDevice = typeDevice;
+        this.typeService = typeService;
 
     }
 

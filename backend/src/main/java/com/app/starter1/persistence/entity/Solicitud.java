@@ -25,21 +25,25 @@ public class Solicitud {
     @Column(name = "hora", length = 10)
     private String hora;
 
-    @Column(name = "id_equipo", length = 80)
-    private String idEquipo;
+    @Column(name = "id_equipo", insertable = false, updatable = false)
+    private Long idEquipo;
 
-    @Column(name = "status", length = 1, insertable = false, updatable = false)
-    private String status;
+    @Column(name = "status", insertable = false, updatable = false)
+    private Long status;
+
+    @ManyToOne
+    @JoinColumn(name = "id_equipo", referencedColumnName = "id_producto")
+    private Product equipo;
 
     @Column(name = "id_tipo_servicio", insertable = false, updatable = false)
-    private Integer idTipoServicio;
+    private Long idTipoServicio;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario_asignado", referencedColumnName = "id")
     private UserEntity usuarioAsignado;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_servicio", referencedColumnName = "id_tipo_servicio", insertable = false, updatable = false)
+    @JoinColumn(name = "id_tipo_servicio", referencedColumnName = "id_tipo_servicio")
     private TipoServicio typeService;
 
     @ManyToOne

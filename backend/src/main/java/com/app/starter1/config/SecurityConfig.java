@@ -82,11 +82,22 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/type-device/**").hasAnyRole("SUPERADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/type-device/**").hasAnyRole("SUPERADMIN");
 
-                    //products
+                    //solicitudes
                     http.requestMatchers(HttpMethod.GET, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.PUT, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.POST, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    //contratos
+                    http.requestMatchers(HttpMethod.GET, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
+
+                    //tipo servicio
+                    http.requestMatchers(HttpMethod.GET, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
 
 
                     // Configurar el resto de los endpoints (no especificados)

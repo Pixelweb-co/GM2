@@ -12,4 +12,5 @@ public interface ContratoRepository extends JpaRepository<Contrato, Long> {
 
     Optional<Contrato> findByClienteId(Long id);  // Busca por el ID del cliente
     Optional<Contrato> findByCliente(Customer cliente);
+
 }

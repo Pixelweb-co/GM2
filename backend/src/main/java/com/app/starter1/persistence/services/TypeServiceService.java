@@ -1,8 +1,8 @@
 package com.app.starter1.persistence.services;
 
-import com.app.starter1.dto.TypeDeviceDTO;
-import com.app.starter1.persistence.entity.TypeDevice;
-import com.app.starter1.persistence.repository.TypeDeviceRepository;
+import com.app.starter1.dto.TypeServiceDTO;
+import com.app.starter1.persistence.entity.TipoServicio;
+import com.app.starter1.persistence.repository.TypeServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,71 +10,70 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TypeDeviceService {
+public class TypeServiceService {
 
     @Autowired
-    private TypeDeviceRepository typeDeviceRepository;
+    private TypeServiceRepository typeServiceRepository;
 
 
 
-    // Crear o actualizar un typeDeviceo
-    public TypeDevice save(TypeDevice typeDevice) {
-        return typeDeviceRepository.save(typeDevice);
+    // Crear o actualizar un tipoServicioo
+    public TipoServicio save(TipoServicio tipoServicio) {
+        return typeServiceRepository.save(tipoServicio);
     }
 
-    // Obtener todos los typeDeviceos como DTOs
-    public List<TypeDeviceDTO> findAll() {
-        return typeDeviceRepository.findAll()
+    // Obtener todos los tipoServicioos como DTOs
+    public List<TypeServiceDTO> findAll() {
+        return typeServiceRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    // Buscar typeDeviceo por ID
-    public TypeDeviceDTO findById(Long id) {
-        TypeDevice typeDevice = typeDeviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TypeDevice not found"));
-        return mapToDTO(typeDevice);
+    // Buscar tipoServicioo por ID
+    public TypeServiceDTO findById(Long id) {
+        TipoServicio tipoServicio = typeServiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("TipoServicio not found"));
+        return mapToDTO(tipoServicio);
     }
 
-    // Buscar entidad TypeDeviceo por ID
-    public TypeDevice findEntityById(Long id) {
-        return typeDeviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TypeDevice not found"));
+    // Buscar entidad TipoServicioo por ID
+    public TipoServicio findEntityById(Long id) {
+        return typeServiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("TipoServicio not found"));
     }
 
-    // Eliminar typeDeviceo por ID
+    // Eliminar tipoServicioo por ID
     public void deleteById(Long id) {
-        if (!typeDeviceRepository.existsById(id)) {
-            throw new RuntimeException("TypeDevice not found");
+        if (!typeServiceRepository.existsById(id)) {
+            throw new RuntimeException("TipoServicio not found");
         }
-        typeDeviceRepository.deleteById(id);
+        typeServiceRepository.deleteById(id);
     }
 
 
     // Método para mapear entidad a DTO
-    public TypeDeviceDTO mapToDTO(TypeDevice typeDevice) {
-        return new TypeDeviceDTO(
-                typeDevice.getId(),
-                typeDevice.getTypeDevice()
+    public TypeServiceDTO mapToDTO(TipoServicio tipoServicio) {
+        return new TypeServiceDTO(
+                tipoServicio.getId(),
+                tipoServicio.getDescripcion()
 
         );
     }
 
     // Método para convertir DTO a entidad
-    public TypeDevice mapToEntity(TypeDeviceDTO typeDeviceDTO) {
+    public TipoServicio mapToEntity(TypeServiceDTO tipoServicioDTO) {
 
 
-        return TypeDevice.builder()
-                .id(typeDeviceDTO.getId())
-                .typeDevice(typeDeviceDTO.getTypeDevice())
-
+        return TipoServicio.builder()
+                .id(tipoServicioDTO.getId())
+                .descripcion(tipoServicioDTO.getTypeService())
                 .build();
     }
 
     // Método para actualizar entidad desde DTO
-    public void updateEntityFromDTO(TypeDevice existingTypeDevice, TypeDeviceDTO typeDeviceDTO) {
-        existingTypeDevice.setTypeDevice(typeDeviceDTO.getTypeDevice());
+    public void updateEntityFromDTO(TipoServicio existingTipoServicio, TypeServiceDTO tipoServicioDTO) {
+        existingTipoServicio.setDescripcion(tipoServicioDTO.getTypeService());
 
 
     }

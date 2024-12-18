@@ -1,8 +1,8 @@
 package com.app.starter1.controllers;
 
-import com.app.starter1.dto.TypeDeviceDTO;
-import com.app.starter1.persistence.entity.TypeDevice;
-import com.app.starter1.persistence.services.TypeDeviceService;
+import com.app.starter1.dto.TypeServiceDTO;
+import com.app.starter1.persistence.entity.TipoServicio;
+import com.app.starter1.persistence.services.TypeServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,47 +10,47 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/type-device")
-public class TypeDeviceController {
+@RequestMapping("/type-service")
+public class TypeServiceController {
 
     @Autowired
-    private TypeDeviceService typeDeviceService;
+    private TypeServiceService typeServiceService;
 
-    // Obtener todos los typeDeviceos
+    // Obtener todos los typeServiceos
     @GetMapping
-    public ResponseEntity<List<TypeDeviceDTO>> getAllTypeDevices() {
-        List<TypeDeviceDTO> typeDevices = typeDeviceService.findAll();
-        return ResponseEntity.ok(typeDevices);
+    public ResponseEntity<List<TypeServiceDTO>> getAllTypeServices() {
+        List<TypeServiceDTO> typeServices = typeServiceService.findAll();
+        return ResponseEntity.ok(typeServices);
     }
 
-    // Obtener typeDeviceo por ID
+    // Obtener typeServiceo por ID
     @GetMapping("/{id}")
-    public ResponseEntity<TypeDeviceDTO> getTypeDeviceById(@PathVariable Long id) {
-        TypeDeviceDTO typeDevice = typeDeviceService.findById(id);
-        return ResponseEntity.ok(typeDevice);
+    public ResponseEntity<TypeServiceDTO> getTypeServiceById(@PathVariable Long id) {
+        TypeServiceDTO typeService = typeServiceService.findById(id);
+        return ResponseEntity.ok(typeService);
     }
 
-    // Crear un nuevo typeDeviceo
+    // Crear un nuevo typeServiceo
     @PostMapping
-    public ResponseEntity<TypeDeviceDTO> createTypeDevice(@RequestBody TypeDeviceDTO typeDeviceDTO) {
-        TypeDevice typeDevice = typeDeviceService.mapToEntity(typeDeviceDTO);
-        TypeDevice savedTypeDevice = typeDeviceService.save(typeDevice);
-        return ResponseEntity.ok(typeDeviceService.mapToDTO(savedTypeDevice));
+    public ResponseEntity<TypeServiceDTO> createTypeService(@RequestBody TypeServiceDTO typeServiceDTO) {
+        TipoServicio typeService = typeServiceService.mapToEntity(typeServiceDTO);
+        TipoServicio savedTypeService = typeServiceService.save(typeService);
+        return ResponseEntity.ok(typeServiceService.mapToDTO(savedTypeService));
     }
 
-    // Actualizar un typeDeviceo existente
+    // Actualizar un typeServiceo existente
     @PutMapping("/{id}")
-    public ResponseEntity<TypeDeviceDTO> updateTypeDevice(@PathVariable Long id, @RequestBody TypeDeviceDTO typeDeviceDTO) {
-        TypeDevice existingTypeDevice = typeDeviceService.findEntityById(id);
-        typeDeviceService.updateEntityFromDTO(existingTypeDevice, typeDeviceDTO);
-        TypeDevice updatedTypeDevice = typeDeviceService.save(existingTypeDevice);
-        return ResponseEntity.ok(typeDeviceService.mapToDTO(updatedTypeDevice));
+    public ResponseEntity<TypeServiceDTO> updateTypeService(@PathVariable Long id, @RequestBody TypeServiceDTO typeServiceDTO) {
+        TipoServicio existingTypeService = typeServiceService.findEntityById(id);
+        typeServiceService.updateEntityFromDTO(existingTypeService, typeServiceDTO);
+        TipoServicio updatedTypeService = typeServiceService.save(existingTypeService);
+        return ResponseEntity.ok(typeServiceService.mapToDTO(updatedTypeService));
     }
 
-    // Eliminar un typeDeviceo por ID
+    // Eliminar un typeServiceo por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTypeDevice(@PathVariable Long id) {
-        typeDeviceService.deleteById(id);
+    public ResponseEntity<Void> deleteTypeService(@PathVariable Long id) {
+        typeServiceService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

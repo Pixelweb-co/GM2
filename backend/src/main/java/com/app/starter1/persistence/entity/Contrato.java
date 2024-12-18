@@ -42,7 +42,9 @@ public class Contrato {
     private Customer cliente;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "equipos_contrato", joinColumns = @JoinColumn(name = "id_contrato"), inverseJoinColumns = @JoinColumn(name = "id_equipo"))
+    @JoinTable(name = "equipos_contrato",
+            joinColumns = @JoinColumn(name = "id_contrato"), // Se refiere a la columna de la tabla Contrato
+            inverseJoinColumns = @JoinColumn(name = "id_equipo")) // Se refiere a la columna de la tabla Product
     private Set<Product> productContractList = new HashSet<>();
 
 

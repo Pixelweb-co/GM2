@@ -36,19 +36,25 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import type { SolicitudType } from '@/types/apps/solicitudType'
 
-//import SolicitudForm from '@/components/dialogs/form-solicitud'
+// Style Imports
+import tableStyles from '@core/styles/table.module.css'
+
+
+import CustomTextField from '@core/components/mui/TextField'
+
+
+
+
+import SolicitudForm from '@/components/dialogs/form-solicitud'
 
 // Component Imports
 import TableFilters from './TableFilters'
 
 //import AddSolicitudDrawer from './AddSolicitudDrawer'
 
-import CustomTextField from '@core/components/mui/TextField'
 
-// Style Imports
-import tableStyles from '@core/styles/table.module.css'
+import type { SolicitudType } from '@/types/apps/solicitudType'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -115,14 +121,18 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
   const [loadForm, setOpenForm] = useState(false)
 
   const [rowSelection, setRowSelection] = useState<any>({
+    id: '',
+    entidad: '',
     fecha: '',
     hora: '',
-    estadoSolicitud: '1',
-    idEquipo: '0',
-    idEntidad: '0',
-    idTipoServicio: '0',
-    usuarioAsignado: '0',
-    typeService: '0'
+    tipo_servicio: '',
+    descr: '',
+    asig: '',
+    fchasg: '',
+    horasg: '',
+    nombreEquipo:'',
+    nombreEntidad:'',
+    nombreTipoServicio:''
   })
 
   const [data, setData] = useState<SolicitudType[]>(tableData)
@@ -174,30 +184,30 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           </Typography>
         )
       }),
-      columnHelper.accessor('idEquipo', {
+      columnHelper.accessor('nombreEquipo', {
         header: 'Equipo',
 
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
-            {row.original.idEquipo}
+            {row.original.nombreEquipo}
           </Typography>
         )
       }),
 
-      columnHelper.accessor('idTipoServicio', {
+      columnHelper.accessor('nombreTipoServicio', {
         header: 'Tipo servicio',
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
-            {row.original.idTipoServicio}
+            {row.original.nombreTipoServicio}
           </Typography>
         )
       }),
 
-      columnHelper.accessor('idEntidad', {
+      columnHelper.accessor('nombreEntidad', {
         header: 'Entidad',
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
-            {row.original.idEntidad}
+            {row.original.nombreEntidad}
           </Typography>
         )
       }),
@@ -207,7 +217,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           <div className='flex items-center gap-3'>
             <Chip
               variant='tonal'
-              label={row.original.status ? 'Activo' : 'Inactivo'}
+              label={row.original.nombreEstadoSolicitud }
               size='small'
               color={row.original.status ? 'success' : 'error'} // Cambiar color dinámicamente
               className='capitalize'
@@ -325,14 +335,17 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
               onClick={() => {
                 setOpenForm(true)
                 setRowSelection({
+                  entidad: '',
                   fecha: '',
                   hora: '',
-                  estadoSolicitud: '1',
-                  idEquipo: '0',
-                  idEntidad: '0',
-                  idTipoServicio: '0',
-                  usuarioAsignado: '0',
-                  typeService: '0'
+                  tipo_servicio: '',
+                  descr: '',
+                  asig: '',
+                  fchasg: '',
+                  horasg: '',
+                  nombreEquipo:'',
+                  nombreEntidad:'',
+                  nombreTipoServicio:''
                 })
               }}
               variant='contained'
@@ -415,25 +428,29 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
         setData={setData}
       /> */}
 
-      {/* <SolicitudForm
+     <SolicitudForm
         open={loadForm}
         onClose={() => {
           setOpenForm(false)
           reload(true)
           setRowSelection({
-    fecha: '',
-    hora: '',
-    estadoSolicitud: '1',
-    idEquipo: '0',
-    idEntidad: '0',
-    idTipoServicio: '0',
-    usuarioAsignado: '0',
-    typeService: '0'
-  })
+            id:'',
+            entidad: '',
+            fecha: '',
+            hora: '',
+            tipo_servicio: '',
+            descr: '',
+            asig: '',
+            fchasg: '',
+            horasg: '',
+            nombreEquipo:'',
+            nombreEntidad:'',
+            nombreTipoServicio:''
+          })
         }}
         setOpen={() => setOpenForm(true)}
         rowSelect={rowSelection}
-      /> */}
+      />
     </>
   )
 }

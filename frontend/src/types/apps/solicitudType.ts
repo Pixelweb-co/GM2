@@ -1,18 +1,19 @@
 export interface SolicitudType {
-  idSolicitud: number // ID único de la solicitud
-  fecha: string // Fecha en formato string (YYYY-MM-DD o similar)
-  hora: string // Hora en formato string (HH:mm)
-  idEquipo: string // Identificador del equipo relacionado
-  idEntidad: string // Identificador de la entidad relacionada
-  status: string // Estado de la solicitud (puede ser un código, e.g., 'A', 'P', etc.)
-  idTipoServicio: number // ID del tipo de servicio relacionado
-
-  // Relación con el usuario asignado
-  usuarioAsignado?: string // Objeto de tipo UserEntity (opcional)
-
-  // Relación con el tipo de servicio
-  typeService?: string // Objeto de tipo TipoServicio (opcional)
-
-  // Relación con el estado de la solicitud
+  idSolicitud?: number // ID único de la solicitud
+  fecha?: string // Fecha en formato string (YYYY-MM-DD o similar)
+  hora?: string // Hora en formato string (HH:mm)
+  equipo?: string // Identificador del equipo relacionado
+  entidad?: string // Identificador de la entidad relacionada
+  status?: string // Estado de la solicitud (puede ser un código, e.g., 'A', 'P', etc.)
+  idTipoServicio?: string // ID del tipo de servicio relacionado
+  nombreAsig?:string
+  nombreEntidad?:string
+  nombreTipoServicio?:string
+  nombreEquipo?:string
   estadoSolicitud?: string // Objeto de tipo EstadoSolicitud (opcional)
+  nombreEstadoSolicitud?:string
+  descr?:string
+  asig?:string
+  fchasg?:string
+  horasg?:string
 }

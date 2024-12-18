@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="22b6de35-ff12-45e5-b27f-e87c183368c2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/ContratoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/TypeServiceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/SolicitudResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/TypeServiceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/exeptions/NotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/EstadoSolicitudRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/TypeServiceRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/TypeServiceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/SolicitudController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/SolicitudController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/SolicitudDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/SolicitudDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/Contrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/Contrato.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/EstadoSolicitud.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/EstadoSolicitud.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/Solicitud.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/Solicitud.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/TipoServicio.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/TipoServicio.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/ContratoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/ContratoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/CustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/SolicitudService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/SolicitudService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/forsol.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/types/apps/solicitudType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/types/apps/solicitudType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/apps/solicitudes/list/SolicitudListTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/apps/solicitudes/list/SolicitudListTable.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Pixelweb-co"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Pixelweb-co/GM2.git",
+    "accountId": "b872fd32-e88f-4b99-aa96-ef3d69bae58c"
+  }
+}]]></component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2pj9jmdyhCwd9fCjMLdwxTayQcs" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AppStart.executor": "Run",
+    "Maven.starter1 [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.app.starter1.persistence.entity" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.app.starter1.controllers" />
+      <recent name="com.app.starter1.dto" />
+      <recent name="com.app.starter1.persistence.services" />
+      <recent name="com.app.starter1.persistence.repository" />
+      <recent name="com.app.starter1.persistence.entity" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="AppStart" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.app.starter1.Starter1Application" />
+      <module name="starter1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="22b6de35-ff12-45e5-b27f-e87c183368c2" name="Changes" comment="" />
+      <created>1733268754899</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733268754899</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-web/6.4.1/spring-security-web-6.4.1.jar!/org/springframework/security/web/access/intercept/AuthorizationFilter.class</url>
+          <line>42</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.beans.factory.BeanCreationException" package="org.springframework.beans.factory" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

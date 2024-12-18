@@ -11,11 +11,16 @@ import {
   Button,
   MenuItem,
   Grid,
-  InputLabel,
-  Select,
-  FormControl,
-  Typography,
-  Divider
+
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+
+  Checkbox,
+  ListItemText,
+  Card,
+  CardContent
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -24,19 +29,19 @@ import axios from 'axios'
 
 import type { SolicitudType } from '@/types/apps/solicitudType'
 
+
+import CustomTextField from '@/@core/components/mui/TextField'
+import type { UsersType } from '@/types/apps/userType'
+
 const schema = yup.object().shape({
-  name: yup.string().required('El nombre es obligatorio'),
-  nit: yup.string().required('El NIT es obligatorio'),
-  phone: yup.string().required('telefono es obligatorio'),
-  email: yup.string().email('Email inválido').required('email es obligatorio'),
-  address: yup.string().required('direccion es obligatorio'),
-  contact: yup.string().required('El contacto es obligatorio'),
-  position: yup.string().required('El cargo es obligatorio'),
-  type: yup.string().required('El tipo es obligatorio'),
-  fechaInicio: yup.string().required('La fecha inicial es obligatoria'),
-  fechaFinal: yup.string().required('La fecha final es obligatoria'),
-  descripcionContrato: yup.string().optional(),
-  status: yup.string().required('El estado es obligatorio')
+  entidad: yup.string().required('El cliente es obligatorio'),
+  fecha: yup.string().required('La fecha es obligatoria'),
+  hora: yup.string().required('La hora es obligatoria'),
+  tipoServicio: yup.string().required('El tipo de servicio es obligatorio'),
+  descr: yup.string().required('descripcion es obligatorio'),
+  asig: yup.string().notRequired(),
+  fchasg: yup.string().notRequired(),
+  horasg: yup.string().notRequired()
 })
 
 const SolicitudForm = ({
@@ -51,8 +56,87 @@ const SolicitudForm = ({
   rowSelect: SolicitudType
 }) => {
   const [id, setId] = useState<any>(null)
-
+  const [customersList, setCustomersList] = useState<any[]>([])
+  const [productsList, setProductsList] = useState<any[]>([])
+  const [typeServiceList, setTypeServiceList] = useState<any[]>([])
+  const [userList, setUsersList] = useState<UsersType[]>([])
   const [editData, setEditData] = useState<any>(null)
+  const [checked, setChecked] = useState([]);
+
+  const fetchOptions = async () => {
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+      }
+
+      const [customersRes,userRes,typeServiceRes] = await Promise.all([
+        axios.get('http://localhost:8080/customers', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }),
+        axios.get('http://localhost:8080/users', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }),
+        axios.get('http://localhost:8080/type-service', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      setCustomersList(customersRes.data)
+      setUsersList(userRes.data)
+      setTypeServiceList(typeServiceRes.data)
+
+
+      return true
+    } catch (error) {
+      console.error('Error al obtener datos:', error)
+    }
+  }
+
+  const fetchProducts = async (idCustomer: any) => {
+    try {
+
+      console.log("Fp: ",idCustomer)
+
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+      }
+
+      const [productsRes] = await Promise.all([
+        axios.get('http://localhost:8080/contratos/customer/'+idCustomer+'', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      setProductsList(productsRes.data.productContractList)
+
+
+      return true
+
+    }catch(e){
+      console.log(e)
+    }
+
+  }
+
+  useEffect(() => {
+    fetchOptions()
+  }, [])
 
   const {
     control,
@@ -63,18 +147,14 @@ const SolicitudForm = ({
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
-      nit: '',
-      phone: '',
-      email: '',
-      address: '',
-      contact: '',
-      position: '',
-      type: '',
-      fechaInicio: '',
-      fechaFinal: '',
-      descripcionContrato: '',
-      status: '1'
+      entidad: '',
+      fecha: '',
+      hora: '',
+      tipoServicio: '',
+      descr: '',
+      asig: '',
+      fchasg: '',
+      horasg: ''
     }
   })
 
@@ -83,6 +163,7 @@ const SolicitudForm = ({
       const token = localStorage.getItem('AuthToken')
 
       console.log('token ', token)
+      console.log("pids ",checked)
 
       if (!token) {
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
@@ -91,17 +172,19 @@ const SolicitudForm = ({
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
-      const apiUrl = id ? `http://localhost:8080/solicituds/${id}` : 'http://localhost:8080/solicituds' // Creación
+      const apiUrl = id ? `http://localhost:8080/solicitudes/${id}` : 'http://localhost:8080/solicitudes' // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
-        data: data,
+        data: {...data, productsToInsert:checked,status:1},
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
       })
+
+
 
       // Procesar la respuesta
       if (response.data.result === 'success') {
@@ -113,18 +196,15 @@ const SolicitudForm = ({
       }
 
       setEditData(null)
-      setValue('name', '')
-      setValue('nit', '')
-      setValue('phone', '')
-      setValue('email', '')
-      setValue('address', '')
-      setValue('contact', '')
-      setValue('position', '')
-      setValue('type', '')
-      setValue('fechaInicio', '')
-      setValue('fechaFinal', '')
-      setValue('descripcionContrato', '')
-      setValue('status', '1')
+      setValue('entidad', '')
+      setValue('fecha', '')
+      setValue('hora', '')
+      setValue('tipoServicio', '')
+      setValue('descr', '')
+      setValue('asig', '')
+      setValue('fchasg', '')
+      setValue('horasg', '')
+
       reset()
       setId(null)
 
@@ -140,337 +220,230 @@ const SolicitudForm = ({
     if (rowSelect.idSolicitud) {
       console.log('rowSelect', rowSelect)
       setId(rowSelect.idSolicitud)
-      setValue('name', rowSelect.name || '')
-      setValue('nit', rowSelect.nit || '')
-      setValue('phone', rowSelect.phone || '')
-      setValue('email', rowSelect.email || '')
-      setValue('address', rowSelect.address || '')
-      setValue('contact', rowSelect.contact || '')
-      setValue('position', rowSelect.position || '')
-      setValue('type', rowSelect.type || '')
-      setValue('fechaInicio', rowSelect.contrato?.fechaInicio || '')
-      setValue('fechaFinal', rowSelect.contrato?.fechaFinal || '')
-      setValue('descripcionContrato', rowSelect.contrato?.descripcionContrato || '')
-      setValue('status', rowSelect.status || '0')
+      setValue('entidad', rowSelect.entidad || '')
+      setValue('fecha', rowSelect.fecha || '')
+      setValue('hora', rowSelect.hora || '')
+      setValue('tipoServicio', rowSelect.tipoServicio || '')
+      setValue('descr', rowSelect.descr || '')
+      setValue('asig', rowSelect.asig || '')
+      setValue('fchasg', rowSelect.fchasg || '')
+      setValue('horasg', rowSelect.horasg || '')
+
       setEditData(rowSelect)
     } else {
-      setValue('name', '')
-      setValue('nit', '')
-      setValue('phone', '')
-      setValue('email', '')
-      setValue('address', '')
-      setValue('contact', '')
-      setValue('position', '')
-      setValue('type', '')
-      setValue('fechaInicio', '')
-      setValue('fechaFinal', '')
-      setValue('descripcionContrato', '')
-      setValue('status', '1')
+      setValue('entidad', '')
+      setValue('fecha', '')
+      setValue('hora', '')
+      setValue('tipoServicio', '')
+      setValue('descr', '')
+      setValue('asig', '')
+      setValue('fchasg', '')
+      setValue('horasg', '')
+
       reset()
       setId(null)
       setEditData({
-        id: null,
-        name: '',
-        nit: '',
-        phone: '',
-        email: '',
-        address: '',
-        contact: '',
-        position: '',
-        type: '',
-        fechaInicio: '',
-        fechaFinal: '',
-        descripcionContrato: '',
-        status: '1'
+        entidad: '',
+        fecha: '',
+        hora: '',
+        tipoServicio: '',
+        descr: '',
+        asig: '',
+        fchasg: '',
+        horasg: ''
       })
     }
   }, [rowSelect])
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>Agregar nuevo solicitud</DialogTitle>
+      <DialogTitle>Agregar nueva solicitud</DialogTitle>
       <DialogContent>
         <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+              <h3>Datos de la solicitud</h3>
               <Controller
-                name='name'
+                name='entidad'
                 control={control}
                 render={({ field }) => (
-                  <TextField
+                  <CustomTextField
                     {...field}
+                    select
                     fullWidth
-                    value={editData ? editData.name : ''}
+                    className='mt-2'
+                    value={editData?.entidad ? editData?.entidad : '1'}
                     onChange={e => {
-                      setEditData({ ...editData, name: e.target.value })
-                      setValue('name', e.target.value)
+                      setEditData({ ...editData, entidad: e.target.value })
+                      setValue('entidad', e.target.value)
+                      fetchProducts(e.target.value)
                     }}
-                    label='Nombre'
-                    error={!!errors.name}
-                    helperText={errors.name?.message}
-                  />
+                    label='Cliente'
+                    error={Boolean(errors.entidad)}
+                    helperText={errors.entidad?.message}
+                  >
+                    {customersList.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
                 )}
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='nit'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    value={editData ? editData.nit : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, nit: e.target.value })
-                      setValue('nit', e.target.value)
-                    }}
-                    fullWidth
-                    label='NIT'
-                    error={!!errors.nit}
-                    helperText={errors.nit?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='phone'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData ? editData.phone : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, phone: e.target.value })
-                      setValue('phone', e.target.value)
-                    }}
-                    label='Teléfono'
-                    error={!!errors.phone}
-                    helperText={errors.phone?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='email'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData ? editData.email : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, email: e.target.value })
-                      setValue('email', e.target.value)
-                    }}
-                    label='Email'
-                    type='email'
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name='address'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData ? editData.address : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, address: e.target.value })
-                      setValue('address', e.target.value)
-                    }}
-                    label='Dirección'
-                    multiline
-                    maxRows={4}
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='contact'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData ? editData.contact : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, contact: e.target.value })
-                      setValue('contact', e.target.value)
-                    }}
-                    label='Contacto'
-                    error={!!errors.contact}
-                    helperText={errors.contact?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='position'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label='Cargo'
-                    value={editData ? editData.position : ''}
-                    onChange={e => {
-                      setEditData({ ...editData, position: e.target.value })
 
-                      setValue('position', e.target.value)
-                    }}
-                    error={!!errors.position}
-                    helperText={errors.position?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='type'
+
+            <Controller
+                      name='fecha'
+                      control={control}
+                      render={({ field }) => (
+                        <CustomTextField
+                          {...field}
+                          className='mt-2'
+                          fullWidth
+                          type='date'
+                          label='Fecha'
+                          error={Boolean(errors.fecha)}
+                          helperText={errors.fecha?.message}
+                        />
+                      )}
+                    />
+
+
+            <Controller
+                      name='hora'
+                      control={control}
+                      render={({ field }) => (
+                        <CustomTextField
+                          {...field}
+                          className='mt-2'
+                          fullWidth
+                          type='time'
+                          label='Hora'
+                          error={Boolean(errors.hora)}
+                          helperText={errors.hora?.message}
+                        />
+                      )}
+                    />
+
+<Controller
+                name='tipoServicio'
                 control={control}
                 render={({ field }) => (
-                  <FormControl fullWidth error={!!errors.type}>
-                    <InputLabel>Tipo</InputLabel>
-                    <Select
-                      {...field}
-                      value={editData ? editData.type : ''}
-                      onChange={e => {
-                        setEditData({ ...editData, type: e.target.value })
-                        setValue('type', e.target.value)
-                      }}
+                  <CustomTextField
+                    {...field}
+                    className='mt-2'
+                    select
+                    fullWidth
+                    value={editData?.tipoServicio ? editData?.tipoServicio : '1'}
+                    onChange={e => {
+                      setEditData({ ...editData, tipoServicio: e.target.value })
+                      setValue('tipoServicio', e.target.value)
+
+                    }}
+                    label='Tipo de servicio'
+                    error={Boolean(errors.tipoServicio)}
+                    helperText={errors.tipoServicio?.message}
+                  >
+                    {typeServiceList.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.typeService}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                )}
+              />
+<Controller
+                name='asig'
+                control={control}
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    className='mt-2'
+                    select
+                    fullWidth
+                    value={editData?.asig ? editData?.asig : '1'}
+                    onChange={e => {
+                      setEditData({ ...editData, asig: e.target.value })
+                      setValue('asig', e.target.value)
+
+                    }}
+                    label='Asignado a'
+                    error={Boolean(errors.asig)}
+                    helperText={errors.asig?.message}
+                  >
+                    {userList.filter((user)=>user.roles?.find((rol)=>['BIOMEDICAL','SUPERADMIN'].find(roln=>roln === rol.roleEnum )))?.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.nombres} {item.apellidos}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                )}
+              />
+
+              <Controller
+                              name='descr'
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  className='mt-4'
+                                  fullWidth
+                                  value={editData?.descr ? editData.descr : ''}
+                                  onChange={e => {
+                                    setEditData({
+                                      ...editData,
+                                      descr: e.target.value
+                                    })
+                                    setValue('descr', e.target.value)
+                                  }}
+                                  label='Descripción'
+                                  multiline
+                                  maxRows={6}
+                                  error={!!errors.descr}
+                                  helperText={errors.descr?.message}
+                                />
+                              )}
+                            />
+
+
+
+
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+
+              <h3>Equipos</h3>
+                <Card>
+                <CardContent>
+              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                {productsList.map(value => {
+                  const labelId = `checkbox-list-label-${value.id}`
+                  const handleToggle = (value: any) => () => {setChecked((prevChecked) => (prevChecked.includes(value) ? prevChecked.filter((item) => item !== value) : [...prevChecked, value]));};
+
+                  return (
+                    <ListItem
+                      key={value.id}
+
+                      disablePadding
                     >
-                      <MenuItem value=''>-- Selecciona tipo --</MenuItem>
-                      <MenuItem value='1'>Externa</MenuItem>
-                      <MenuItem value='0'>Interna</MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='status'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth error={!!errors.status}>
-                    <InputLabel>Estado</InputLabel>
-                    <Select
-                      {...field}
-                      value={editData ? editData.status : '0'}
-                      onChange={e => {
-                        setEditData({ ...editData, status: e.target.value })
-                        setValue('status', e.target.value)
-                      }}
-                    >
-                      <MenuItem value=''>-- Selecciona estado --</MenuItem>
-                      <MenuItem value='1'>Activo</MenuItem>
-                      <MenuItem value='0'>Inactivo</MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} className='my-4'>
-              <Typography>
-                <b>Contrato</b>
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='fechaInicio'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label='Fecha inicial'
-                    value={editData?.contrato?.fechaInicio ? editData.contrato?.fechaInicio : ''}
-                    onChange={e => {
-                      setEditData({
-                        ...editData,
-                        contrato: {
-                          ...editData.contrato,
-                          fechaInicio: e.target.value
-                        }
-                      })
-                      setValue('fechaInicio', e.target.value)
-                    }}
-                    type='date'
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.fechaInicio}
-                    helperText={errors.fechaInicio?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='fechaFinal'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData?.contrato?.fechaFinal ? editData.contrato?.fechaFinal : ''}
-                    onChange={e => {
-                      setEditData({
-                        ...editData,
-                        contrato: {
-                          ...editData.contrato,
-                          fechaFinal: e.target.value
-                        }
-                      })
-                      setValue('fechaFinal', e.target.value)
-                    }}
-                    label='Fecha final'
-                    type='date'
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.fechaFinal}
-                    helperText={errors.fechaFinal?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider className='my-4' />
-              <Controller
-                name='descripcionContrato'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    value={editData?.contrato?.descripcionContrato ? editData.contrato.descripcionContrato : ''}
-                    onChange={e => {
-                      setEditData({
-                        ...editData,
-                        contrato: {
-                          ...editData.contrato,
-                          descripcionContrato: e.target.value
-                        }
-                      })
-                      setValue('descripcionContrato', e.target.value)
-                    }}
-                    label='Descripción'
-                    multiline
-                    maxRows={4}
-                    error={!!errors.descripcionContrato}
-                    helperText={errors.descripcionContrato?.message}
-                  />
-                )}
-              />
+                      <ListItemButton role={undefined} onClick={handleToggle(value.id)} dense>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge='start'
+                            checked={checked.includes(value.id)}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText id={labelId} primary={`${value.productName}`} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+              </CardContent>
+              </Card>
             </Grid>
           </Grid>
         </Box>
