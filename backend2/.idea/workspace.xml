@@ -9,6 +9,7 @@
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/controllers/TypeServiceController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/SolicitudResponseDTO.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/dto/TypeServiceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/entity/Schedule.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/exeptions/NotFoundException.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/EstadoSolicitudRepository.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/TypeServiceRepository.java" afterDir="false" />
@@ -26,6 +27,7 @@
       <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/repository/CustomerRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/ProductService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/SolicitudService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/app/starter1/persistence/services/SolicitudService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/forsol.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/dialogs/form-solicitud/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/types/apps/solicitudType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/types/apps/solicitudType.ts" afterDir="false" />
