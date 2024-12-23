@@ -120,4 +120,18 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword) {
+        userDetailService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("Contraseña restablecida exitosamente.");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        userDetailService.sendResetPasswordEmail(email);
+        return ResponseEntity.ok("Correo de restablecimiento enviado.");
+    }
+
 }

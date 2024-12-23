@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react'
 import type { SyntheticEvent } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import axios from 'axios'
 
 // MUI Imports
@@ -54,6 +56,8 @@ const FormCustomer = () => {
 
   const [editData, setEditData] = useState<any>(null)
 
+  const router = useRouter()
+
   const onSubmit = async (data: any) => {
     try {
       const token = localStorage.getItem('AuthToken')
@@ -79,15 +83,6 @@ const FormCustomer = () => {
         }
       })
 
-      // Procesar la respuesta
-      if (response.data.result === 'success') {
-        console.log('Customer guardado con éxito:', response.data)
-
-        // Aquí puedes redirigir o mostrar un mensaje de éxito
-      } else {
-        console.error('Error en la respuesta:', response.data.message)
-      }
-
       setValue('name', '')
       setValue('nit', '')
       setValue('phone', '')
@@ -97,6 +92,9 @@ const FormCustomer = () => {
       setValue('position', '')
 
       reset()
+      localStorage.setItem('UserLogin', JSON.stringify(response.data))
+
+      router.push('home')
     } catch (error) {
       console.error('Error al enviar los datos:', error)
     }

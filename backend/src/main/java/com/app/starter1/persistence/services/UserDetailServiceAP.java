@@ -283,6 +283,43 @@ public class UserDetailServiceAP implements UserDetailsService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
+    public void sendResetPasswordEmail(String email) {
+            // Buscar usuario por email
+        UserEntity user = userRepository.findUserEntityByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el correo: " + email));
+
+            // Generar token único (UUID o similar)
+        String token = UUID.randomUUID().toString();
+        user.setRecoveryToken(token);
+
+            // Guardar el token en la base de datos
+        userRepository.save(user);
+
+            // Lógica para enviar el correo con el token
+        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            // Enviar correo con el enlace
+
+        String to = user.getEmail();
+        String subject = "GM2 Recuperación de contraseña";
+        String body =  resetLink;
+        String type = "recover-password";
 
 
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
+        producerService.sendMessage("email-notifications", message);
+        System.out.println("Notificación enviada a la cola.");
+
+
+    }
+
+    public void resetPassword(String token, String newPassword) {
+            // Buscar usuario por el token
+        UserEntity user = userRepository.findByRecoveryToken(token)
+                    .orElseThrow(() -> new RuntimeException("Token inválido o expirado."));
+
+            // Actualizar la contraseña
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setRecoveryToken(""); // Eliminar el token después de usarlo
+        userRepository.save(user);
+    }
 }

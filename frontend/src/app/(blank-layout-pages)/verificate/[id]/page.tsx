@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
 import VerifyEmailLink from '@/views/pages/auth/VerifyEmailLink'
 import { AuthManager } from '@/utils/authManager'
@@ -11,8 +11,6 @@ const VerficateEmailPage = () => {
   const params = useParams()
   const [emailToken, setEmailToken] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
-
-  const router = useRouter()
 
   useEffect(() => {
     // Extrae el parámetro que necesitas, por ejemplo: `params.token`
@@ -24,7 +22,6 @@ const VerficateEmailPage = () => {
 
       setLoading(false)
       console.log('result', result)
-      router.push('/home')
     }
   }, [params])
 

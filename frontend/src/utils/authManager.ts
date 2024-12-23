@@ -61,8 +61,6 @@ export const AuthManager = {
         }
       })
 
-      localStorage.setItem('UserLogin', JSON.stringify(response.data))
-
       return true // Devuelve la respuesta con los datos de validación
     } catch (error) {
       console.error('Error durante la validación de la cuenta:', error) // Manejo de errores

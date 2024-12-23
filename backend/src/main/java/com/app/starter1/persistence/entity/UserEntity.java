@@ -55,6 +55,9 @@ public class UserEntity {
     @Column(name = "verification_token")
     private String verificationToken;
 
+    @Column(name = "recovery_token",nullable = true)
+    private String recoveryToken;
+
     // Relación N:1 con Customer
     @ManyToOne(fetch = FetchType.EAGER) // Cambiar a EAGER si necesitas la información siempre
     @JoinColumn(name = "customer_id", nullable = true)
