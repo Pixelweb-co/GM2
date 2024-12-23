@@ -1,4 +1,4 @@
-package com.sendermail.serviceSender.service;
+package com.app.starter1.persistence.services;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -15,5 +15,7 @@ public class NotificationProducerService {
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
         System.out.println("Mensaje enviado a Kafka: " + message);
+
+
     }
 }

@@ -45,10 +45,10 @@ public class Customer {
     @Column(name = "tipo_entidad", nullable = true)  // Hacerlo opcional
     private String type;
 
-    @Column(name = "status_cliente")
+    @Column(name = "status_cliente", nullable = true)
     private Boolean status;
 
-    @Column(name = "date_added", nullable = true, updatable = false)
+    @Column(name = "date_added", nullable = true)
     private LocalDate dateRegister;
 
     @PrePersist

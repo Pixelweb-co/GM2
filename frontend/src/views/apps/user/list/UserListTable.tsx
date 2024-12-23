@@ -198,13 +198,14 @@ const UsersListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton onClick={() => setData(data?.filter(product => product.id !== row.original.id))}>
-              <i className='tabler-trash text-textSecondary' />
-            </IconButton>
             <IconButton>
               <Link href={'/accounts/user/form/' + row.original.id} className='flex'>
                 <i className='tabler-edit text-textSecondary' />
               </Link>
+            </IconButton>
+
+            <IconButton onClick={() => setData(data?.filter(product => product.id !== row.original.id))}>
+              <i className='tabler-trash text-textSecondary' />
             </IconButton>
           </div>
         ),

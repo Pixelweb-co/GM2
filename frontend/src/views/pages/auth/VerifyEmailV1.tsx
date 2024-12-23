@@ -23,31 +23,30 @@ import { getLocalizedUrl } from '@/utils/i18n'
 import AuthIllustrationWrapper from './AuthIllustrationWrapper'
 
 const VerifyEmailV1 = () => {
-  // Hooks
-  const { lang: locale } = useParams()
-
   return (
     <AuthIllustrationWrapper>
       <Card className='flex flex-col sm:is-[450px]'>
         <CardContent className='sm:!p-12'>
-          <Link href={getLocalizedUrl('/', locale as Locale)} className='flex justify-center mbe-6'>
+          <Link href={'/'} className='flex justify-center mbe-6'>
             <Logo />
           </Link>
           <div className='flex flex-col gap-1 mbe-6'>
-            <Typography variant='h4'>Verify your email ✉️</Typography>
+            <Typography variant='h4'>Verifica tu cuenta ✉️</Typography>
             <Typography>
-              Account activation link sent to your email address:{' '}
-              <span className='font-medium text-textPrimary'>john.doe@email.com</span> Please follow the link inside to
-              continue.
+              Un enlace de activacion se ha enviado a el correo electronico:{' '}
+              <span className='font-medium text-textPrimary'>john.doe@email.com</span> Profa vor haz click en el enlace
+              para activar tu cuenta.
             </Typography>
           </div>
-          <Button fullWidth variant='contained' type='submit' className='mbe-6'>
-            Skip For Now
-          </Button>
+          <Link href='/login' passHref>
+            <Button fullWidth variant='contained' className='mbe-6'>
+              Acceder
+            </Button>
+          </Link>
           <div className='flex justify-center items-center flex-wrap gap-2'>
-            <Typography>Didn&#39;t get the mail?</Typography>
+            <Typography>No llego el correo electronico?</Typography>
             <Typography color='primary' component={Link}>
-              Resend
+              Reenviar
             </Typography>
           </div>
         </CardContent>

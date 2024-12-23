@@ -4,7 +4,9 @@ package com.app.starter1.controllers;
 import com.app.starter1.dto.*;
 import com.app.starter1.persistence.entity.Contrato;
 import com.app.starter1.persistence.entity.Customer;
+import com.app.starter1.persistence.entity.UserEntity;
 import com.app.starter1.persistence.repository.CustomerRepository;
+import com.app.starter1.persistence.repository.UserRepository;
 import com.app.starter1.persistence.services.ContractService;
 import com.app.starter1.persistence.services.CustomerService;
 import jakarta.transaction.Transactional;
@@ -30,6 +32,9 @@ public class CustomerController {
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping
     public ResponseEntity<?> createClienteYContrato(@RequestBody ClienteContratoRequest request) {
         // Crear el cliente
@@ -42,6 +47,38 @@ public class CustomerController {
                 "cliente", cliente,
                 "contrato", contrato
         ));
+    }
+
+    @PostMapping("/account-setup")
+    public ResponseEntity<?> accountSetup(@RequestBody ClienteSinContratoRequest request) {
+        // Crear el cliente
+
+        // Buscar el usuario por ID
+        UserEntity user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + request.getUserId()));
+
+        // Obtener los datos del cliente desde el objeto form
+        ClienteForm form = request.getForm();
+
+        // Crear el cliente
+        Customer customer = Customer.builder()
+                .name(form.getName())
+                .nit(form.getNit())
+                .phone(form.getPhone())
+                .email(form.getEmail())
+                .address(form.getAddress())
+                .contact(form.getContact())
+                .position(form.getPosition())
+                .type(form.getType())
+                .status(form.getStatus() != null ? Boolean.valueOf(form.getStatus()) : null)
+                .build();
+
+        // Asociar el cliente al usuario
+        customer = customerRepository.save(customer);
+        user.setCustomer(customer);
+        UserEntity userSaved = userRepository.save(user);
+
+        return ResponseEntity.ok(userSaved);
     }
 
 

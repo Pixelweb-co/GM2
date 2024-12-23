@@ -46,7 +46,7 @@
             <p>Hola <strong>${name}</strong>,</p>
             <p>Gracias por registrarte en Tornillos Protor. Ahora puedes disfrutar de todos nuestros servicios.</p>
             <p>Debes validar tu cuenta en el siguiente enlace</p>
-            <p>${link_activate}</p>
+            <p><a href="${activateLink}">Activa tu cuenta aqui!</a></p>
             <p>Si tienes alguna duda, no dudes en contactarnos.</p>
         </div>
         <div class="email-footer">

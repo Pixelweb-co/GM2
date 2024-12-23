@@ -104,9 +104,35 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
     try {
       const result = await AuthManager.authorize(data) // Enviar username y password al backend
 
-      setSuccess(true)
-      setError(null)
-      router.push('/home') // Redirigir al usuario al home después de login exitoso
+      console.log('vf ', result.userEntity.verificationToken)
+      console.log('customer ', result.userEntity.customer)
+
+      if (result.status) {
+        if (result.userEntity.verificationToken != '') {
+          {
+            router.push('/verify-email')
+
+            return false
+          }
+        } else {
+          {
+            setSuccess(false)
+            setError(null)
+
+            if (!result.userEntity.customer) {
+              setSuccess(false)
+              setError(null)
+              router.push('/account-setup')
+
+              return false
+            }
+
+            router.push('/home') // Redirigir al usuario al home después de login exitoso
+
+            return true
+          }
+        }
+      }
     } catch (error: any) {
       console.error('Error during login:', error.response.data.message)
       setError(error.response.data.message)

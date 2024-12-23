@@ -1,6 +1,6 @@
-package com.sendermail.serviceSender.controller;
+package com.app.starter1.controllers;
 
-import com.sendermail.serviceSender.service.NotificationProducerService;
+import com.app.starter1.persistence.services.NotificationProducerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,9 +18,10 @@ public class NotificationController {
     public String sendNotification(
             @RequestParam String to,
             @RequestParam String subject,
-            @RequestParam String body
+            @RequestParam String body,
+            @RequestParam String type
     ) {
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\"}", to, subject, body);
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
         producerService.sendMessage("email-notifications", message);
         return "Notificación enviada a la cola.";
     }

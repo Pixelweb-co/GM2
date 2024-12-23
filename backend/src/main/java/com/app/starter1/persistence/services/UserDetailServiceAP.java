@@ -58,9 +58,16 @@ public class UserDetailServiceAP implements UserDetailsService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    private final NotificationProducerService producerService;
+
 
     @Autowired
     private CustomerRepository customerRepository; // Para obtener el cliente si es necesario
+
+    public UserDetailServiceAP(NotificationProducerService producerService) {
+        this.producerService = producerService;
+    }
 
     // Crear o actualizar un usuario
     public  Map<String, Object>  createOrUpdateUser(UserCreateUpdateRequest request) throws IllegalAccessException {
@@ -138,6 +145,7 @@ public class UserDetailServiceAP implements UserDetailsService {
 
     public AuthResponse loginUser(LoginRequest authloginRequest){
 
+
         String username = authloginRequest.username();
         String password = authloginRequest.password();
 
@@ -180,6 +188,8 @@ public class UserDetailServiceAP implements UserDetailsService {
 
     public AuthResponse createUser(AuthCreateUserRequest authCreateUserRequest) throws IllegalAccessException {
 
+        String nombres = authCreateUserRequest.nombres();
+        String apellidos = authCreateUserRequest.apellidos();
         String username = authCreateUserRequest.username();
         String password = authCreateUserRequest.password();
         String email = authCreateUserRequest.email();
@@ -202,6 +212,8 @@ public class UserDetailServiceAP implements UserDetailsService {
         }
 
         UserEntity userEntity = UserEntity.builder()
+                .nombres(nombres)
+                .apellidos(apellidos)
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .roles(roleEntityList)
@@ -221,6 +233,18 @@ public class UserDetailServiceAP implements UserDetailsService {
 
         // String confirmationUrl = "http://localhost:8080/verify-email?token=" + token;
         // emailService.sendEmail(userEntity.getEmail(), "Email Verification", "Click the link to verify your email: " + confirmationUrl);
+
+        String activationLink = "http://localhost:3000/verificate/"+userEntity.getVerificationToken();
+
+        String to = userEntity.getEmail();
+        String subject = "Registro exitoso! "+"Bienvenido a GM2, "+nombres+' '+apellidos;
+        String body =  activationLink;
+        String type = "register";
+
+
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
+        producerService.sendMessage("email-notifications", message);
+        System.out.println("Notificación enviada a la cola.");
 
         ArrayList<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 

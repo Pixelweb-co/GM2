@@ -26,7 +26,7 @@ export const events: EventInput[] = [
   {
     id: '2',
     url: '',
-    title: 'Meeting With Client',
+    title: 'reu With Client',
     start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
     allDay: true,

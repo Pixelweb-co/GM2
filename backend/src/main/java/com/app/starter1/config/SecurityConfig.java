@@ -57,6 +57,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/auth/**").permitAll();
 
+                    http.requestMatchers(HttpMethod.GET, "/sendnotification/**").permitAll();
 
                     // Configurar los endpoints privados
                     //auth
@@ -98,6 +99,12 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.PUT, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.POST, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
+
+                    //plantillas
+                    http.requestMatchers(HttpMethod.GET, "/plantillas/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/plantillas/**").hasAnyRole("SUPERADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/plantillas/**").hasAnyRole("SUPERADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/plantillas/**").hasAnyRole("SUPERADMIN");
 
 
                     // Configurar el resto de los endpoints (no especificados)

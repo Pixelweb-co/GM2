@@ -1,4 +1,5 @@
-package com.sendermail.serviceSender.config;
+package com.app.starter1.config;
+
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

@@ -23,6 +23,7 @@ public class VerificationTokenService {
         }
 
         user.setEnabled(true);
+        user.setVerificationToken("");
         userRepository.save(user);
         return "valid";
     }

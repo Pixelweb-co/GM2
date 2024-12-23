@@ -4,6 +4,8 @@
 import { useEffect, useState, useMemo } from 'react'
 
 // MUI Imports
+import { useRouter } from 'next/navigation'
+
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
@@ -34,6 +36,8 @@ import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
+import { set } from 'date-fns'
+
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import type { ProductType } from '@/types/apps/productType'
 
@@ -48,6 +52,8 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+
+import CheckListForm from '@/components/dialogs/form-checklist'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -115,6 +121,9 @@ const ProductsListTable = ({ reload, tableData }: any) => {
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setLoadForm] = useState(false)
+  const [productType, setProductType] = useState<any | null>(null)
+  const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
+  const router = useRouter()
 
   const columns = useMemo<ColumnDef<ProductTypeWithAction, any>[]>(
     () => [
@@ -200,8 +209,26 @@ const ProductsListTable = ({ reload, tableData }: any) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton onClick={() => setData(data?.filter((product: ProductType) => product.id !== row.original.id))}>
-              <i className='tabler-trash text-textSecondary' />
+            <IconButton
+              onClick={() => {
+                setRowSelection(row.original)
+                setLoadFormCheck(true)
+              }}
+            >
+              <i className='tabler-eye text-textSecondary' />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                localStorage.removeItem('productview')
+                console.log('asignando p', row.original)
+
+                localStorage.setItem('productview', JSON.stringify(row.original))
+                setTimeout(() => {
+                  router.push('/productos/view')
+                }, 500)
+              }}
+            >
+              <i className='tabler-eye text-textSecondary' />
             </IconButton>
             <IconButton
               onClick={() => {
@@ -211,6 +238,9 @@ const ProductsListTable = ({ reload, tableData }: any) => {
               }}
             >
               <i className='tabler-edit text-textSecondary' />
+            </IconButton>
+            <IconButton onClick={() => setData(data?.filter((product: ProductType) => product.id !== row.original.id))}>
+              <i className='tabler-trash text-textSecondary' />
             </IconButton>
           </div>
         ),
@@ -417,21 +447,43 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           reload(true)
 
           setRowSelection({
-            name: '',
-            nit: '',
-            phone: '',
-            email: '',
-            address: '',
-            contact: '',
-            position: '',
-            type: '',
-            fhcinicial: '',
-            fchfinal: '',
-            descripcion: '',
-            status: '1'
+            id: undefined,
+            productType: '',
+            productCode: '',
+            productName: '',
+            brand: '',
+            model: '',
+            licensePlate: '',
+            productClass: '',
+            classification: '',
+            clientId: null,
+            status: '1',
+            dateAdded: null,
+            inventoryRegister: '',
+            origin: '',
+            voltage: '',
+            power: '',
+            frequency: '',
+            amperage: '',
+            purchaseDate: '',
+            bookValue: 0,
+            supplier: '',
+            warranty: '',
+            warrantyStartDate: '',
+            warrantyEndDate: '',
+            manual: '',
+            periodicity: '',
+            location: '',
+            placement: ''
           })
         }}
         setOpen={() => setLoadForm(true)}
+        rowSelect={rowSelection}
+      />
+      <CheckListForm
+        open={loadFormCheck}
+        onClose={() => setLoadFormCheck(false)}
+        setOpen={() => setLoadFormCheck(true)}
         rowSelect={rowSelection}
       />
     </>

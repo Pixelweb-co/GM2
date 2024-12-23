@@ -87,6 +87,9 @@ public class Product {
     @Column(name = "proveedor_producto")
     private String supplier;
 
+    @Column(name = "cliente_producto")
+    private String customer;
+
     @Column(name = "garantia_producto")
     private String warranty;
 

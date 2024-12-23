@@ -53,7 +53,22 @@ export const AuthManager = {
       throw error
     }
   },
+  async validateAccount(data: { validationToken: string }) {
+    try {
+      const response = await axios.post('http://localhost:8080/auth/validate-account', data, {
+        headers: {
+          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+        }
+      })
 
+      localStorage.setItem('UserLogin', JSON.stringify(response.data))
+
+      return true // Devuelve la respuesta con los datos de validación
+    } catch (error) {
+      console.error('Error durante la validación de la cuenta:', error) // Manejo de errores
+      throw error
+    }
+  },
   async validateEmail(data: { email: string }) {
     try {
       const response = await axios.post('http://localhost:8080/auth/validate-email', data, {

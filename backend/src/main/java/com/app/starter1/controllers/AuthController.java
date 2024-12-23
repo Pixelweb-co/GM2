@@ -7,6 +7,7 @@ import com.app.starter1.dto.AuthResponse;
 import com.app.starter1.dto.LoginRequest;
 import com.app.starter1.persistence.repository.UserRepository;
 import com.app.starter1.persistence.services.UserDetailServiceAP;
+import com.app.starter1.persistence.services.VerificationTokenService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.validation.Valid;
@@ -32,6 +33,9 @@ public class AuthController {
     private UserDetailServiceAP userDetailService;
 
     @Autowired
+    private VerificationTokenService verificationTokenService;
+
+    @Autowired
     private UserRepository userRepository;
 
     public AuthController(JwtUtils jwtUtils) {
@@ -48,6 +52,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody @Valid AuthCreateUserRequest authCreateUser) {
         try {
             return new ResponseEntity<>(userDetailService.createUser(authCreateUser), HttpStatus.CREATED);
+
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalAccessException e) {
@@ -70,6 +75,17 @@ public class AuthController {
         boolean isAvailable = !userRepository.existsByEmail(email);
         Map<String, Boolean> response = new HashMap<>();
         response.put("isAvailable", isAvailable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/validate-account")
+    public ResponseEntity<Map<String, String>> validateAccount(@RequestBody Map<String, String> request) {
+        String vaidationToken = request.get("validationToken");
+        String isAvailable = verificationTokenService.validateVerificationToken(vaidationToken);
+
+
+        Map<String, String> response = new HashMap<>();
+        response.put("Activado", isAvailable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

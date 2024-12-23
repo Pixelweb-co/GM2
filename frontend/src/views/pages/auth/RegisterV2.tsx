@@ -94,6 +94,8 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
 
   // Validaciones con yup
   const schema = yup.object().shape({
+    nombres: yup.string().required('El nombre es obligatorio'),
+    apellidos: yup.string().required('El apellido es obligatorio'),
     username: yup
       .string()
       .required('El nombre de usuario es obligatorio')
@@ -164,7 +166,7 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
 
       console.log('Registro exitoso:', response)
 
-      router.push('/home') // Redirigir al usuario al home después de login exitoso
+      router.push('/verify-email') // Redirigir al usuario al home después de login exitoso
     } catch (error) {
       console.error('Error al registrar:', error)
     }
@@ -199,6 +201,25 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
             <Typography>¡Haz que la gestión de tu aplicación sea fácil y divertida!</Typography>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} noValidate autoComplete='off' className='flex flex-col gap-6'>
+            <CustomTextField
+              autoFocus
+              fullWidth
+              label='Nombre completo'
+              placeholder='Ingresa tu nombre completo'
+              {...register('nombres')}
+              error={!!errors.nombres}
+              helperText={errors.nombres?.message}
+            />
+            <CustomTextField
+              autoFocus
+              fullWidth
+              label='Apellidos'
+              placeholder='Ingresa tus apellidos'
+              {...register('apellidos')}
+              error={!!errors.apellidos}
+              helperText={errors.apellidos?.message}
+            />
+
             <CustomTextField
               autoFocus
               fullWidth
