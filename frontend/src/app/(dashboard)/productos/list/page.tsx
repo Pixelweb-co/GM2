@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 import ProductList from '@views/apps/products/list'
+import { userMethods } from '@/utils/userMethods'
 
 const getProductData = async () => {
   console.log('productList ', process.env.BACKEND_PUBLIC_APP_URL)
@@ -19,8 +20,20 @@ const getProductData = async () => {
       throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
     }
 
+    const user = userMethods.getUserLogin()
+
+    console.log('user ', user)
+
+    let product_url = `http://localhost:8080/products`
+
+    if (user.roles[0].roleEnum === 'ADMIN' || user.roles[0].roleEnum === 'USER') {
+      const id_customer = user.customer.id
+
+      product_url = `http://localhost:8080/products/customer/${id_customer}`
+    }
+
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/products`, {
+    const res = await axios.get(product_url, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado

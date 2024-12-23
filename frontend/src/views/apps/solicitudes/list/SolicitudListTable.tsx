@@ -40,11 +40,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
-
 import CustomTextField from '@core/components/mui/TextField'
-
-
-
 
 import SolicitudForm from '@/components/dialogs/form-solicitud'
 
@@ -52,7 +48,6 @@ import SolicitudForm from '@/components/dialogs/form-solicitud'
 import TableFilters from './TableFilters'
 
 //import AddSolicitudDrawer from './AddSolicitudDrawer'
-
 
 import type { SolicitudType } from '@/types/apps/solicitudType'
 
@@ -130,12 +125,15 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
     asig: '',
     fchasg: '',
     horasg: '',
-    nombreEquipo:'',
-    nombreEntidad:'',
-    nombreTipoServicio:''
+    nombreEquipo: '',
+    nombreEntidad: '',
+    nombreTipoServicio: ''
   })
 
-  const [data, setData] = useState<SolicitudType[]>(tableData)
+  const [data, setData] = useState<SolicitudType[]>(
+    tableData.sort((a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+  )
+
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
 
@@ -217,7 +215,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           <div className='flex items-center gap-3'>
             <Chip
               variant='tonal'
-              label={row.original.nombreEstadoSolicitud }
+              label={row.original.nombreEstadoSolicitud}
               size='small'
               color={row.original.status ? 'success' : 'error'} // Cambiar color dinámicamente
               className='capitalize'
@@ -343,9 +341,9 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
                   asig: '',
                   fchasg: '',
                   horasg: '',
-                  nombreEquipo:'',
-                  nombreEntidad:'',
-                  nombreTipoServicio:''
+                  nombreEquipo: '',
+                  nombreEntidad: '',
+                  nombreTipoServicio: ''
                 })
               }}
               variant='contained'
@@ -428,13 +426,13 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
         setData={setData}
       /> */}
 
-     <SolicitudForm
+      <SolicitudForm
         open={loadForm}
         onClose={() => {
           setOpenForm(false)
           reload(true)
           setRowSelection({
-            id:'',
+            id: '',
             entidad: '',
             fecha: '',
             hora: '',
@@ -443,9 +441,9 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
             asig: '',
             fchasg: '',
             horasg: '',
-            nombreEquipo:'',
-            nombreEntidad:'',
-            nombreTipoServicio:''
+            nombreEquipo: '',
+            nombreEntidad: '',
+            nombreTipoServicio: ''
           })
         }}
         setOpen={() => setOpenForm(true)}

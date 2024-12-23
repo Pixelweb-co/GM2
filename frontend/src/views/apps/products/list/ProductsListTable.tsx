@@ -35,9 +35,6 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
-// Type Imports
-import { set } from 'date-fns'
-
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import type { ProductType } from '@/types/apps/productType'
 
@@ -117,11 +114,11 @@ const ProductsListTable = ({ reload, tableData }: any) => {
   // States
   // const [addProductOpen, setAddProductOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(...[tableData])
+  const [data, setData] = useState(tableData.sort((a, b) => b.id - a.id))
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setLoadForm] = useState(false)
-  const [productType, setProductType] = useState<any | null>(null)
+
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
   const router = useRouter()
 

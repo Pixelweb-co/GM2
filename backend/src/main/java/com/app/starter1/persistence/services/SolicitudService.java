@@ -46,7 +46,7 @@ public class SolicitudService {
                         .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
                         .nombreEstadoSolicitud(solicitud.getEstadoSolicitud() != null ? solicitud.getEstadoSolicitud().getDescripcion() : null)
                         .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado().getId() : null)
-                        .status(solicitud.getEstadoSolicitud() != null ? solicitud.getEstadoSolicitud().getId() : null)
+                        .status(solicitud.getEstadoSolicitud() != null ? solicitud.getStatus() : null)
                         .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
                         .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
                         .build())

@@ -88,7 +88,7 @@ public class Product {
     private String supplier;
 
     @Column(name = "cliente_producto")
-    private String customer;
+    private Long customer;
 
     @Column(name = "garantia_producto")
     private String warranty;

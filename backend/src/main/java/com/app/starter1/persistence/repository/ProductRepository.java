@@ -10,5 +10,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByStatus(String status); // Filtrar productos por estado
 
     List<Product> findByProductNameContaining(String keyword); // Buscar productos por nombre parcial
-
+    List<Product> findByCustomer(Long customerId);
 }

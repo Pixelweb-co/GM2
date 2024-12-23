@@ -28,8 +28,8 @@ public class Solicitud {
     @Column(name = "id_equipo", insertable = false, updatable = false)
     private Long idEquipo;
 
-    @Column(name = "status", insertable = false, updatable = false)
-    private Long status;
+    @Column(name = "status")
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "id_equipo", referencedColumnName = "id_producto")

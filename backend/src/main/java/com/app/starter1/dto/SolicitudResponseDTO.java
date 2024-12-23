@@ -16,7 +16,7 @@ public class SolicitudResponseDTO {
     private String nombreEntidad;
     private String nombreEstadoSolicitud;
     private Long asig;
-    private Long status;
+    private String status;
     private Long idEquipo;
     private Long entidad;
     private Long tipoServicio;

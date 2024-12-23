@@ -26,6 +26,17 @@ public class ProductService {
     @Autowired
     private ContratoRepository contratoRepository;
 
+
+    /**
+     * Obtiene los productos asociados a un cliente dado.
+     *
+     * @param customerId ID del cliente
+     * @return Lista de productos asociados al cliente
+     */
+    public List<Product> getProductsByCustomer(Long customerId) {
+        return productRepository.findByCustomer(customerId);
+    }
+
     /**
      * Guarda un producto y actualiza su relación con el contrato asociado al cliente.
      *
@@ -34,6 +45,12 @@ public class ProductService {
      * @return Producto guardado
      */
     public Product guardarProductoConContrato(Product producto, Long clienteId) {
+        // Guardar el producto en la base de datos
+
+        // Establecer el ID del cliente en el campo customer del producto
+        //producto.setCustomer(clienteId.toString());
+        System.out.println("customer "+clienteId);
+
         // Guardar el producto en la base de datos
         Product productoGuardado = productRepository.save(producto);
 

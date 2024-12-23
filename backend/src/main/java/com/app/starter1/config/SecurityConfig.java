@@ -78,10 +78,10 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.DELETE, "/products/**").hasAnyRole("SUPERADMIN","ADMIN");
 
                     //type device
-                    http.requestMatchers(HttpMethod.GET, "/type-device/**").hasAnyRole("SUPERADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/type-device/**").hasAnyRole("SUPERADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/type-device/**").hasAnyRole("SUPERADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/type-device/**").hasAnyRole("SUPERADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
 
                     //solicitudes
                     http.requestMatchers(HttpMethod.GET, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");

@@ -31,11 +31,19 @@ public class ProductController {
         return productRepository.findAll();
     }
 
+    @GetMapping("/customer/{id_customer}")
+    public ResponseEntity<List<Product>> getProductsByCustomer(@PathVariable Long id_customer) {
+        List<Product> products = productService.getProductsByCustomer(id_customer);
+        return ResponseEntity.ok(products);
+    }
+
     @PostMapping
     public ResponseEntity<Product> crearProducto(@RequestBody ProductoRequest productoRequest) {
         Product producto = convertirAEntidad(productoRequest);
 
-        Product productoGuardado = productService.guardarProductoConContrato(producto, productoRequest.getClient());
+        System.out.println(productoRequest.getCustomer());
+
+        Product productoGuardado = productService.guardarProductoConContrato(producto, productoRequest.getCustomer());
         return ResponseEntity.status(HttpStatus.CREATED).body(productoGuardado);
     }
 
@@ -63,6 +71,7 @@ public class ProductController {
                 .productName(productoRequest.getProductName())
                 .productCode(productoRequest.getProductCode())
                 .productType(productoRequest.getTypeDevice())
+                .customer(productoRequest.getCustomer())
                 .build();
     }
 

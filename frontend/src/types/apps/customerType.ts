@@ -8,7 +8,7 @@ export type CustomersType = {
   contact?: string
   position?: string
   type?: string
-  status?: string
+  status?: boolean
   dateRegister?: string
 
   contrato?: {

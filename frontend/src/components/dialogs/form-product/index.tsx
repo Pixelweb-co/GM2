@@ -25,6 +25,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabList from '@mui/lab/TabList'
 
 import CustomTextField from '@/@core/components/mui/TextField'
+import { userMethods } from '@/utils/userMethods'
 
 const schema = yup.object().shape({
   typeDevice: yup.string().required('El tipo de producto es obligatorio'),
@@ -36,7 +37,7 @@ const schema = yup.object().shape({
 
   //productClass: yup.string().required('La clase de producto es obligatoria'),
   classification: yup.string().required('La clasificación es obligatoria'),
-  client: yup.string().required('El cliente es obligatorio'),
+  customer: userMethods.isRole('ADMIN') ? yup.string().notRequired() : yup.string().required('Cliente es requerido'),
   status: yup.string().required('El estado es obligatorio'),
 
   invimaRegister: yup.string().required('El registro de inventario es obligatorio'),
@@ -71,7 +72,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
     //productClass: '',
     classification: '',
-    client: 0,
+    customer: 0,
     status: '1',
     invimaRegister: '',
     origin: '',
@@ -148,7 +149,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
       //productClass: '',
       classification: '',
-      client: '',
+      customer: '',
       status: '1',
       invimaRegister: '',
       origin: '',
@@ -194,7 +195,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
-        data: data,
+        data: {
+          ...data,
+          customer:
+            userMethods.isRole('ADMIN') || userMethods.isRole('USER')
+              ? userMethods.getUserLogin().customer?.id
+              : data?.customer
+        },
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
@@ -219,7 +226,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
       //setValue('productClass', '')
       setValue('classification', '')
-      setValue('client', '')
+      setValue('customer', '')
       setValue('status', '1')
 
       //setValue('dateAdded', '')
@@ -251,7 +258,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
         //productClass: '',
         classification: '',
-        client: '',
+        customer: '',
         status: '1',
 
         //dateAdded: '',
@@ -293,7 +300,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
       // setValue('productClass', rowSelect.productClass)
       setValue('classification', rowSelect.classification)
-      setValue('client', rowSelect.client)
+      setValue('customer', rowSelect.client)
       setValue('status', rowSelect.status)
 
       // setValue('dateAdded', rowSelect.dateAdded)
@@ -329,7 +336,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
       // productClass: '',
       classification: '',
-      client: 0,
+      customer: '',
       status: '1',
       dateAdded: '',
       invimaRegister: '',
@@ -359,7 +366,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
     //setValue('productClass', '')
     setValue('classification', '')
-    setValue('client', '')
+    setValue('customer', '')
     setValue('status', '1')
 
     //setValue('dateAdded', '')
@@ -532,31 +539,33 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                       )}
                     />
 
-                    <Controller
-                      name='client'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          select
-                          fullWidth
-                          value={editData?.client ? editData?.client : '1'}
-                          onChange={e => {
-                            setEditData({ ...editData, client: e.target.value })
-                            setValue('client', e.target.value)
-                          }}
-                          label='Cliente'
-                          error={Boolean(errors.client)}
-                          helperText={errors.client?.message}
-                        >
-                          {customersList.map(item => (
-                            <MenuItem key={item.id} value={item.id}>
-                              {item.name}
-                            </MenuItem>
-                          ))}
-                        </CustomTextField>
-                      )}
-                    />
+                    {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) && (
+                      <Controller
+                        name='customer'
+                        control={control}
+                        render={({ field }) => (
+                          <CustomTextField
+                            {...field}
+                            select
+                            fullWidth
+                            value={editData?.customer ? editData?.customer : '1'}
+                            onChange={e => {
+                              setEditData({ ...editData, customer: e.target.value })
+                              setValue('customer', e.target.value)
+                            }}
+                            label='Cliente'
+                            error={Boolean(errors.customer)}
+                            helperText={errors.customer?.message}
+                          >
+                            {customersList.map(item => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </CustomTextField>
+                        )}
+                      />
+                    )}
 
                     <Controller
                       name='location'

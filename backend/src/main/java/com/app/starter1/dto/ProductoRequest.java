@@ -20,7 +20,7 @@ public class ProductoRequest {
     private String origin;
     private String invimaRegister;
     private String status;
-    private Long client;
+    private Long customer;
     private Long classification;
     private String licensePlate;
     private String model;

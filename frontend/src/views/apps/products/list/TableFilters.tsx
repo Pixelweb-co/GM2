@@ -1,64 +1,113 @@
-// React Imports
 import { useState, useEffect } from 'react'
 
-// MUI Imports
+import axios from 'axios'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 
-// Type Imports
-import type { CustomersType } from '@/types/apps/customerType'
-
-// Component Imports
 import CustomTextField from '@core/components/mui/TextField'
+import type { ProductType } from '@/types/apps/productType'
+import { userMethods } from '@/utils/userMethods'
 
 const TableFilters = ({
   setData,
   tableData
 }: {
-  setData: (data: CustomersType[]) => void
-  tableData?: CustomersType[]
+  setData: (data: ProductType[]) => void
+  tableData?: ProductType[]
 }) => {
-  // Estados
-  //const [role, setRole] = useState<string>('') // Estado para filtrar por roles
-  const [status, setStatus] = useState<boolean | ''>('') // Estado para filtrar por estado (activo/inactivo)
+  const [status, setStatus] = useState<string>('')
+  const [customers, setCustomers] = useState<any[]>([])
+  const [userLoginRole, setUserLoginRole] = useState<string | null>(null)
+  const [customer, setCustomer] = useState<string>('')
 
+  // Efecto para filtrar los datos según los criterios seleccionados
   useEffect(() => {
-    if (!tableData || !Array.isArray(tableData)) return // Verificar si tableData es un array
+    if (!tableData || !Array.isArray(tableData)) return
 
-    const filteredData = tableData.filter(customer => {
-      // const matchRole = role ? customer.roles.some(r => r.roleEnum === role) : true // Comparar roles
+    const filteredData = tableData.filter((product: any) => {
+      const matchStatus = status ? product.status === status : true
 
-      const matchStatus = status !== '' ? customer.status === status : true // Comparar el estado
+      const matchCustomer = userLoginRole === 'SUPERADMIN' && customer ? product.customer === customer : true
 
-      return matchStatus
+      return matchStatus && matchCustomer
     })
 
     setData(filteredData)
-  }, [status, tableData, setData])
+  }, [status, customer, tableData, setData, userLoginRole])
+
+  const fetchCustomers = async () => {
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) throw new Error('Token no disponible.')
+
+      const response = await axios.get('http://localhost:8080/customers', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (Array.isArray(response.data)) {
+        setCustomers(response.data)
+      } else {
+        console.warn('Formato inesperado en los datos de clientes:', response.data)
+      }
+    } catch (error) {
+      console.error('Error al obtener los clientes:', error)
+    }
+  }
+
+  useEffect(() => {
+    const user = userMethods.getUserLogin()
+
+    if (user?.roles?.[0]?.roleEnum) {
+      setUserLoginRole(user.roles[0].roleEnum)
+    }
+
+    fetchCustomers()
+  }, [])
 
   return (
     <CardContent>
       <Grid container spacing={6}>
-        {/* Status Filter */}
-        <Grid item xs={12} sm={4}>
+        {/* Filtro por estado */}
+        <Grid item xs={12} sm={6}>
           <CustomTextField
             select
             fullWidth
             id='select-status'
             value={status}
-            onChange={e => {
-              const selectedValue = e.target.value
-
-              setStatus(selectedValue === 'active' ? true : selectedValue === 'inactive' ? false : '')
-            }}
+            onChange={e => setStatus(e.target.value)}
             SelectProps={{ displayEmpty: true }}
           >
-            <MenuItem value=''>Select Status</MenuItem>
-            <MenuItem value='active'>Activo</MenuItem>
-            <MenuItem value='inactive'>Inactivo</MenuItem>
+            <MenuItem value=''>Todos los estados</MenuItem>
+            <MenuItem value='1'>Activo</MenuItem>
+            <MenuItem value='0'>Inactivo</MenuItem>
           </CustomTextField>
         </Grid>
+
+        {/* Filtro por cliente (solo para SUPERADMIN) */}
+        {userLoginRole === 'SUPERADMIN' && (
+          <Grid item xs={12} sm={6}>
+            <CustomTextField
+              select
+              fullWidth
+              id='select-customer'
+              value={customer}
+              onChange={e => setCustomer(e.target.value)}
+              SelectProps={{ displayEmpty: true }}
+            >
+              <MenuItem value=''>Todos los clientes</MenuItem>
+              {customers.map((item: { id: string; name: string }) => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </CustomTextField>
+          </Grid>
+        )}
       </Grid>
     </CardContent>
   )
