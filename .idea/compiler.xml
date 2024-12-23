@@ -19,14 +19,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="serviceEmail" target="17" />
       <module name="SpringKafkaConsumer" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="SpringKafkaConsumer" options="-parameters" />
-      <module name="serviceEmail" options="-parameters" />
       <module name="starter1" options="-parameters" />
     </option>
   </component>

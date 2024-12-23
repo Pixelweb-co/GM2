@@ -722,8 +722,8 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           helperText={errors.status?.message}
                         >
                           {[
-                            { id: 1, name: 'Activo' },
-                            { id: 2, name: 'Inactivo' }
+                            { id: '1', name: 'Activo' },
+                            { id: '0', name: 'Inactivo' }
                           ].map((item: any) => {
                             return (
                               <MenuItem key={item.id} value={item.id}>

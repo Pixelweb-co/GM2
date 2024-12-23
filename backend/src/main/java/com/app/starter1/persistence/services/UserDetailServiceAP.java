@@ -4,7 +4,6 @@ import com.app.starter1.dto.AuthCreateUserRequest;
 import com.app.starter1.dto.AuthResponse;
 import com.app.starter1.dto.LoginRequest;
 import com.app.starter1.dto.UserCreateUpdateRequest;
-import com.app.starter1.event.OnRegistrationCompleteEvent;
 import com.app.starter1.persistence.entity.Customer;
 import com.app.starter1.persistence.entity.RoleEntity;
 import com.app.starter1.persistence.entity.UserEntity;
@@ -52,8 +51,6 @@ public class UserDetailServiceAP implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    EmailService emailService;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;

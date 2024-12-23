@@ -39,6 +39,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 import type { ProductType } from '@/types/apps/productType'
 
 import ProductoForm from '@/components/dialogs/form-product'
+import ColumnSelector from '@/components/ColumnSelector'
 
 // Component Imports
 import TableFilters from './TableFilters'
@@ -282,6 +283,10 @@ const ProductsListTable = ({ reload, tableData }: any) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
+  useEffect(() => {
+    console.log('columnas visibles ', table)
+  }, [])
+
   return (
     <>
       <Card>
@@ -298,6 +303,9 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             <MenuItem value='25'>25</MenuItem>
             <MenuItem value='50'>50</MenuItem>
           </CustomTextField>
+
+          <ColumnSelector table={table} />
+
           <div className='flex flex-col sm:flex-row max-sm:is-full items-start sm:items-center gap-4'>
             <DebouncedInput
               value={globalFilter ?? ''}
@@ -366,6 +374,8 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           </div>
         </div>
         <div className='overflow-x-auto'>
+          <div className='px-1 border-b border-black'></div>
+
           <table className={tableStyles.table}>
             <thead>
               {table.getHeaderGroups().map(headerGroup => (
