@@ -207,7 +207,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
             />
             <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
               <FormControlLabel control={<Checkbox {...register('remember')} />} label='Recordarme' />
-              <Typography className='text-end' color='primary' component={Link}>
+              <Typography className='text-end' color='primary' component={Link} href='/recover-password'>
                 Olvidé mi contraseña?
               </Typography>
             </div>

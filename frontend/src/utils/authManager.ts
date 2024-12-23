@@ -109,5 +109,20 @@ export const AuthManager = {
 
       return false
     }
+  },
+  async resetPassword(data) {
+    try {
+      const response = await axios.post('http://localhost:8080/auth/reset-password', {
+        newPassword: data.newPassword,
+        token: data.token
+      })
+
+      return response.data // Devuelve la respuesta con los datos de validación
+    } catch (error) {
+      console.error('Error durante la validación del token:', error) // Manejo de errores
+      throw error
+
+      return false
+    }
   }
 }

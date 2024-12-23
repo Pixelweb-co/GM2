@@ -43,10 +43,9 @@
             <h2>Recuperación de Contraseña</h2>
         </div>
         <div class="email-body">
-            <p>Hola <strong>${name}</strong>,</p>
             <p>Recibimos una solicitud para recuperar tu contraseña. Si no solicitaste este cambio, por favor ignora este mensaje.</p>
             <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
-            <p><a href="${resetLink}">Restablecer contraseña</a></p>
+            <p><a href="${recoverLink}">Restablecer contraseña</a></p>
         </div>
         <div class="email-footer">
             <p>&copy; 2024 Tornillos Protor. Todos los derechos reservados.</p>

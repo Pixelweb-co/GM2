@@ -121,16 +121,14 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(
-            @RequestParam String token,
-            @RequestParam String newPassword) {
-        userDetailService.resetPassword(token, newPassword);
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        userDetailService.resetPassword(request.get("token"), request.get("newPassword"));
         return ResponseEntity.ok("Contraseña restablecida exitosamente.");
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
-        userDetailService.sendResetPasswordEmail(email);
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        userDetailService.sendResetPasswordEmail(request.get("email"));
         return ResponseEntity.ok("Correo de restablecimiento enviado.");
     }
 

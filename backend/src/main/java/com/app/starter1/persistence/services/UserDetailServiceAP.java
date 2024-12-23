@@ -296,7 +296,7 @@ public class UserDetailServiceAP implements UserDetailsService {
         userRepository.save(user);
 
             // Lógica para enviar el correo con el token
-        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+        String resetLink = "http://localhost:3000/reset-password/" + token;
             // Enviar correo con el enlace
 
         String to = user.getEmail();

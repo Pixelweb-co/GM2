@@ -58,7 +58,7 @@ public class EmailService {
 
 
         if(notification.getType().equals("recover-password")){
-            model.put("recover-password", notification.getBody()); // O cualquier otro valor dinámico
+            model.put("recoverLink", notification.getBody()); // O cualquier otro valor dinámico
         }
 
         // Cargar la plantilla dependiendo del tipo

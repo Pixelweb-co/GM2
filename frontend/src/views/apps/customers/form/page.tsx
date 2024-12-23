@@ -94,7 +94,7 @@ const FormCustomer = () => {
       reset()
       localStorage.setItem('UserLogin', JSON.stringify(response.data))
 
-      router.push('home')
+      router.push('/home')
     } catch (error) {
       console.error('Error al enviar los datos:', error)
     }
