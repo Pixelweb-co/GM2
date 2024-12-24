@@ -55,13 +55,6 @@
         "roles": [
           "SUPERADMIN"
         ]
-      },
-      {
-        "label": "Permisos",
-        "route": "/accounts/permissions/list",
-        "roles": [
-          "SUPERADMIN"
-        ]
       }
     ]
   },
@@ -91,6 +84,20 @@
       {
         "label": "Clientes",
         "route": "/administracion/clientes/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      },
+      {
+        "label": "Tipos de servicio",
+        "route": "/administracion/tiposervicio/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
+      },
+      {
+        "label": "Tipos de dispositivos",
+        "route": "/administracion/tipodispositivo/list",
         "roles": [
           "SUPERADMIN"
         ]

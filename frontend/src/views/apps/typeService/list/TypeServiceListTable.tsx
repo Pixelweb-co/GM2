@@ -19,9 +19,6 @@ import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 
-// Style Imports
-import tableStyles from '@core/styles/table.module.css'
-
 // Third-party Importss
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -44,10 +41,12 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 
 
-
 import CustomTextField from '@core/components/mui/TextField'
 
-import type { RolesType } from '@/types/apps/roleType'
+// Style Imports
+import tableStyles from '@core/styles/table.module.css'
+
+import type { TypeServiceType } from '@/types/apps/typeServiceType'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -107,11 +106,11 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<RolesTypeWithAction>()
 
-const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
+const RolesListTable = ({ tableData }: { tableData?: TypeServiceType[] }) => {
   // States
 
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState<RolesType[]>(tableData || [])
+  const [data, setData] = useState<TypeServiceType[]>(tableData || [])
   const [globalFilter, setGlobalFilter] = useState('')
 
   const columns = useMemo<ColumnDef<RolesTypeWithAction, any>[]>(
@@ -139,31 +138,14 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
         )
       },
       columnHelper.accessor('roleEnum', {
-        header: 'Role',
+        header: 'Nombre',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
             <div className='flex flex-col'>
               <Typography color='text.primary' className='font-medium'>
-                {row.original.roleEnum}
+                {row.original.typeService}
               </Typography>
             </div>
-          </div>
-        )
-      }),
-      columnHelper.accessor('permissionList', {
-        header: 'Permisos',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-2'>
-            {row.original.permissionList &&
-              row.original.permissionList.map((permission: any) => (
-                <Chip
-                  key={permission.id}
-                  variant='outlined'
-                  label={permission.name}
-                  color='primary' // Cambiar el color dinámicamente si es necesario
-                  className='capitalize'
-                />
-              ))}
           </div>
         )
       }),

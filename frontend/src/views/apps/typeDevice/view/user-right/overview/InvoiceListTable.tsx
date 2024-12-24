@@ -1,7 +1,8 @@
 'use client'
 
 // React Imports
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
+import type { MouseEvent } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -9,15 +10,14 @@ import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import TablePagination from '@mui/material/TablePagination'
-import type { TextFieldProps } from '@mui/material/TextField'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -45,9 +45,11 @@ import type { Locale } from '@configs/i18n'
 // Component Imports
 import OptionMenu from '@core/components/option-menu'
 import CustomAvatar from '@core/components/mui/Avatar'
-import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
+import TablePaginationComponent from '@components/TablePaginationComponent'
 
+// Util Imports
+import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -85,35 +87,6 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed
 }
 
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
-  // States
-  const [value, setValue] = useState(initialValue)
-
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
-
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
-}
-
 // Vars
 const invoiceStatusObj: InvoiceStatusObj = {
   Sent: { color: 'secondary', icon: 'tabler-send-2' },
@@ -127,45 +100,27 @@ const invoiceStatusObj: InvoiceStatusObj = {
 // Column Definitions
 const columnHelper = createColumnHelper<InvoiceTypeWithAction>()
 
-const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
+const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   // States
-  const [status, setStatus] = useState<InvoiceType['invoiceStatus']>('')
   const [rowSelection, setRowSelection] = useState({})
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState(...[invoiceData])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
+  // Vars
+  const open = Boolean(anchorEl)
+
+  // Hooks
+  const { lang: locale } = useParams()
 
   const columns = useMemo<ColumnDef<InvoiceTypeWithAction, any>[]>(
     () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
-            }}
-          />
-        )
-      },
       columnHelper.accessor('id', {
         header: '#',
         cell: ({ row }) => (
           <Typography
             component={Link}
-            href={`apps/invoice/preview/${row.original.id}`}
+            href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
             color='primary'
           >{`#${row.original.id}`}</Typography>
         )
@@ -193,7 +148,7 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
             }
           >
             <CustomAvatar skin='light' color={invoiceStatusObj[row.original.invoiceStatus].color} size={28}>
-              <i className={classnames('bs-4 is-4', invoiceStatusObj[row.original.invoiceStatus].icon)} />
+              <i className={classnames('text-base', invoiceStatusObj[row.original.invoiceStatus].icon)} />
             </CustomAvatar>
           </Tooltip>
         )
@@ -210,12 +165,12 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton>
+            <IconButton onClick={() => setData(data?.filter(invoice => invoice.id !== row.original.id))}>
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
             <IconButton>
               <Link
-                href={`apps/invoice/preview/${row.original.id}`}
+                href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
                 className='flex'
               >
                 <i className='tabler-eye text-textSecondary' />
@@ -232,10 +187,10 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
                 },
                 {
                   text: 'Edit',
-                  icon: 'tabler-pencil',
-                  href: `apps/invoice/edit/${row.original.id}`,
+                  icon: 'tabler-edit',
+                  href: getLocalizedUrl(`/apps/invoice/edit/${row.original.id}`, locale as Locale),
                   linkProps: {
-                    className: 'flex items-center is-full plb-2 pli-4 gap-2 text-textSecondary'
+                    className: classnames('flex items-center bs-[40px] plb-2 pli-4 is-full gap-2 text-textSecondary')
                   }
                 },
                 {
@@ -266,7 +221,7 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 6
+        pageSize: 10
       }
     },
     enableRowSelection: true, //enable row selection for all rows
@@ -283,75 +238,67 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  useEffect(() => {
-    const filteredData = invoiceData?.filter(invoice => {
-      if (status && invoice.invoiceStatus.toLowerCase().replace(/\s+/g, '-') !== status) return false
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
 
-      return true
-    })
-
-    setData(filteredData)
-  }, [status, invoiceData, setData])
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
   return (
     <Card>
-      <CardContent className='flex justify-between flex-wrap items-start gap-4'>
-        <div className='flex items-center justify-between gap-4'>
-          <div className='flex items-center gap-2'>
-            <Typography className='hidden sm:block'>Show</Typography>
-            <CustomTextField
-              select
-              value={table.getState().pagination.pageSize}
-              onChange={e => table.setPageSize(Number(e.target.value))}
-              className='is-[70px]'
+      <CardHeader
+        title='Invoice List'
+        sx={{ '& .MuiCardHeader-action': { m: 0 } }}
+        className='flex items-center justify-between flex-wrap gap-4'
+        action={
+          <div className='flex items-center gap-4 flex-wrap'>
+            <div className='flex items-center gap-2'>
+              <Typography>Show</Typography>
+              <CustomTextField
+                select
+                value={table.getState().pagination.pageSize}
+                onChange={e => table.setPageSize(Number(e.target.value))}
+                className='is-[70px]'
+              >
+                <MenuItem value='10'>10</MenuItem>
+                <MenuItem value='25'>25</MenuItem>
+                <MenuItem value='50'>50</MenuItem>
+              </CustomTextField>
+            </div>
+            <Button
+              variant='tonal'
+              aria-haspopup='true'
+              onClick={handleClick}
+              color='secondary'
+              aria-expanded={open ? 'true' : undefined}
+              endIcon={<i className='tabler-upload' />}
+              aria-controls={open ? 'user-view-overview-export' : undefined}
             >
-              <MenuItem value='6'>6</MenuItem>
-              <MenuItem value='24'>24</MenuItem>
-              <MenuItem value='50'>50</MenuItem>
-            </CustomTextField>
+              Export
+            </Button>
+            <Menu open={open} anchorEl={anchorEl} onClose={handleClose} id='user-view-overview-export'>
+              <MenuItem onClick={handleClose} className='uppercase'>
+                pdf
+              </MenuItem>
+              <MenuItem onClick={handleClose} className='uppercase'>
+                xlsx
+              </MenuItem>
+              <MenuItem onClick={handleClose} className='uppercase'>
+                csv
+              </MenuItem>
+            </Menu>
           </div>
-          <Button
-            variant='contained'
-            component={Link}
-            startIcon={<i className='tabler-plus' />}
-            href={'apps/invoice/add'}
-            className='max-sm:is-full'
-          >
-            Create Invoice
-          </Button>
-        </div>
-        <div className='flex flex-col sm:flex-row max-sm:is-full items-start sm:items-center gap-4'>
-          <DebouncedInput
-            value={globalFilter ?? ''}
-            onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search Invoice'
-            className='max-sm:is-full sm:is-[250px]'
-          />
-          <CustomTextField
-            select
-            id='select-status'
-            value={status}
-            onChange={e => setStatus(e.target.value)}
-            className='max-sm:is-full sm:is-[160px]'
-            SelectProps={{ displayEmpty: true }}
-          >
-            <MenuItem value=''>Invoice Status</MenuItem>
-            <MenuItem value='downloaded'>Downloaded</MenuItem>
-            <MenuItem value='draft'>Draft</MenuItem>
-            <MenuItem value='paid'>Paid</MenuItem>
-            <MenuItem value='partial-payment'>Partial Payment</MenuItem>
-            <MenuItem value='past-due'>Past Due</MenuItem>
-            <MenuItem value='sent'>Sent</MenuItem>
-          </CustomTextField>
-        </div>
-      </CardContent>
+        }
+      />
       <div className='overflow-x-auto'>
         <table className={tableStyles.table}>
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th key={header.id}>
+                  <th key={header.id} {...(header.id === 'action' && { className: 'is-24' })}>
                     {header.isPlaceholder ? null : (
                       <>
                         <div
@@ -374,30 +321,22 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
               </tr>
             ))}
           </thead>
-          {table.getFilteredRowModel().rows.length === 0 ? (
-            <tbody>
-              <tr>
-                <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                  No data available
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table
-                .getRowModel()
-                .rows.slice(0, table.getState().pagination.pageSize)
-                .map(row => {
-                  return (
-                    <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                      ))}
-                    </tr>
-                  )
-                })}
-            </tbody>
-          )}
+          <tbody>
+            {table
+              .getRowModel()
+              .rows.slice(0, table.getState().pagination.pageSize)
+              .map(row => {
+                return (
+                  <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                    {row.getVisibleCells().map(cell => (
+                      <td key={cell.id} {...(cell.id.includes('action') && { className: 'is-24' })}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                )
+              })}
+          </tbody>
         </table>
       </div>
       <TablePagination
@@ -408,7 +347,6 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData: InvoiceType[] }) => {
         onPageChange={(_, page) => {
           table.setPageIndex(page)
         }}
-        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
       />
     </Card>
   )

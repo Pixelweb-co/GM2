@@ -19,9 +19,6 @@ import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 
-// Style Imports
-import tableStyles from '@core/styles/table.module.css'
-
 // Third-party Importss
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -43,11 +40,12 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 // Type Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
 
-
+import type { RolesType } from '@/types/apps/roleType'
 
 import CustomTextField from '@core/components/mui/TextField'
 
-import type { RolesType } from '@/types/apps/roleType'
+// Style Imports
+import tableStyles from '@core/styles/table.module.css'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
