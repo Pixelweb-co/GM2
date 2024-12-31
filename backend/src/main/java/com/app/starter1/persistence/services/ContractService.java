@@ -18,6 +18,9 @@ public class ContractService {
     private ContratoRepository contratoRepository;
 
     public Contrato createContrato(Customer cliente, ClienteContratoRequest request) {
+
+        System.out.println(request.getFechaInicio());
+
         Contrato contrato = Contrato.builder()
                 .fechaInicio(LocalDate.parse(request.getFechaInicio()))
                 .fechaFinal(LocalDate.parse(request.getFechaFinal()))

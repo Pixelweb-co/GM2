@@ -13,6 +13,9 @@ import PopularProducts from '@views/apps/ecommerce/dashboard/PopularProducts'
 import Orders from '@views/apps/ecommerce/dashboard/Orders'
 import Transactions from '@views/apps/ecommerce/dashboard/Transactions'
 import InvoiceListTable from '@views/apps/ecommerce/dashboard/InvoiceListTable'
+import SolicitudesDonut from '@/views/apps/ecommerce/dashboard/SolicitudesEstadosDonut'
+import EstadisticasGenerales from '@/views/apps/ecommerce/dashboard/EstadisticasGeneralesCard'
+import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
 
 // Data Imports
 //import { getInvoiceData } from '@/app/server/actions'
@@ -43,42 +46,18 @@ const EcommerceDashboard = async () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12} md={4}>
-        <CongratulationsJohn />
+      <SolicitudesDonut />
       </Grid>
       <Grid item xs={12} md={8}>
-        <StatisticsCard />
+        <EstadisticasGenerales />
       </Grid>
       <Grid item xs={12} xl={4}>
-        <Grid container spacing={6}>
-          <Grid item xs={12} sm={6} md={3} xl={6}>
-            <LineChartProfit />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={6}>
-            <RadialBarChart />
-          </Grid>
-          <Grid item xs={12} md={6} xl={12}>
-            <DonutChartGeneratedLeads />
-          </Grid>
-        </Grid>
+      <ListaTrabajo />
       </Grid>
       <Grid item xs={12} xl={8}>
         <RevenueReport />
       </Grid>
-      <Grid item xs={12} sm={6} lg={4}>
-        <EarningReports />
-      </Grid>
-      <Grid item xs={12} sm={6} lg={4}>
-        <PopularProducts />
-      </Grid>
-      <Grid item xs={12} sm={6} lg={4}>
-        <Orders />
-      </Grid>
-      <Grid item xs={12} sm={6} lg={4}>
-        <Transactions />
-      </Grid>
-      <Grid item xs={12} lg={8}>
-        <InvoiceListTable invoiceData={invoiceData} />
-      </Grid>
+
     </Grid>
   )
 }

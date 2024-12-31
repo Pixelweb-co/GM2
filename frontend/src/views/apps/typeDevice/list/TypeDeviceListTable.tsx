@@ -3,15 +3,13 @@
 // React Imports
 import { useEffect, useState, useMemo } from 'react'
 
-// Next Imports
-import Link from 'next/link'
+
 
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 
@@ -19,8 +17,9 @@ import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 
-// Third-party Importss
+// Third-party Imports
 import classnames from 'classnames'
+import axios from 'axios'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
@@ -37,15 +36,22 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
-// Type Imports
-import TablePaginationComponent from '@components/TablePaginationComponent'
+// Style Imports
+import tableStyles from '@core/styles/table.module.css'
 
-import type { RolesType } from '@/types/apps/roleType'
+// Type Imports
+import TablePaginationComponent from '../../../../components/TablePaginationComponent'
+
 
 import CustomTextField from '@core/components/mui/TextField'
 
-// Style Imports
-import tableStyles from '@core/styles/table.module.css'
+
+
+import type { TypeDeviceType } from '../type/typeDeviceType'
+
+import TypeDeviceForm from '../form'
+
+
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -56,8 +62,8 @@ declare module '@tanstack/table-core' {
   }
 }
 
-type RolesTypeWithAction = RolesType & {
-  action?: string
+type TypeDeviceTypeWithAction = TypeDeviceType & {
+  action?: string, id: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -103,16 +109,57 @@ const DebouncedInput = ({
 }
 
 // Column Definitions
-const columnHelper = createColumnHelper<RolesTypeWithAction>()
+const columnHelper = createColumnHelper<TypeDeviceTypeWithAction>()
 
-const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
+const TypeDeviceListTable = ({ reload,tableData }: {reload?:any, tableData?: TypeDeviceType[] }) => {
   // States
 
-  const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState<RolesType[]>(tableData || [])
+  const [rowSelection, setRowSelection] = useState<any>({TypeDevice: '', id: ''})
+  const [data, setData] = useState<TypeDeviceTypeWithAction[]>(tableData?.map(item => ({...item, action: '', id: item.id})) || [])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [loadForm, setOpenForm] = useState(false)
 
-  const columns = useMemo<ColumnDef<RolesTypeWithAction, any>[]>(
+useEffect(()=>{
+
+  console.log("from table type service ",rowSelection)
+
+},[rowSelection])
+
+
+useEffect(()=>{
+
+
+  setData(tableData?.map(item => ({...item, action: '', id: item.id})) || [])
+
+  console.log("from table type device ",tableData)
+
+},[tableData])
+
+const deleteItem = async (id: string) => {
+  try {
+    const token = localStorage.getItem('AuthToken')
+
+    console.log('token ', token)
+
+    if (!token) {
+      throw new Error('No token found')
+    }
+
+    const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    console.log('res', res)
+  } catch (error) {
+    console.error('Error deleting TypeDevice:', error)
+    throw error
+  }
+}
+
+  const columns = useMemo<ColumnDef<TypeDeviceTypeWithAction, any>[]>(
     () => [
       {
         id: 'select',
@@ -136,32 +183,15 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
           />
         )
       },
-      columnHelper.accessor('roleEnum', {
-        header: 'Role',
+      columnHelper.accessor('typeDevice', {
+        header: 'Nombre',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
             <div className='flex flex-col'>
               <Typography color='text.primary' className='font-medium'>
-                {row.original.roleEnum}
+                {row.original.typeDevice}
               </Typography>
             </div>
-          </div>
-        )
-      }),
-      columnHelper.accessor('permissionList', {
-        header: 'Permisos',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-2'>
-            {row.original.permissionList &&
-              row.original.permissionList.map((permission: any) => (
-                <Chip
-                  key={permission.id}
-                  variant='outlined'
-                  label={permission.name}
-                  color='primary' // Cambiar el color dinámicamente si es necesario
-                  className='capitalize'
-                />
-              ))}
           </div>
         )
       }),
@@ -170,13 +200,21 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton onClick={() => setData(data.filter(product => product.id !== row.original.id))}>
+            <IconButton onClick={() => {
+                console.log('delete', row.original.id)
+                deleteItem(row.original.id)
+                reload(true)
+            }}>
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
-            <IconButton>
-              <Link href={'/apps/permission/view'} className='flex'>
+            <IconButton onClick={()=>{
+                setRowSelection(row.original)
+                setOpenForm(true)
+
+            }}>
+
                 <i className='tabler-edit text-textSecondary' />
-              </Link>
+
             </IconButton>
           </div>
         ),
@@ -219,7 +257,7 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
   return (
     <>
       <Card>
-        <CardHeader title='Filters' className='pbe-4' />
+        <CardHeader title='Tipo de servicio' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -239,11 +277,13 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
               className='max-sm:is-full'
             />
 
-            <Link href='permissions/form' passHref>
-              <Button variant='contained' startIcon={<i className='tabler-plus' />} className='max-sm:is-full'>
-                Agregar Rol
+
+              <Button variant='contained' startIcon={<i className='tabler-plus' />} className='max-sm:is-full'
+              onClick={() => setOpenForm(true)}
+              >
+                Agregar tipo de servicio
               </Button>
-            </Link>
+
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -300,6 +340,22 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
               </tbody>
             )}
           </table>
+
+          <TypeDeviceForm
+        open={loadForm}
+        onClose={() => {
+          setOpenForm(false)
+          reload(true)
+          setRowSelection({
+            id: '',
+            TypeDevice: '',
+          })
+        }}
+        setOpen={() => setOpenForm(true)}
+        rowSelect={rowSelection}
+      />
+
+
         </div>
         <TablePagination
           component={() => <TablePaginationComponent table={table} />}
@@ -315,4 +371,4 @@ const RolesListTable = ({ tableData }: { tableData?: RolesType[] }) => {
   )
 }
 
-export default RolesListTable
+export default TypeDeviceListTable

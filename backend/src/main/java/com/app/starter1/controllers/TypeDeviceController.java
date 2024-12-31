@@ -1,5 +1,6 @@
 package com.app.starter1.controllers;
 
+import com.app.starter1.dto.DeleteResponse;
 import com.app.starter1.dto.TypeDeviceDTO;
 import com.app.starter1.persistence.entity.TypeDevice;
 import com.app.starter1.persistence.services.TypeDeviceService;
@@ -49,8 +50,11 @@ public class TypeDeviceController {
 
     // Eliminar un typeDeviceo por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTypeDevice(@PathVariable Long id) {
+    public ResponseEntity<DeleteResponse> deleteTypeDevice(@PathVariable Long id) {
         typeDeviceService.deleteById(id);
-        return ResponseEntity.noContent().build();
+
+        DeleteResponse deleteResponse = new DeleteResponse("sucess",id);
+
+        return ResponseEntity.ok(deleteResponse);
     }
 }

@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-import TypeServiceListTable from '../../../../../views/apps/typeService/list/TypeServiceListTable'
+import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeDeviceListTable'
 
-const getTypeServiceData = async () => {
-  console.log('TypeServiceList ', process.env.BACKEND_PUBLIC_APP_URL)
+const getTypeDeviceData = async () => {
+  console.log('TypeDeviceList ', process.env.BACKEND_PUBLIC_APP_URL)
 
   try {
     // Recupera el token desde localStorage
@@ -16,7 +16,7 @@ const getTypeServiceData = async () => {
     console.log('token ', token)
 
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/type-service`, {
+    const res = await axios.get(`http://localhost:8080/type-device`, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado
@@ -25,22 +25,22 @@ const getTypeServiceData = async () => {
 
     return res.data
   } catch (error) {
-    console.error('Error fetching TypeService data:', error)
+    console.error('Error fetching TypeDevice data:', error)
     throw error
   }
 }
 
-const TypeServiceListApp = () => {
-  const [TypeServiceData, setTypeServiceData] = useState<any[]>([])
+const TypeDeviceListApp = () => {
+  const [TypeDeviceData, setTypeDeviceData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   const reload = async () => {
     try {
-      const data = await getTypeServiceData()
+      const data = await getTypeDeviceData()
 
       console.log('Datostp', data)
-      setTypeServiceData(data)
+      setTypeDeviceData(data)
     } catch (err: any) {
       setError(err)
     } finally {
@@ -51,10 +51,10 @@ const TypeServiceListApp = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getTypeServiceData()
+        const data = await getTypeDeviceData()
 
         console.log('Datos', data)
-        setTypeServiceData(data)
+        setTypeDeviceData(data)
       } catch (err: any) {
         setError(err)
       } finally {
@@ -66,9 +66,9 @@ const TypeServiceListApp = () => {
   }, [])
 
   if (loading) return <p>Loading...</p>
-  if (error) return <p>Error loading TypeService data: {String(error)}</p>
+  if (error) return <p>Error loading TypeDevice data: {String(error)}</p>
 
-  return <TypeServiceListTable tableData={TypeServiceData} reload={()=>reload()}/>
+  return <TypeDeviceListTable tableData={TypeDeviceData} reload={()=>reload()}/>
 }
 
-export default TypeServiceListApp
+export default TypeDeviceListApp

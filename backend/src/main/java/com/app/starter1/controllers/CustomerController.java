@@ -73,10 +73,21 @@ public class CustomerController {
                 .status(form.getStatus() != null ? Boolean.valueOf(form.getStatus()) : null)
                 .build();
 
+        ClienteContratoRequest contratoRequest = new ClienteContratoRequest();
+
+        contratoRequest.setDescripcionContrato("");
+        contratoRequest.setFechaInicio("2000-01-01");
+        contratoRequest.setFechaFinal("2000-01-01");
+
         // Asociar el cliente al usuario
         customer = customerRepository.save(customer);
         user.setCustomer(customer);
         UserEntity userSaved = userRepository.save(user);
+
+        // Crear el contrato asociando el cliente creado
+        Contrato contrato = contractService.createContrato(customer, contratoRequest);
+
+
 
         return ResponseEntity.ok(userSaved);
     }

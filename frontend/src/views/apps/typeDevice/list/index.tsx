@@ -2,19 +2,19 @@
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { RolesType } from '@/types/apps/roleType'
+import type { TypeDeviceType } from '../type/typeDeviceType'
 
 // Component Imports
-import RoleListTable from './RoleListTable'
+import TypeDeviceListTable from './TypeDeviceListTable'
 
-const RoleList = ({ roleData }: { roleData?: RolesType[] }) => {
+const typeDeviceList = ({ typeDeviceData, reload }: { typeDeviceData?: TypeDeviceType[], reload:void }) => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <RoleListTable tableData={roleData} />
+        <TypeDeviceListTable tableData={typeDeviceData} reload={reload}/>
       </Grid>
     </Grid>
   )
 }
 
-export default RoleList
+export default typeDeviceList

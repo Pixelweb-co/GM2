@@ -7,9 +7,9 @@ import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 
 // Component Imports
-import CustomTextField from '@core/components/mui/TextField'
+import CustomTextField from '../../../../@core/components/mui/TextField'
 
-import type { TypeServiceType } from '@/types/apps/typeServiceType'
+import type { TypeServiceType } from '@/views/apps/typeService/type/typeServiceType'
 
 const TableFilters = ({ setData, tableData }: { setData: (data: TypeServiceType[]) => void; tableData?: TypeServiceType[] }) => {
   // Estados
@@ -20,7 +20,7 @@ const TableFilters = ({ setData, tableData }: { setData: (data: TypeServiceType[
     if (!tableData || !Array.isArray(tableData)) return // Verificar si tableData es un array
 
     const filteredData = tableData.filter(typeService => {
-      const matchTypeService = TypeService ? (typeService.descripcion === TypeService) : true // Comparar TypeServices
+      const matchTypeService = TypeService ? (typeService.typeService === TypeService) : true // Comparar TypeServices
 
       return matchTypeService
     })

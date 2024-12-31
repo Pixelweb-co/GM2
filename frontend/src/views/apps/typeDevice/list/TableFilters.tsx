@@ -6,54 +6,51 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 
-// Type Imports
-import type { UsersType } from '@/types/apps/userType'
-
 // Component Imports
-import CustomTextField from '@core/components/mui/TextField'
+import TextField from '@mui/material/TextField'
 
-const TableFilters = ({ setData, tableData }: { setData: (data: UsersType[]) => void; tableData?: UsersType[] }) => {
+import type { TypeServiceType } from '@/views/apps/typeService/type/typeServiceType'
+
+const TableFilters = ({ setData, tableData }: { setData: (data: TypeServiceType[]) => void; tableData?: TypeServiceType[] }) => {
   // Estados
-  const [role, setRole] = useState<string>('') // Estado para filtrar por roles
+  const [TypeService, setTypeService] = useState<string>('') // Estado para filtrar por TypeServices
   const [status, setStatus] = useState<boolean | ''>('') // Estado para filtrar por estado (activo/inactivo)
 
   useEffect(() => {
     if (!tableData || !Array.isArray(tableData)) return // Verificar si tableData es un array
 
-    const filteredData = tableData.filter(user => {
-      const matchRole = role ? user.roles.some(r => r.roleEnum === role) : true // Comparar roles
+    const filteredData = tableData.filter(typeService => {
+      const matchTypeService = TypeService ? (typeService.typeService === TypeService) : true // Comparar TypeServices
 
-      const matchStatus = status !== '' ? user.enabled === status : true // Comparar el estado
-
-      return matchRole && matchStatus
+      return matchTypeService
     })
 
     setData(filteredData)
-  }, [role, status, tableData, setData])
+  }, [TypeService,  tableData, setData])
 
   return (
     <CardContent>
       <Grid container spacing={6}>
-        {/* Role Filter */}
+        {/* TypeService Filter */}
         <Grid item xs={12} sm={4}>
-          <CustomTextField
+          <TextField
             select
             fullWidth
-            id='select-role'
-            value={role}
-            onChange={e => setRole(e.target.value)}
+            id='select-TypeService'
+            value={TypeService}
+            onChange={e => setTypeService(e.target.value)}
             SelectProps={{ displayEmpty: true }}
           >
-            <MenuItem value=''>Select Role</MenuItem>
+            <MenuItem value=''>Select TypeService</MenuItem>
             <MenuItem value='admin'>Admin</MenuItem>
             <MenuItem value='user'>User</MenuItem>
             <MenuItem value='superadmin'>Superadmin</MenuItem>
-          </CustomTextField>
+          </TextField>
         </Grid>
 
         {/* Status Filter */}
         <Grid item xs={12} sm={4}>
-          <CustomTextField
+          <TextField
             select
             fullWidth
             id='select-status'
@@ -68,7 +65,7 @@ const TableFilters = ({ setData, tableData }: { setData: (data: UsersType[]) => 
             <MenuItem value=''>Select Status</MenuItem>
             <MenuItem value='active'>Activo</MenuItem>
             <MenuItem value='inactive'>Inactivo</MenuItem>
-          </CustomTextField>
+          </TextField>
         </Grid>
       </Grid>
     </CardContent>
