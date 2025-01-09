@@ -37,19 +37,23 @@ import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Style Imports
-import tableStyles from '@core/styles/table.module.css'
+import tableStyles from '../../../../@core/styles/table.module.css'
+
+
+import CustomTextField from '../../../../@core/components/mui/TextField'
 
 // Type Imports
 import TablePaginationComponent from '../../../../components/TablePaginationComponent'
 
 
-import CustomTextField from '@core/components/mui/TextField'
+
 
 
 
 import type { TypeDeviceType } from '../type/typeDeviceType'
 
 import TypeDeviceForm from '../form'
+import CheckListForm from '@/components/dialogs/form-checklist'
 
 
 
@@ -118,6 +122,8 @@ const TypeDeviceListTable = ({ reload,tableData }: {reload?:any, tableData?: Typ
   const [data, setData] = useState<TypeDeviceTypeWithAction[]>(tableData?.map(item => ({...item, action: '', id: item.id})) || [])
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setOpenForm] = useState(false)
+  const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
+
 
 useEffect(()=>{
 
@@ -200,13 +206,15 @@ const deleteItem = async (id: string) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton onClick={() => {
-                console.log('delete', row.original.id)
-                deleteItem(row.original.id)
-                reload(true)
-            }}>
-              <i className='tabler-trash text-textSecondary' />
+                        <IconButton
+              onClick={() => {
+                setRowSelection(row.original)
+                setLoadFormCheck(true)
+              }}
+            >
+              <i className='tabler-list text-textSecondary' />
             </IconButton>
+
             <IconButton onClick={()=>{
                 setRowSelection(row.original)
                 setOpenForm(true)
@@ -215,6 +223,14 @@ const deleteItem = async (id: string) => {
 
                 <i className='tabler-edit text-textSecondary' />
 
+            </IconButton>
+
+            <IconButton onClick={() => {
+                console.log('delete', row.original.id)
+                deleteItem(row.original.id)
+                reload(true)
+            }}>
+              <i className='tabler-trash text-textSecondary' />
             </IconButton>
           </div>
         ),
@@ -257,7 +273,7 @@ const deleteItem = async (id: string) => {
   return (
     <>
       <Card>
-        <CardHeader title='Tipo de servicio' className='pbe-4' />
+        <CardHeader title='Tipo de dispositivo' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -340,6 +356,14 @@ const deleteItem = async (id: string) => {
               </tbody>
             )}
           </table>
+
+
+        <CheckListForm
+        open={loadFormCheck}
+        onClose={() => setLoadFormCheck(false)}
+        setOpen={() => setLoadFormCheck(true)}
+        rowSelect={rowSelection}
+      />
 
           <TypeDeviceForm
         open={loadForm}

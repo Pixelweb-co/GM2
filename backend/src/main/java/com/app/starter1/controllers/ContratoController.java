@@ -24,4 +24,6 @@ public class ContratoController {
         return contrato.map(ResponseEntity::ok)  // Si existe el contrato, lo devuelve con un estado 200 OK
                 .orElseGet(() -> ResponseEntity.notFound().build());  // Si no, devuelve 404 Not Found
     }
+
+    
 }

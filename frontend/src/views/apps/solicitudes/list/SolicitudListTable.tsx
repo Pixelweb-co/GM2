@@ -50,6 +50,9 @@ import TableFilters from './TableFilters'
 //import AddSolicitudDrawer from './AddSolicitudDrawer'
 
 import type { SolicitudType } from '@/types/apps/solicitudType'
+import { userMethods } from '@/utils/userMethods'
+import { AuthManager } from '@/utils/authManager'
+import ReporteForm from '../components/page'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -114,6 +117,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
   // const [addSolicitudOpen, setAddSolicitudOpen] = useState(false)
 
   const [loadForm, setOpenForm] = useState(false)
+  const [loadFormPlanilla, setOpenFormPlanilla] = useState(false)
 
   const [rowSelection, setRowSelection] = useState<any>({
     id: '',
@@ -215,9 +219,9 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           <div className='flex items-center gap-3'>
             <Chip
               variant='tonal'
-              label={row.original.nombreEstadoSolicitud}
+              label={row.original.nombreEstadoSolicitud+' - '+row.original.status.id}
               size='small'
-              color={row.original.status ? 'success' : 'error'} // Cambiar color dinámicamente
+              color={row.original.status?.id === 1 ? 'success' : row.original.status?.id === 2 ? 'default':'error'} // Cambiar color dinámicamente
               className='capitalize'
             />
           </div>
@@ -225,9 +229,10 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
       }),
       columnHelper.accessor('action', {
         header: 'Action',
-        cell: ({ row }) => (
-          <div className='flex items-center'>
-            <IconButton
+        cell: ({ row }) =>
+          (
+            <div className='flex items-center'>
+            {userMethods.isRole("SUPERADMIN") && (<IconButton
               onClick={() =>
                 setData(
                   data?.filter((product: any) => {
@@ -237,15 +242,25 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
               }
             >
               <i className='tabler-trash text-textSecondary' />
-            </IconButton>
-            <IconButton
+            </IconButton>)}
+
+            {userMethods.isRole("SUPERADMIN") && (<IconButton
               onClick={() => {
                 setRowSelection(row.original)
                 setOpenForm(true)
               }}
             >
               <i className='tabler-edit text-textSecondary' />
-            </IconButton>
+            </IconButton>)}
+
+            {(userMethods.isRole("SUPERADMIN") || userMethods.isRole("BIOMEDICAL")) && (<IconButton
+              onClick={() => {
+                setRowSelection(row.original)
+                setOpenFormPlanilla(true)
+              }}
+            >
+              <i className='tabler-list text-textSecondary' />
+            </IconButton>)}
           </div>
         ),
         enableSorting: false
@@ -425,6 +440,14 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
         solicitudData={data}
         setData={setData}
       /> */}
+
+      <ReporteForm openForm={loadFormPlanilla} RecordData={rowSelection}
+        closeForm={() => {
+          setOpenFormPlanilla(false)
+          reload(true)
+
+        }}
+      />
 
       <SolicitudForm
         open={loadForm}

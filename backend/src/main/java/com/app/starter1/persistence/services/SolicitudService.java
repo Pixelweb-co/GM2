@@ -44,9 +44,9 @@ public class SolicitudService {
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
                         .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
-                        .nombreEstadoSolicitud(solicitud.getEstadoSolicitud() != null ? solicitud.getEstadoSolicitud().getDescripcion() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
                         .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado().getId() : null)
-                        .status(solicitud.getEstadoSolicitud() != null ? solicitud.getStatus() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
                         .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
                         .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
                         .build())
@@ -88,7 +88,7 @@ public class SolicitudService {
                     .fecha(solicitudDTO.getFecha())
                     .hora(solicitudDTO.getHora())
                     .equipo(equipo)
-                    .estadoSolicitud(estadoSolicitud)
+                    .status(estadoSolicitud)
                     .typeService(typeServiceRepository.findById(Long.parseLong(solicitudDTO.getTipoServicio()))
                             .orElseThrow(() -> new RuntimeException("Tipo de servicio no encontrado")))
                     .customer(customerRepository.findById(Long.parseLong(solicitudDTO.getEntidad()))
@@ -101,5 +101,51 @@ public class SolicitudService {
         }
 
         return solicitudes;
+    }
+
+    public List<SolicitudResponseDTO> getSolicitudesAbiertasPorUsuario(Long idUsuario) {
+        // Obtener las solicitudes abiertas del usuario asignado
+        List<Solicitud> solicitudes = solicitudRepository.findByUsuarioAsignadoIdAndStatusDescripcion(idUsuario, "ABIERTA");
+
+        return solicitudes.stream()
+                .map(solicitud -> SolicitudResponseDTO.builder()
+                        .idSolicitud(solicitud.getIdSolicitud())
+                        .fecha(solicitud.getFecha())
+                        .hora(solicitud.getHora())
+                        .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
+                        .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
+                        .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
+                        .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
+                        .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado().getId() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
+                        .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
+                        .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
+                        .build())
+                .toList();
+    }
+
+    // Lógica para obtener las solicitudes abiertas para el usuario con fecha de hoy
+    public List<SolicitudResponseDTO> getSolicitudesHoy(Long userId, String fechaHoy) {
+        // Encuentra las solicitudes filtrando por usuario, estado "ABIERTA", y fecha
+        List<Solicitud> solicitudes = solicitudRepository
+                .findByUsuarioAsignadoIdAndStatusDescripcionAndFecha(userId, "ABIERTA", fechaHoy);
+
+        return solicitudes.stream()
+                .map(solicitud -> SolicitudResponseDTO.builder()
+                        .idSolicitud(solicitud.getIdSolicitud())
+                        .fecha(solicitud.getFecha())
+                        .hora(solicitud.getHora())
+                        .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
+                        .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
+                        .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
+                        .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
+                        .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado().getId() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
+                        .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
+                        .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
+                        .build())
+                .toList();
     }
 }

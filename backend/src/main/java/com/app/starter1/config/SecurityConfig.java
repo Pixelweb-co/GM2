@@ -66,16 +66,16 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/users/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("SUPERADMIN","ADMIN");
 
-                    http.requestMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/customers/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
 
                     //products
-                    http.requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/products/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/products/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/products/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/products/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/products/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/products/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
 
                     //type device
                     http.requestMatchers(HttpMethod.GET, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
@@ -84,12 +84,12 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.DELETE, "/type-device/**").hasAnyRole("SUPERADMIN","ADMIN");
 
                     //solicitudes
-                    http.requestMatchers(HttpMethod.GET, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/solicitudes/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
                     //contratos
-                    http.requestMatchers(HttpMethod.GET, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.PUT, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.POST, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/contratos/**").hasAnyRole("SUPERADMIN","ADMIN");
@@ -101,10 +101,16 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.DELETE, "/type-service/**").hasAnyRole("SUPERADMIN","ADMIN");
 
                     //plantillas
-                    http.requestMatchers(HttpMethod.GET, "/plantillas/**").hasAnyRole("SUPERADMIN","ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/plantillas/**").hasAnyRole("SUPERADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/plantillas/**").hasAnyRole("SUPERADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/plantillas/**").hasAnyRole("SUPERADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/plantillas/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/plantillas/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/plantillas/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/plantillas/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+
+                    //reportes
+                    http.requestMatchers(HttpMethod.GET, "/reportes/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/reportes/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/reportes/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/reportes/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
 
                     // Configurar el resto de los endpoints (no especificados)

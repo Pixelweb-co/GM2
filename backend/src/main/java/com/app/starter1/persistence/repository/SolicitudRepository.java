@@ -25,4 +25,10 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
         LIMIT 0, 10
     """, nativeQuery = true)
     List<SolicitudDTO> findAllSolicitudes();
+
+    // Encontrar solicitudes abiertas por el id del usuario asignado
+    List<Solicitud> findByUsuarioAsignadoIdAndStatusDescripcion(Long idUsuario, String estado);
+
+    // Método para obtener las solicitudes del usuario asignado con estado "ABIERTO" y fecha de hoy
+    List<Solicitud> findByUsuarioAsignadoIdAndStatusDescripcionAndFecha(Long usuarioId, String estado, String fecha);
 }

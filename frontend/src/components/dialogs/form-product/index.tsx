@@ -55,7 +55,8 @@ const schema = yup.object().shape({
   manual: yup.string().required('El manual es obligatorio'),
   periodicity: yup.string().required('La periodicidad es obligatoria'),
   location: yup.string().required('La ubicación es obligatoria'),
-  placement: yup.string().required('La colocación es obligatoria')
+  placement: yup.string().required('La colocación es obligatoria'),
+  image: yup.string().notRequired()
 })
 
 const ProductForm = ({ open, onClose, rowSelect }: any) => {
@@ -176,6 +177,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   }, [errors])
 
   const onSubmit = async (data: any) => {
+
     console.log('sunnii')
 
     try {
@@ -400,6 +402,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
               <Tab label='Datos Tecnicos' value='datos_tecnicos' />
               <Tab label='Información comercial' value='info_comercial' />
               <Tab label='Periodicidad' value='periodicidad' />
+              <Tab label='Imagen' value='imagen' />
             </TabList>
 
             <CardContent>
@@ -882,6 +885,28 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                   </Grid>
                 </Grid>
               </TabPanel>
+
+              {/* imagen */}
+              <TabPanel value='imagen'>
+                <Grid container>
+                  <Grid item xs={12} sm={12}>
+                    <Controller
+                      name='image'
+                      control={control}
+                      render={({ field }) => (
+                        <CustomTextField
+                          {...field}
+                          fullWidth
+                          type='file'
+                          label='Imagen'
+                          error={Boolean(errors.image)}
+                          helperText={errors.image?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+                </TabPanel>
             </CardContent>
           </TabContext>
         </Card>

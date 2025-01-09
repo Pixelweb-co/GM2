@@ -52,6 +52,7 @@ import CustomTextField from '@core/components/mui/TextField'
 import tableStyles from '@core/styles/table.module.css'
 
 import CheckListForm from '@/components/dialogs/form-checklist'
+import { userMethods } from '@/utils/userMethods'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -207,14 +208,19 @@ const ProductsListTable = ({ reload, tableData }: any) => {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
+
+
+          {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) &&
             <IconButton
               onClick={() => {
                 setRowSelection(row.original)
                 setLoadFormCheck(true)
               }}
             >
-              <i className='tabler-eye text-textSecondary' />
+              <i className='tabler-list text-textSecondary' />
             </IconButton>
+            }
+
             <IconButton
               onClick={() => {
                 localStorage.removeItem('productview')

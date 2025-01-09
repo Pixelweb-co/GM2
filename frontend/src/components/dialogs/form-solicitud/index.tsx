@@ -373,7 +373,7 @@ const SolicitudForm = ({
                   >
                     {userList.filter((user)=>user.roles?.find((rol)=>['BIOMEDICAL','SUPERADMIN'].find(roln=>roln === rol.roleEnum )))?.map(item => (
                       <MenuItem key={item.id} value={item.id}>
-                        {item.nombres} {item.apellidos}
+                        {item.nombres} {item.apellidos} {`(${item?.roles[0].roleEnum})`}
                       </MenuItem>
                     ))}
                   </CustomTextField>

@@ -6,7 +6,25 @@ import axios from 'axios'
 
 import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeDeviceListTable'
 
+import axiosInstance from '@/utils/axiosInterceptor'
+
 const getTypeDeviceData = async () => {
+
+  try {
+    const response = await axiosInstance.get('/type-device');
+
+    console.log('Datos recibidosnw:', response.data);
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error('Error al obtener los datos:', error);
+  }
+
+}
+
+const getTypeDeviceData2 = async () => {
   console.log('TypeDeviceList ', process.env.BACKEND_PUBLIC_APP_URL)
 
   try {

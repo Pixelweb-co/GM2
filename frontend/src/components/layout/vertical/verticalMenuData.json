@@ -5,7 +5,8 @@
     "route": "/productos/list",
     "roles": [
       "SUPERADMIN",
-      "ADMIN"
+      "ADMIN",
+      "BIOMEDICAL"
     ]
   },
   {
@@ -14,14 +15,17 @@
     "route": "/solicitudes/list",
     "roles": [
       "SUPERADMIN",
-      "ADMIN"
+      "ADMIN",
+      "BIOMEDICAL"
     ]
   },
   {
-    "label": "Reportes",
+    "label": "Por hacer",
     "icon": "report",
+    "route": "/solicitudes/worklist",
     "roles": [
-      "SUPERADMIN"
+      "SUPERADMIN",
+      "BIOMEDICAL"
     ]
   },
   {

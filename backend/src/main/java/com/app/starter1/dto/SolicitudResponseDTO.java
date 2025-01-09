@@ -1,5 +1,6 @@
 package com.app.starter1.dto;
 
+import com.app.starter1.persistence.entity.EstadoSolicitud;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,9 +17,9 @@ public class SolicitudResponseDTO {
     private String nombreEntidad;
     private String nombreEstadoSolicitud;
     private Long asig;
-    private String status;
+    private EstadoSolicitud status;
     private Long idEquipo;
     private Long entidad;
     private Long tipoServicio;
-    private String desc;
+    private String descripcion;
 }

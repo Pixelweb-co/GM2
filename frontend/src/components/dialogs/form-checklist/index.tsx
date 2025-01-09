@@ -13,7 +13,12 @@ import {
   Grid,
   CardContent,
   Card,
-  Tab
+  Tab,
+  Divider,
+  Typography,
+  CardHeader,
+  IconButton,
+  Tooltip
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -25,13 +30,14 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabList from '@mui/lab/TabList'
 
 import CustomTextField from '@/@core/components/mui/TextField'
+import axiosInstance from '@/utils/axiosInterceptor'
 
 const schema = yup.object().shape({
   typeDevice: yup.string().notRequired(),
   marca: yup.string().required('La marca es obligatoria'),
   modelo: yup.string().required('El modelo es obligatorio'),
   nombreChequeo: yup.string().required('El nombre del chequeo es obligatorio'),
-  tipoElemento: yup.string().required('El tipo de elemento es obligatorio')
+  tipoElement: yup.string().required('El tipo de elemento es obligatorio')
 })
 
 const CheckListForm = ({ open, onClose, rowSelect }: any) => {
@@ -43,12 +49,14 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
     marca: '',
     modelo: '',
     nombreChequeo: '',
-    tipoElemento: ''
+    tipoElement: ''
   })
 
   const [typeDeviceList, setTypeDeviceList] = useState<any[]>([])
   const [customersList, setCustomersList] = useState<any[]>([])
   const [plantillasList, setPlantillasList] = useState<any[]>([])
+
+  const [formTemplate, setFormTemplate] = useState<any[]>([])
 
   const fetchOptions = async () => {
     try {
@@ -58,14 +66,8 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
-      const [typeDeviceRes, plantillasRes] = await Promise.all([
+      const [typeDeviceRes] = await Promise.all([
         axios.get('http://localhost:8080/type-device', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }),
-        axios.get('http://localhost:8080/plantillas', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -74,7 +76,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       ])
 
       setTypeDeviceList(typeDeviceRes.data)
-      setPlantillasList(plantillasRes.data)
+
 
       return true
     } catch (error) {
@@ -99,7 +101,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       marca: '',
       modelo: '',
       nombreChequeo: '',
-      tipoElemento: ''
+      tipoElement: ''
     },
     mode: 'onSubmit'
   })
@@ -110,32 +112,21 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
 
   const onSubmit = async (data: any) => {
     try {
-      const token = localStorage.getItem('AuthToken')
-
-      console.log('token ', token)
-
-      if (!token) {
-        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
-      }
 
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = 'post' // Actualización o Creación
       const apiUrl = 'http://localhost:8080/plantillas' // Creación
 
-      const response = await axios({
+      const response = await axiosInstance({
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
         data: {
           marca: data.marca,
           modelo: data.modelo,
-          nom: data.nombreChequeo,
-          tipo: data.tipoElemento,
-          tipoElement: rowSelect.productType
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+
+          tipoElement: rowSelect.productType,
+          campos: formTemplate // Incluye los campos dinámicos generados
         }
       })
 
@@ -153,7 +144,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       setValue('marca', '')
       setValue('modelo', '')
       setValue('nombreChequeo', '')
-      setValue('tipoElemento', '')
+      setValue('tipoElement', '')
 
       reset()
       setId(0)
@@ -162,7 +153,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
         marca: '',
         modelo: '',
         nombreChequeo: '',
-        tipoElemento: ''
+        tipoElement: '0'
       })
 
       onClose()
@@ -170,6 +161,9 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       console.error('Error al enviar los datos:', error)
     }
   }
+
+
+
 
   useEffect(() => {
     if (rowSelect.id) {
@@ -180,7 +174,32 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       setValue('marca', rowSelect.brand)
       setValue('modelo', rowSelect.model)
       setValue('nombreChequeo', rowSelect.productName)
-      setValue('tipoElemento', rowSelect.productCode)
+      setValue('tipoElement', rowSelect.productCode)
+
+
+      const getTemplates = async (item:any) => {
+
+        console.error('item:', item);
+
+        try {
+          const response = await axiosInstance.get(`/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
+
+          console.log('Datos recibidostp :', response.data);
+
+          setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: (item.tipo).toString() })));
+
+        } catch (error) {
+
+          console.error('Error al obtener los datos:', error);
+        }
+
+      }
+
+      getTemplates(rowSelect)
+
+
+
+
     }
   }, [rowSelect, setValue])
 
@@ -192,163 +211,199 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       marca: '',
       modelo: '',
       nombreChequeo: '',
-      tipoElemento: ''
+      tipoElement: ''
     })
 
     setValue('typeDevice', '')
     setValue('marca', '')
     setValue('modelo', '')
     setValue('nombreChequeo', '')
-    setValue('tipoElemento', '')
+    setValue('tipoElement', '')
   }
+
+  useEffect(() => {
+
+    console.log('formTemplate:', formTemplate);
+
+  }, [formTemplate]);
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
       <DialogTitle>Plantila de checkeo</DialogTitle>
 
       <DialogContent>
-        <Card>
-          <TabContext value={valueT}>
-            <TabList variant='scrollable' onChange={handleTabChange} className='border-be'>
-              <Tab label='Ingreso items' value='itemsf' />
-              <Tab label='Formulario' value='formulario' />
-            </TabList>
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name='typeDevice'
+              control={control}
+              render={({ field }) => (
+                <CustomTextField
+                  fullWidth
+                  value={
+                    editData.productType
+                      ? typeDeviceList.find(item => item.id === parseInt(editData.productType)).typeDevice
+                      : ''
+                  }
+                  label='Tipo de dispositivo'
+                  error={Boolean(errors.typeDevice)}
+                  helperText={errors.typeDevice?.message}
+                />
+              )}
+            />
 
-            <CardContent>
-              <TabPanel value='itemsf'>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    <Controller
-                      name='typeDevice'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          fullWidth
-                          value={
-                            editData.productType
-                              ? typeDeviceList.find(item => item.id === parseInt(editData.productType)).typeDevice
-                              : ''
-                          }
-                          label='Tipo de dispositivo'
-                          error={Boolean(errors.typeDevice)}
-                          helperText={errors.typeDevice?.message}
-                        />
-                      )}
-                    />
+            <Controller
+              name='marca'
+              control={control}
+              render={({ field }) => (
+                <CustomTextField
+                  {...field}
+                  className='mt-4'
+                  fullWidth
+                  label='Marca'
+                  error={Boolean(errors.marca)}
+                  helperText={errors.marca?.message}
+                />
+              )}
+            />
 
-                    <Controller
-                      name='marca'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          className='mt-4'
-                          fullWidth
-                          label='Marca'
-                          error={Boolean(errors.marca)}
-                          helperText={errors.marca?.message}
-                        />
-                      )}
-                    />
+            <Controller
+              name='modelo'
+              control={control}
+              render={({ field }) => (
+                <CustomTextField
+                  {...field}
+                  className='mt-4'
+                  fullWidth
+                  label='Modelo'
+                  error={Boolean(errors.modelo)}
+                  helperText={errors.modelo?.message}
+                />
+              )}
+            />
 
-                    <Controller
-                      name='modelo'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          className='mt-4'
-                          fullWidth
-                          label='Modelo'
-                          error={Boolean(errors.modelo)}
-                          helperText={errors.modelo?.message}
-                        />
-                      )}
-                    />
+            <Typography variant='h6' className='mt-4'>
+              Agregar campo
+            </Typography>
+            <Divider className='mt-4' />
 
-                    <Controller
-                      name='nombreChequeo'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          className='mt-4'
-                          fullWidth
-                          label='Nombre del chequeo'
-                          error={Boolean(errors.nombreChequeo)}
-                          helperText={errors.nombreChequeo?.message}
-                        />
-                      )}
-                    />
+            <Controller
+              name='nombreChequeo'
+              control={control}
+              render={({ field }) => (
+                <CustomTextField
+                  {...field}
+                  className='mt-4'
+                  fullWidth
+                  onChange={e => {
+                    setEditData({ ...editData, nombreChequeo: e.target.value })
+                    setValue('nombreChequeo', e.target.value)
+                  }}
+                  label='Nombre del chequeo'
+                  error={Boolean(errors.nombreChequeo)}
+                  helperText={errors.nombreChequeo?.message}
+                />
+              )}
+            />
 
-                    <Controller
-                      name='tipoElemento'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          select
-                          fullWidth
-                          value={editData?.tipoElemento ? editData?.tipoElemento : '1'}
-                          onChange={e => {
-                            setEditData({ ...editData, tipoElemento: e.target.value })
-                            setValue('tipoElemento', e.target.value)
-                          }}
-                          label='Tipo elemento'
-                          error={Boolean(errors.tipoElemento)}
-                          helperText={errors.tipoElemento?.message}
-                        >
-                          {[
-                            { id: 1, name: 'Caja de texto' },
-                            { id: 2, name: 'Caja de checkeo' }
-                          ].map(item => (
-                            <MenuItem key={item.id} value={item.id}>
-                              {item.name}
-                            </MenuItem>
-                          ))}
-                        </CustomTextField>
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-              </TabPanel>
+            <Controller
+              name='tipoElement'
+              control={control}
+              render={({ field }) => (
+                <CustomTextField
+                  {...field}
+                  className='mt-4'
+                  select
+                  fullWidth
+                  value={editData?.tipoElement ? editData?.tipoElement : '1'}
+                  onChange={e => {
+                    setEditData({ ...editData, tipoElement: e.target.value })
+                    setValue('tipoElement', e.target.value)
+                  }}
+                  label='Tipo elemento'
+                  error={Boolean(errors.tipoElement)}
+                  helperText={errors.tipoElement?.message}
+                >
+                  {[
+                    { id: '1', name: 'Selecciona un control' },
+                    { id: '2', name: 'Caja de texto' },
+                    { id: '3', name: 'Caja de checkeo' }
+                  ].map((item, index) => (
+                    <MenuItem key={index} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              )}
+            />
 
-              {/* datos_tecnicos */}
-              <TabPanel value='formulario'>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    {plantillasList.length > 0 &&
-                      plantillasList
-                        .filter(plantilla => plantilla.tipoElement === parseInt(editData.productType))
-                        .map((plantillar, index) => (
-                          <div key={index}>
-                            {plantillar.tipo === 'text' && (
-                              <Controller
-                                name='tipoElemento'
-                                control={control}
-                                render={({ field }) => (
-                                  <CustomTextField className='mt-4' fullWidth label={plantillar.nom} />
-                                )}
-                              />
-                            )}
+            <Button
+              type='button'
+              variant='contained'
+              color='success'
+              className='mt-4'
+              onClick={() => {
+                console.log('editData', editData)
 
-                            {plantillar.tipo === 'check' && (
-                              <Controller
-                                name='tipoElemento'
-                                control={control}
-                                render={({ field }) => (
-                                  <CustomTextField type='checkbox' className='mt-4' fullWidth label={plantillar.nom} />
-                                )}
-                              />
-                            )}
-                          </div>
-                        ))}
-                  </Grid>
-                </Grid>
-              </TabPanel>
-            </CardContent>
-          </TabContext>
-        </Card>
+                setFormTemplate([...formTemplate, { nom: editData.nombreChequeo, tipo: editData.tipoElement }])
+              }}
+            >
+              Agregar campo
+            </Button>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Card>
+              <CardHeader title='Formulario de checkeo' />
+
+              <CardContent>
+                {formTemplate.length > 0 &&
+                  formTemplate.map((plantillar, index) => (
+                    <div key={index}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={10} sm={10}>
+                          {plantillar.tipo == 2 && (
+                            <Controller
+                              name='tipoElementDt'
+                              control={control}
+                              render={({ field }) => (
+                                <CustomTextField className='mt-4' fullWidth label={plantillar.nom} />
+                              )}
+                            />
+                          )}
+
+                          {plantillar.tipo == 3 && (
+                            <Controller
+                              name='tipoElementcx'
+                              control={control}
+                              render={({ field }) => (
+                                <CustomTextField type='checkbox' className='mt-4' label={plantillar.nom} />
+                              )}
+                            />
+                          )}
+                        </Grid>
+
+                        <Grid item xs={2} sm={2}>
+                          <Tooltip title='Eliminar campo' placement='top'>
+                          <IconButton
+                          className='mt-8'
+                            onClick={() => {
+                              setFormTemplate(formTemplate.filter((item, i) => i !== index))
+                            }}
+                          >
+                            <i className='tabler-trash text-textSecondary' color='danger'/>
+                          </IconButton>
+                            </Tooltip>
+                        </Grid>
+                      </Grid>
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+
       </DialogContent>
       <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
         <DialogActions>

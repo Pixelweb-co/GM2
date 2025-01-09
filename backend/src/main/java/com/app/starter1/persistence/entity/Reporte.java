@@ -15,9 +15,13 @@ import lombok.NoArgsConstructor;
 public class Reporte {
 
     @Id
-    @OneToOne
-    @JoinColumn(name = "id_solicitud", referencedColumnName = "id_solicitud", nullable = false)
-    private Solicitud solicitud;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+    @Column(name = "id_solicitud")
+    private Long solicitud;
 
     @Column(name = "estado_equipo")
     private Integer estadoEquipo;

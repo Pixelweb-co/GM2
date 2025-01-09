@@ -23,7 +23,7 @@ public class Plantilla {
     private Long id;
 
     @Column(name = "tipo_element")
-    private Integer tipoElement;
+    private Long tipoElement;
 
     @Column(length = 80)
     private String marca;
@@ -35,7 +35,7 @@ public class Plantilla {
     private String nom;
 
     @Column(length = 80)
-    private String tipo;
+    private Long tipo;
 
     private Integer valor;
 

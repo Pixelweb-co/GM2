@@ -1,44 +1,78 @@
+package com.app.starter1.controllers;
+
 import com.app.starter1.dto.ReportDTO;
 import com.app.starter1.persistence.entity.Reporte;
-import com.app.starter1.persistence.repository.ReportRepository;
+import com.app.starter1.persistence.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Service
-public class ReportService {
+import java.util.List;
+
+@RestController
+@RequestMapping("/reportes")
+public class ReportController {
 
     @Autowired
-    private ReportRepository reportRepository;
+    private ReportService reportService;
 
-    // Guardar reporte
-    public Reporte save(ReportDTO reportDTO) {
-        Reporte reporte = mapToEntity(reportDTO);
-
-        return reportRepository.save(reporte);
+    /**
+     * Crear un nuevo reporte.
+     *
+     * @param reportDTO Datos del reporte a guardar.
+     * @return Reporte guardado como respuesta.
+     */
+    @PostMapping
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) {
+        Reporte savedReport = reportService.save(reportDTO);
+        return ResponseEntity.ok(reportService.mapToDTO(savedReport));
     }
 
-    // Mapear DTO a entidad
-    public Reporte mapToEntity(ReportDTO reportDTO) {
-        return Reporte.builder()
-                .solicitud(reportDTO.getIdSolicitud()) // Se asume que el ID es suficiente para relacionar
-                .ciudad(reportDTO.getCiudad())
-                .ubicacion(reportDTO.getUbicacion())
-                .trabajoRealizado(reportDTO.getResumen())
-                .observaciones(reportDTO.getObservacion())
-                .estadoEquipo(reportDTO.getEstadoEquipo())
-                .build();
+    /**
+     * Obtener todos los reportes.
+     *
+     * @return Lista de reportes en formato DTO.
+     */
+    @GetMapping
+    public ResponseEntity<List<ReportDTO>> getAllReports() {
+        List<ReportDTO> reportList = reportService.findAll();
+        return ResponseEntity.ok(reportList);
     }
 
-    // Mapear entidad a DTO (opcional)
-    public ReportDTO mapToDTO(Reporte reporte) {
-        return ReportDTO.builder()
-                .id(reporte.getId())
-                .idSolicitud(reporte.getSolicitud())
-                .ciudad(reporte.getCiudad())
-                .ubicacion(reporte.getUbicacion())
-                .resumen(reporte.getTrabajoRealizado())
-                .observacion(reporte.getObservaciones())
-                .estadoEquipo(reporte.getEstadoEquipo())
-                .build();
+    /**
+     * Obtener un reporte por su ID.
+     *
+     * @param id ID del reporte a buscar.
+     * @return Reporte encontrado.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ReportDTO> getReportById(@PathVariable Long id) {
+        ReportDTO reportDTO = reportService.findById(id);
+        return ResponseEntity.ok(reportDTO);
+    }
+
+    /**
+     * Actualizar un reporte existente.
+     *
+     * @param id        ID del reporte a actualizar.
+     * @param reportDTO Datos actualizados del reporte.
+     * @return Reporte actualizado.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<ReportDTO> updateReport(@PathVariable Long id, @RequestBody ReportDTO reportDTO) {
+        Reporte updatedReport = reportService.update(id, reportDTO);
+        return ResponseEntity.ok(reportService.mapToDTO(updatedReport));
+    }
+
+    /**
+     * Eliminar un reporte por su ID.
+     *
+     * @param id ID del reporte a eliminar.
+     * @return Respuesta indicando éxito.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteReport(@PathVariable Long id) {
+        reportService.deleteById(id);
+        return ResponseEntity.ok("Reporte eliminado con éxito.");
     }
 }

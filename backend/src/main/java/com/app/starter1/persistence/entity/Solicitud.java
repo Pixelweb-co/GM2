@@ -25,15 +25,10 @@ public class Solicitud {
     @Column(name = "hora", length = 10)
     private String hora;
 
-    @Column(name = "id_equipo", insertable = false, updatable = false)
-    private Long idEquipo;
-
-    @Column(name = "status")
-    private String status;
-
     @ManyToOne
     @JoinColumn(name = "id_equipo", referencedColumnName = "id_producto")
     private Product equipo;
+
 
     @Column(name = "id_tipo_servicio", insertable = false, updatable = false)
     private Long idTipoServicio;
@@ -47,8 +42,8 @@ public class Solicitud {
     private TipoServicio typeService;
 
     @ManyToOne
-    @JoinColumn(name = "id_estado_sol", referencedColumnName = "id_estado_sol")
-    private EstadoSolicitud estadoSolicitud;
+    @JoinColumn(name = "status", referencedColumnName = "id_estado_sol")
+    private EstadoSolicitud status;
 
     @ManyToOne
     @JoinColumn(name = "id_entidad", referencedColumnName = "id")

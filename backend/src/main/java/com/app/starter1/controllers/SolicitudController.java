@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,4 +33,24 @@ public class SolicitudController {
         List<Solicitud> createdSolicitudes = solicitudService.createSolicitudes(solicitudDTO);
         return ResponseEntity.ok(createdSolicitudes);
     }
+
+    @Transactional
+    @GetMapping("/worklist/{id_usuario}")
+    public ResponseEntity<List<SolicitudResponseDTO>> getSolicitudesAbiertas(@PathVariable Long id_usuario) {
+        List<SolicitudResponseDTO> solicitudesAbiertas = solicitudService.getSolicitudesAbiertasPorUsuario(id_usuario);
+        return ResponseEntity.ok(solicitudesAbiertas);
+    }
+
+    // Endpoint para obtener solicitudes abiertas para el usuario con fecha de hoy
+    @GetMapping("/worklist/today/{userId}")
+    public ResponseEntity<List<SolicitudResponseDTO>> getSolicitudesHoy(@PathVariable Long userId) {
+        // Obtén la fecha de hoy en formato String (asegúrate de que coincida con el formato de tu base de datos)
+        String fechaHoy = LocalDate.now().toString(); // "yyyy-MM-dd"
+
+        // Llama al servicio para obtener las solicitudes filtradas
+        List<SolicitudResponseDTO> solicitudes = solicitudService.getSolicitudesHoy(userId, fechaHoy);
+        return ResponseEntity.ok(solicitudes);
+    }
+
+
 }

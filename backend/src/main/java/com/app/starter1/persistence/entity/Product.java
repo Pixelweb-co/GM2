@@ -24,7 +24,7 @@ public class Product {
     private Long id;
 
     @Column(name = "tipo_producto")
-    private String productType;
+    private Long productType;
 
     @Column(name = "codigo_producto")
     private String productCode;
@@ -110,7 +110,6 @@ public class Product {
 
     @Column(name = "ubicacion_producto")
     private String placement;
-
 
 
 }

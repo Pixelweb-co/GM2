@@ -2,15 +2,24 @@ package com.app.starter1.persistence.services;
 
 import com.app.starter1.persistence.entity.Contrato;
 import com.app.starter1.persistence.entity.Customer;
+import com.app.starter1.persistence.entity.Image;
 import com.app.starter1.persistence.entity.Product;
 import com.app.starter1.persistence.exeptions.ProductNotFoundException;
 import com.app.starter1.persistence.repository.ContratoRepository;
 import com.app.starter1.persistence.repository.CustomerRepository;
+import com.app.starter1.persistence.repository.ImageRepository;
 import com.app.starter1.persistence.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Contract;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +35,9 @@ public class ProductService {
     @Autowired
     private ContratoRepository contratoRepository;
 
+    // Inyectar el repositorio de imágenes
+    @Autowired
+    private ImageRepository imageRepository;
 
     /**
      * Obtiene los productos asociados a un cliente dado.
@@ -46,29 +58,48 @@ public class ProductService {
      */
     public Product guardarProductoConContrato(Product producto, Long clienteId) {
         // Guardar el producto en la base de datos
-
-        // Establecer el ID del cliente en el campo customer del producto
-        //producto.setCustomer(clienteId.toString());
-        System.out.println("customer "+clienteId);
-
-        // Guardar el producto en la base de datos
         Product productoGuardado = productRepository.save(producto);
 
-        // Buscar al cliente por su ID
+
+
+        // Manejar la relación con el contrato como antes
         Customer cliente = customerRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-        // Buscar el contrato del cliente
         Contrato contrato = contratoRepository.findByCliente(cliente)
                 .orElseThrow(() -> new RuntimeException("Contrato no encontrado para el cliente"));
 
-        // Actualizar la relación entre contrato y producto
         contrato.getProductContractList().add(productoGuardado);
         contratoRepository.save(contrato);
 
         return productoGuardado;
     }
 
+    private void guardarImagen(MultipartFile imagen, Long productId) {
+        try {
+            // Preparar los datos de la imagen
+            String fileName = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
+
+            // Guardar en el sistema de archivos
+            String uploadDir = "uploads/images/";
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.copy(imagen.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Crear y guardar la entidad Image
+            LocalDateTime now = LocalDateTime.now();
+            Image nuevaImagen = Image.builder()
+                    .equipment(productId.toString())
+                    .name(fileName)
+                    .date(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .hour(now.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                    .build();
+
+            imageRepository.save(nuevaImagen);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al guardar la imagen: " + e.getMessage(), e);
+        }
+    }
     /**
      * Actualiza los datos de un producto existente.
      *
@@ -109,8 +140,24 @@ public class ProductService {
         existingProduct.setLocation(updatedProduct.getLocation());
         existingProduct.setPlacement(updatedProduct.getPlacement());
 
+       
+
         // Guardar el producto actualizado
         return productRepository.save(existingProduct);
     }
+
+    private void eliminarImagen(Image imagen) {
+        try {
+            // Eliminar la imagen del sistema de archivos
+            Path filePath = Paths.get("uploads/images/" + imagen.getName());
+            Files.deleteIfExists(filePath);
+
+            // Eliminar la imagen de la base de datos
+            imageRepository.delete(imagen);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar la imagen: " + e.getMessage(), e);
+        }
+    }
+
 
 }

@@ -27,6 +27,6 @@ public class ProductoRequest {
     private String brand;
     private String productName;
     private String productCode;
-    private String typeDevice;
+    private Long typeDevice;
 }
 
