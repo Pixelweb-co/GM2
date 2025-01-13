@@ -1,7 +1,11 @@
 package com.app.starter1.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "images")
@@ -18,8 +22,8 @@ public class Image {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "equipment", length = 20)
-    private String equipment;
+    @Column(name = "equipment", length = 80)
+    private Long equipment;
 
     @Column(name = "name", length = 80)
     private String name;
@@ -29,5 +33,6 @@ public class Image {
 
     @Column(name = "hour", length = 10)
     private String hour;
+
 }
 

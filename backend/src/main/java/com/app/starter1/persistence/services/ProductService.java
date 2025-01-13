@@ -75,31 +75,7 @@ public class ProductService {
         return productoGuardado;
     }
 
-    private void guardarImagen(MultipartFile imagen, Long productId) {
-        try {
-            // Preparar los datos de la imagen
-            String fileName = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
 
-            // Guardar en el sistema de archivos
-            String uploadDir = "uploads/images/";
-            Path filePath = Paths.get(uploadDir + fileName);
-            Files.createDirectories(filePath.getParent());
-            Files.copy(imagen.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            // Crear y guardar la entidad Image
-            LocalDateTime now = LocalDateTime.now();
-            Image nuevaImagen = Image.builder()
-                    .equipment(productId.toString())
-                    .name(fileName)
-                    .date(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .hour(now.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-                    .build();
-
-            imageRepository.save(nuevaImagen);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al guardar la imagen: " + e.getMessage(), e);
-        }
-    }
     /**
      * Actualiza los datos de un producto existente.
      *

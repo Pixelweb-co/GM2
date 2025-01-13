@@ -95,6 +95,8 @@ public class CustomerController {
 
 
     @GetMapping
+    @Transactional
+
     public ResponseEntity<List<Customer>> getAllCustomersWithContracts() {
         List<Customer> customers = customerService.getAllCustomersWithContracts();
         return ResponseEntity.ok(customers);

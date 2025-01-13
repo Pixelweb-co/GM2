@@ -10,7 +10,17 @@ const nextConfig = {
         locale: false
       }
     ]
-  }
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080', // Puerto del servidor donde se están sirviendo las imágenes
+        pathname: '/media/**', // Ruta de las imágenes
+      },
+    ],
+  },
 }
 
 export default nextConfig

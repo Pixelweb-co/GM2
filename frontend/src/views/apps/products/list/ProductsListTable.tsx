@@ -453,7 +453,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
         setData={setData}
       /> */}
 
-      <ProductoForm
+      {loadForm && <ProductoForm
         open={loadForm}
         onClose={() => {
           setLoadForm(false)
@@ -493,12 +493,16 @@ const ProductsListTable = ({ reload, tableData }: any) => {
         setOpen={() => setLoadForm(true)}
         rowSelect={rowSelection}
       />
-      <CheckListForm
+
+    }
+
+    {loadFormCheck &&  <CheckListForm
         open={loadFormCheck}
         onClose={() => setLoadFormCheck(false)}
         setOpen={() => setLoadFormCheck(true)}
         rowSelect={rowSelection}
       />
+    }
     </>
   )
 }

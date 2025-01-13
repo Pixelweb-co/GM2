@@ -16,6 +16,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Product {
 
     @Id
@@ -110,9 +111,5 @@ public class Product {
 
     @Column(name = "ubicacion_producto")
     private String placement;
-
-    @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_producto", referencedColumnName = "equipment" )
-    private Image image;
 
 }

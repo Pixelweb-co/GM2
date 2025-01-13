@@ -2,6 +2,8 @@
 import type { SyntheticEvent } from 'react'
 import React, { useEffect, useState } from 'react'
 
+import Image from 'next/image'
+
 import {
   Dialog,
   DialogTitle,
@@ -63,6 +65,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   const [id, setId] = useState(0)
   const [valueT, setValueT] = useState('dispositivo')
 
+  const [selectedFile, setSelectedFile] = useState(null)
+
+  const handleFileChange = event => {
+    // Obtiene el archivo seleccionado
+    setSelectedFile(event.target.files[0])
+  }
+
   const [editData, setEditData] = useState<any>({
     typeDevice: '1',
     productCode: '',
@@ -97,6 +106,8 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   const [customersList, setCustomersList] = useState<any[]>([])
 
   const fetchOptions = async () => {
+    console.log('fetchOptions')
+
     try {
       const token = localStorage.getItem('AuthToken')
 
@@ -130,6 +141,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
   useEffect(() => {
     fetchOptions()
+
   }, [])
 
   const {
@@ -177,8 +189,26 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   }, [errors])
 
   const onSubmit = async (data: any) => {
-
     console.log('sunnii')
+
+    const formData = new FormData()
+
+    formData.append(
+      'producto',
+      JSON.stringify({
+        ...data,
+        customer:
+          userMethods.isRole('ADMIN') || userMethods.isRole('USER')
+            ? userMethods.getUserLogin().customer?.id
+            : data?.customer
+      })
+    )
+
+    // Agregar el archivo de imagen al FormData
+    if (selectedFile) {
+      console.log('selectedFile ', selectedFile)
+      formData.append('file', selectedFile)
+    }
 
     try {
       const token = localStorage.getItem('AuthToken')
@@ -197,15 +227,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
-        data: {
-          ...data,
-          customer:
-            userMethods.isRole('ADMIN') || userMethods.isRole('USER')
-              ? userMethods.getUserLogin().customer?.id
-              : data?.customer
-        },
+        data: formData,
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
         }
       })
@@ -290,7 +314,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
   useEffect(() => {
     if (rowSelect.id) {
-      console.log('rowSelect:', rowSelect)
+      console.log('rowSelect edit:', rowSelect)
       setEditData(rowSelect)
       setId(rowSelect.id)
       setValue('typeDevice', rowSelect.typeDevice)
@@ -322,14 +346,79 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('periodicity', rowSelect.periodicity)
       setValue('location', rowSelect.location)
       setValue('placement', rowSelect.placement)
+    }else{
+      console.log('rowSelect new:', rowSelect)
+      setValue('typeDevice', '')
+      setValue('productCode', '')
+      setValue('productName', '')
+      setValue('brand', '')
+      setValue('model', '')
+      setValue('licensePlate', '')
+
+      //setValue('productClass', '')
+      setValue('classification', '')
+      setValue('customer', '')
+      setValue('status', '1')
+
+      //setValue('dateAdded', '')
+      setValue('invimaRegister', '')
+      setValue('origin', '')
+      setValue('voltage', '')
+      setValue('power', '')
+      setValue('frequency', '')
+      setValue('amperage', '')
+      setValue('purchaseDate', '')
+      setValue('bookValue', 0)
+      setValue('supplier', '')
+      setValue('warranty', '')
+      setValue('warrantyStartDate', '')
+      setValue('warrantyEndDate', '')
+      setValue('manual', '')
+      setValue('periodicity', '')
+      setValue('location', '')
+      setValue('placement', '')
+      reset()
+      setId(0)
+      setEditData({
+        typeDevice: '',
+        productCode: '',
+        productName: '',
+        brand: '',
+        model: '',
+        licensePlate: '',
+
+        //productClass: '',
+        classification: '',
+        customer: '',
+        status: '1',
+
+        //dateAdded: '',
+        invimaRegister: '',
+        origin: '',
+        voltage: '',
+        power: '',
+        frequency: '',
+        amperage: '',
+        purchaseDate: '',
+        bookValue: 0,
+        supplier: '',
+        warranty: '',
+        warrantyStartDate: '',
+        warrantyEndDate: '',
+        manual: '',
+        periodicity: '',
+        location: '',
+        placement: ''
+      })
     }
+
   }, [rowSelect, setValue])
 
   const handleTabChange = (event: SyntheticEvent, newValue: string) => setValueT(newValue)
 
   const handleReset = () => {
     setEditData({
-      typeDevice: '1',
+      typeDevice: '',
       productCode: '',
       productName: '',
       brand: '',
@@ -542,33 +631,32 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                       )}
                     />
 
-                    {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) && (
-                      <Controller
-                        name='customer'
-                        control={control}
-                        render={({ field }) => (
-                          <CustomTextField
-                            {...field}
-                            select
-                            fullWidth
-                            value={editData?.customer ? editData?.customer : '1'}
-                            onChange={e => {
-                              setEditData({ ...editData, customer: e.target.value })
-                              setValue('customer', e.target.value)
-                            }}
-                            label='Cliente'
-                            error={Boolean(errors.customer)}
-                            helperText={errors.customer?.message}
-                          >
-                            {customersList.map(item => (
-                              <MenuItem key={item.id} value={item.id}>
-                                {item.name}
-                              </MenuItem>
-                            ))}
-                          </CustomTextField>
-                        )}
-                      />
-                    )}
+                    <Controller
+                      name='customer'
+                      control={control}
+                      render={({ field }) => (
+                        <CustomTextField
+                          {...field}
+                          select
+                          hidden={userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')}
+                          fullWidth
+                          value={editData?.customer ? editData?.customer : '1'}
+                          onChange={e => {
+                            setEditData({ ...editData, customer: e.target.value })
+                            setValue('customer', e.target.value)
+                          }}
+                          label='Cliente'
+                          error={Boolean(errors.customer)}
+                          helperText={errors.customer?.message}
+                        >
+                          {customersList.map(item => (
+                            <MenuItem key={item.id} value={item.id}>
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      )}
+                    />
 
                     <Controller
                       name='location'
@@ -895,18 +983,24 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                       control={control}
                       render={({ field }) => (
                         <CustomTextField
-                          {...field}
                           fullWidth
                           type='file'
                           label='Imagen'
+                          onChange={handleFileChange}
                           error={Boolean(errors.image)}
                           helperText={errors.image?.message}
                         />
                       )}
                     />
+
+                    {editData.image && (
+                      <Card sx={{ textAlign: 'center',marginTop: 5 }}>
+                        <Image src={`http://localhost:8080/media/${editData.image.name}`} width={150} height={150} alt="Imagen de el dispositivo" />
+                      </Card>
+                    )}
                   </Grid>
                 </Grid>
-                </TabPanel>
+              </TabPanel>
             </CardContent>
           </TabContext>
         </Card>

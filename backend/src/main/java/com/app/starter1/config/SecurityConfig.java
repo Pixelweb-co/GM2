@@ -112,6 +112,9 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/reportes/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.DELETE, "/reportes/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
+                    //libreria de medios
+                    http.requestMatchers(HttpMethod.GET, "/media/**").permitAll();
+
 
                     // Configurar el resto de los endpoints (no especificados)
                     http.anyRequest().denyAll();

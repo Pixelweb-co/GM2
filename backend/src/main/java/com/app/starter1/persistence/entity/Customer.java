@@ -58,7 +58,7 @@ public class Customer {
         }
     }
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Contrato contrato;
 

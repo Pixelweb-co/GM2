@@ -1,17 +1,29 @@
 package com.app.starter1.controllers;
 
+import com.app.starter1.dto.ProductFileRequest;
 import com.app.starter1.dto.ProductoRequest;
 import com.app.starter1.persistence.entity.Customer;
+import com.app.starter1.persistence.entity.Image;
 import com.app.starter1.persistence.entity.Product;
+import com.app.starter1.persistence.repository.ImageRepository;
 import com.app.starter1.persistence.repository.ProductRepository;
 import com.app.starter1.persistence.services.ProductService;
+import com.app.starter1.persistence.services.StorageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.time.format.DateTimeFormatter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -24,11 +36,23 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    StorageService storageService;
+
+    @Autowired
+    HttpServletRequest request;
+
+    @Autowired
+    ImageRepository imageRepository;
+
     @GetMapping
     @Transactional
     // Obtener todos los products
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> findAll() {
+        return productRepository.findAllWithImage();
     }
 
     @GetMapping("/customer/{id_customer}")
@@ -37,13 +61,48 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping
-    public ResponseEntity<Product> crearProducto(@RequestBody ProductoRequest productoRequest) {
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<Product> crearProducto(
+            @RequestPart("producto") String productoJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
+            ) throws JsonProcessingException {
+
+        // Deserializar el JSON del producto
+        ProductoRequest productoRequest = objectMapper.readValue(productoJson, ProductoRequest.class);
+
+        String path = storageService.Store(file);
+        String host = request.getRequestURL().toString().replace(request.getRequestURI(),"");
+        String url = ServletUriComponentsBuilder
+                .fromHttpUrl(host)
+                .path("/media/")
+                .toString();
+
         Product producto = convertirAEntidad(productoRequest);
 
-        System.out.println(productoRequest.getCustomer());
 
         Product productoGuardado = productService.guardarProductoConContrato(producto, productoRequest.getCustomer());
+
+        //elacion imagen
+
+        Image image = new Image();
+
+        image.setEquipment(productoGuardado.getId());
+        image.setName(path); // Ruta del archivo devuelta por Store
+
+        // Establecer la fecha formateada
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yy");
+        String formattedDate = LocalDate.now().format(dateFormatter);
+
+        // Establecer la hora formateada
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String formattedTime = LocalTime.now().format(timeFormatter);
+
+        image.setDate(formattedDate);  // Fecha formateada en MM-dd-yy
+        image.setHour(formattedTime);  // Hora formateada en HH:mm:ss
+        imageRepository.save(image);
+
+
+
         return ResponseEntity.status(HttpStatus.CREATED).body(productoGuardado);
     }
 

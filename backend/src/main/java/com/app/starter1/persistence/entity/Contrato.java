@@ -1,6 +1,7 @@
 package com.app.starter1.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,10 +42,11 @@ public class Contrato {
     @JsonBackReference
     private Customer cliente;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "equipos_contrato",
             joinColumns = @JoinColumn(name = "id_contrato"), // Se refiere a la columna de la tabla Contrato
-            inverseJoinColumns = @JoinColumn(name = "id_equipo")) // Se refiere a la columna de la tabla Product
+            inverseJoinColumns = @JoinColumn(name = "id_producto")) // Se refiere a la columna de la tabla Product
     private Set<Product> productContractList = new HashSet<>();
 
 
