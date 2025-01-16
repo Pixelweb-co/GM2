@@ -68,8 +68,7 @@ public class ProductController {
             @RequestPart(value = "file", required = false) MultipartFile file
             ) throws JsonProcessingException {
 
-        // Deserializar el JSON del producto
-        ProductoRequest productoRequest = objectMapper.readValue(productoJson, ProductoRequest.class);
+
 
         String path = storageService.Store(file);
         String host = request.getRequestURL().toString().replace(request.getRequestURI(),"");
@@ -77,7 +76,9 @@ public class ProductController {
                 .fromHttpUrl(host)
                 .path("/media/")
                 .toString();
+        // Deserializar el JSON del producto
 
+        ProductoRequest productoRequest = objectMapper.readValue(productoJson, ProductoRequest.class);
         Product producto = convertirAEntidad(productoRequest);
 
 
@@ -102,7 +103,8 @@ public class ProductController {
         image.setHour(formattedTime);  // Hora formateada en HH:mm:ss
         imageRepository.save(image);
 
-
+        productoGuardado.setImage(image);
+        productRepository.save(productoGuardado);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productoGuardado);
     }
