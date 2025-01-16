@@ -317,7 +317,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       console.log('rowSelect edit:', rowSelect)
       setEditData(rowSelect)
       setId(rowSelect.id)
-      setValue('typeDevice', rowSelect.typeDevice)
+      setValue('typeDevice', rowSelect.productType)
       setValue('productCode', rowSelect.productCode)
       setValue('productName', rowSelect.productName)
       setValue('brand', rowSelect.brand)
@@ -326,7 +326,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
       // setValue('productClass', rowSelect.productClass)
       setValue('classification', rowSelect.classification)
-      setValue('customer', rowSelect.client)
+      setValue('customer', rowSelect.customer)
       setValue('status', rowSelect.status)
 
       // setValue('dateAdded', rowSelect.dateAdded)

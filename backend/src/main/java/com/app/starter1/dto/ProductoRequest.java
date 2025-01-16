@@ -21,7 +21,8 @@ public class ProductoRequest {
     private String invimaRegister;
     private String status;
     private Long customer;
-    private Long classification;
+    private String classification;
+    public String warranty;
     private String licensePlate;
     private String model;
     private String brand;

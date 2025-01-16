@@ -60,8 +60,6 @@ public class ProductService {
         // Guardar el producto en la base de datos
         Product productoGuardado = productRepository.save(producto);
 
-
-
         // Manejar la relación con el contrato como antes
         Customer cliente = customerRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
@@ -115,6 +113,9 @@ public class ProductService {
         existingProduct.setPeriodicity(updatedProduct.getPeriodicity());
         existingProduct.setLocation(updatedProduct.getLocation());
         existingProduct.setPlacement(updatedProduct.getPlacement());
+
+
+        existingProduct.setImage(updatedProduct.getImage());
 
        
 

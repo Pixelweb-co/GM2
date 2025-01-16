@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/products")
@@ -112,6 +113,8 @@ public class ProductController {
                 .location(productoRequest.getLocation())
                 .periodicity(productoRequest.getPeriodicity())
                 .manual(productoRequest.getManual())
+                .classification(productoRequest.getClassification())
+                .warranty(productoRequest.getWarranty())
                 .warrantyStartDate(LocalDate.parse(productoRequest.getWarrantyStartDate()))
                 .warrantyEndDate(LocalDate.parse(productoRequest.getWarrantyEndDate()))
                 .supplier(productoRequest.getSupplier())
@@ -134,15 +137,61 @@ public class ProductController {
                 .build();
     }
 
-    @PutMapping("/{id}")
+
+    @Transactional
+    @PutMapping(path = "/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Product> actualizarProducto(
             @PathVariable Long id,
-            @RequestBody Product product) {
-        Product updatedProduct = productService.actualizarProducto(id, product);
-        return ResponseEntity.ok(updatedProduct);
+            @RequestPart("producto") String productoJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws JsonProcessingException {
+        ProductoRequest productoRequest = objectMapper.readValue(productoJson, ProductoRequest.class);
+        Product updatedProduct = convertirAEntidad(productoRequest);
+
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (file != null) {
+            // Manejo de imagen existente
+            List<Image> existingImages = imageRepository.findByEquipment(id);
+            for (Image image : existingImages) {
+                storageService.delete(image.getName());
+                imageRepository.delete(image);
+            }
+
+            // Guardar nueva imagen
+            String path = storageService.Store(file);
+            Image newImage = new Image();
+            newImage.setEquipment(id);
+            newImage.setName(path);
+            newImage.setDate(formatDate(LocalDate.now()));
+            newImage.setHour(formatTime(LocalTime.now()));
+            imageRepository.save(newImage);
+
+            updatedProduct.setImage(newImage);
+        } else {
+            // Mantener la imagen existente si no se proporciona un nuevo archivo
+            updatedProduct.setImage(existingProduct.getImage());
+        }
+
+        // Actualizar el producto
+        Product updatedEntity = productService.actualizarProducto(id, updatedProduct);
+        return ResponseEntity.ok(updatedEntity);
+    }
+
+    private String formatDate(LocalDate date) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yy");
+        return date.format(dateFormatter);
+    }
+
+    private String formatTime(LocalTime time) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return time.format(timeFormatter);
+    }
+
     }
 
 
 
 
-}
+

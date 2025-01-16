@@ -112,7 +112,6 @@ public class Product {
     private String placement;
 
     @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_producto", referencedColumnName = "equipment" )
-    private Image image;
+     private Image image;
 
 }

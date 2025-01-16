@@ -76,4 +76,21 @@ public class FileSystemStorageService  implements StorageService{
 
         }
     }
+
+
+    public void delete(String filename) {
+        try {
+            Path fileToDelete = rootLocation.resolve(filename).normalize().toAbsolutePath();
+
+            if (Files.exists(fileToDelete)) {
+                Files.delete(fileToDelete);
+            } else {
+                throw new RuntimeException("El archivo no existe: " + filename);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error al intentar eliminar el archivo: " + filename, e);
+        }
+    }
+
+
 }
