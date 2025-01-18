@@ -42,7 +42,7 @@ public class Contrato {
     @JsonBackReference
     private Customer cliente;
 
-    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "equipos_contrato",
             joinColumns = @JoinColumn(name = "id_contrato"), // Se refiere a la columna de la tabla Contrato

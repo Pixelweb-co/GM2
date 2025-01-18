@@ -25,6 +25,7 @@ import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
 // Menu data import
 import verticalMenuData from './verticalMenuData.json'
 import { userMethods } from '@/utils/userMethods'
+import { LinearProgress } from '@mui/material'
 
 type RenderExpandIconProps = {
   open?: boolean
@@ -100,7 +101,7 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href='/home' icon={<i className='tabler-info-circle' />}>
+        <MenuItem href='/home' icon={<i className='tabler-info-circle' />} onClick={() => setPl('0')}>
           Dashboard
         </MenuItem>
 

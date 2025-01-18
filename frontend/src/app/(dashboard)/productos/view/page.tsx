@@ -1,7 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 
-import { Grid, Card, CardHeader, CardContent, Typography, TextField, Button, Box, Checkbox } from '@mui/material'
+import Image from 'next/image'
+
+import { Grid, Card, CardHeader, CardContent, Typography, TextField, Button, Box, Checkbox, Alert } from '@mui/material'
+
+import axiosInstance from '@/utils/axiosInterceptor'
+import Documents from '@/components/Documents'
 
 const ProductViewLayout = () => {
   // Estado inicial de los reportes
@@ -14,7 +19,10 @@ const ProductViewLayout = () => {
     { id: 6, fecha: '2024-10-09', color: 'primary' }
   ])
 
-  const [product, setProduct] = useState(null)
+  const [formTemplate, setFormTemplate] = useState<any[]>([])
+
+  // Estado inicial del producto
+  const [product, setProduct] = useState<any>(null)
 
   useEffect(() => {
     // Carga los datos del localStorage
@@ -24,6 +32,27 @@ const ProductViewLayout = () => {
       console.log('productData', productData)
       setProduct(productData) // Usa el primer producto para mostrar los datos
     }
+
+    const getTemplates = async (item:any) => {
+
+      console.error('item:', item);
+
+      try {
+        const response = await axiosInstance.get(`/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
+
+        console.log('Datos recibidostp :', response.data);
+
+        setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: (item.tipo).toString() })));
+
+      } catch (error) {
+
+        console.error('Error al obtener los datos:', error);
+      }
+
+    }
+
+    getTemplates(productData)
+
   }, [])
 
   if (!product) {
@@ -31,12 +60,12 @@ const ProductViewLayout = () => {
   }
 
   // Función para eliminar un reporte
-  const eliminarReporte = id => {
+  const eliminarReporte = (id: any) => {
     setReportes(reportes.filter(reporte => reporte.id !== id))
   }
 
   // Función para visualizar un reporte (puedes expandirla para mostrar contenido)
-  const verReporte = fecha => {
+  const verReporte = (fecha: any) => {
     alert(`Visualizando reporte del ${fecha}`)
   }
 
@@ -46,8 +75,16 @@ const ProductViewLayout = () => {
       <Grid item xs={12} md={3}>
         <Card>
           <CardContent>
-            <Typography variant='h6'>Contenido de la columna izquierda</Typography>
-            <Typography>Imagen producto</Typography>
+            <Image
+              src={
+                product.image
+                  ? `http://localhost:8080/media/${product.image.name}`
+                  : 'http://localhost:8080/media/default.png'
+              }
+              alt={product.productName}
+              width={300}
+              height={300}
+            />
           </CardContent>
         </Card>
       </Grid>
@@ -57,48 +94,101 @@ const ProductViewLayout = () => {
         <Card sx={{ mb: 2 }}>
           <CardHeader title='Dispositivo' />
           <CardContent className='flex  gap-4'>
-            <Typography>
-              <strong>Nombre:</strong> {product.productName}
-            </Typography>
-            <Typography>
+            <Grid container spacing={4}>
+              <Grid item xs={4} sm={4}>
+                <Typography>
+                  <strong>Nombre:</strong> {product.productName}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Marca:</strong> {product.brand}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Modelo:</strong> {product.model}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Serial:</strong> {product.productCode}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
+              <strong>Voltaje:</strong> {product.voltage}
+            </Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Registro Invima:</strong> {product.invimaRegister}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Procedencia:</strong> {product.origin}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Ubicación:</strong> {product.location}
             </Typography>
+              </Grid>
+
+            </Grid>
+
+
+
+
+
+
+
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader title='Datos Técnicos' />
           <CardContent className='flex  gap-4'>
-            <Typography>
-              <strong>Voltaje:</strong> {product.voltage}
-            </Typography>
-            <Typography>
+          <Grid container spacing={4}>
+              <Grid item xs={4} sm={4}>
+                <Typography>
+                  <strong>Nombre:</strong> {product.productName}
+                </Typography>
+              </Grid>
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Amperios:</strong> {product.amperage}
             </Typography>
-            <Typography>
+              </Grid>
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Potencia:</strong> {product.power}
             </Typography>
-            <Typography>
+              </Grid>
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Frecuencia:</strong> {product.frequency}
             </Typography>
-            <Typography>
+              </Grid>
+
+              <Grid item xs={4} sm={4}>
+              <Typography>
               <strong>Manual de Usuario:</strong> {product.manual}
             </Typography>
+              </Grid>
+
+
+              </Grid>
+
+
           </CardContent>
         </Card>
       </Grid>
@@ -107,62 +197,72 @@ const ProductViewLayout = () => {
         <Card sx={{ mb: 2 }}>
           <CardHeader title='Información Comercial' />
           <CardContent className='flex  gap-2'>
-            <Typography>
+          <Grid container spacing={4}>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Fecha de Compra:</strong> {product.purchaseDate}
             </Typography>
-            <Typography>
+
+              </Grid>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Valor Contable:</strong> {product.bookValue}
             </Typography>
-            <Typography>
+
+              </Grid>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Proveedor:</strong> {product.supplier}
             </Typography>
 
-            <Typography>
+              </Grid>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Tiempo de Garantía:</strong> {product.warranty}
             </Typography>
-            <Typography>
+
+              </Grid>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Inicio Garantía:</strong> {product.warrantyStartDate}
             </Typography>
-            <Typography>
+
+              </Grid>
+
+
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Finaliza Garantía:</strong> {product.warrantyEndDate}
             </Typography>
-            <Typography>
+
+              </Grid>
+              <Grid item xs={3} sm={3}>
+              <Typography>
               <strong>Periodicidad del Mantenimiento:</strong> {product.periodicity}
             </Typography>
+
+              </Grid>
+
+              </Grid>
+
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader title='Protocolo de Mantenimiento' />
           <CardContent>
-            <TextField fullWidth multiline rows={4} placeholder='Escribe el protocolo aquí...' sx={{ mb: 2 }} />
-            <Button variant='contained' color='primary'>
-              Guardar
-            </Button>
+            {formTemplate.length > 0 && formTemplate.map((item, index) => (
+              <Alert severity='info' key={index} sx={{marginBottom:2}}>{item.nom}</Alert>
+
+            ))}
           </CardContent>
         </Card>
       </Grid>
 
       <Grid item xs={12} md={12}>
-        <Card>
-          <CardHeader title='Documentos Anexos' />
-          <CardContent>
-            <Box display='flex' alignItems='center' sx={{ mb: 2 }}>
-              <Button variant='outlined' component='label' sx={{ mr: 2 }}>
-                Seleccionar archivo
-                <input type='file' hidden />
-              </Button>
-              <TextField placeholder='Etiqueta' size='small' sx={{ flexGrow: 1, mr: 2 }} />
-              <Checkbox />
-              <Typography variant='body2' sx={{ mr: 2 }}>
-                Reporte
-              </Typography>
-              <Button variant='contained' color='primary'>
-                Cargar
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+          <Documents product_id={product.id} />
+
+
       </Grid>
 
       <Grid item xs={12} md={12}>
@@ -198,6 +298,8 @@ const ProductViewLayout = () => {
             </Box>
           </CardContent>
         </Card>
+
+
       </Grid>
 
       <Grid item xs={12} md={12}>

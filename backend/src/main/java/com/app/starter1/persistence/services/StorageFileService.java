@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-public interface StorageService {
+public interface StorageFileService {
     void init() throws IOException;
     String Store (MultipartFile file);
     Resource LoadAsResource(String filename);

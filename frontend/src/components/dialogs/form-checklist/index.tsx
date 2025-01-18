@@ -27,13 +27,15 @@ import axios from 'axios'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 
+import { toast, ToastContainer } from 'react-toastify'
+
 import TabList from '@mui/lab/TabList'
 
 import CustomTextField from '@/@core/components/mui/TextField'
 import axiosInstance from '@/utils/axiosInterceptor'
 
 const schema = yup.object().shape({
-  typeDevice: yup.string().notRequired(),
+  productType: yup.string().notRequired(),
   marca: yup.string().required('La marca es obligatoria'),
   modelo: yup.string().required('El modelo es obligatorio'),
   nombreChequeo: yup.string().required('El nombre del chequeo es obligatorio'),
@@ -45,7 +47,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
   const [valueT, setValueT] = useState('itemsf')
 
   const [editData, setEditData] = useState<any>({
-    typeDevice: '1',
+    productType: '1',
     marca: '',
     modelo: '',
     nombreChequeo: '',
@@ -75,6 +77,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
         })
       ])
 
+      console.log('typeDeviceRes:', typeDeviceRes.data)
       setTypeDeviceList(typeDeviceRes.data)
 
 
@@ -97,7 +100,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      typeDevice: '1',
+      productType: '1',
       marca: '',
       modelo: '',
       nombreChequeo: '',
@@ -131,16 +134,17 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       })
 
       // Procesar la respuesta
-      if (response.data.result === 'success') {
+      toast.success('Hey 👋!', {
+        position: 'top-right',
+      });
         console.log('Plantilla guardado con éxito:', response.data)
+
         fetchOptions()
 
         // Aquí puedes redirigir o mostrar un mensaje de éxito
-      } else {
-        console.error('Error en la respuesta:', response.data.message)
-      }
 
-      setValue('typeDevice', '')
+
+      setValue('productType', '')
       setValue('marca', '')
       setValue('modelo', '')
       setValue('nombreChequeo', '')
@@ -149,7 +153,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       reset()
       setId(0)
       setEditData({
-        typeDevice: '1',
+        productType: '1',
         marca: '',
         modelo: '',
         nombreChequeo: '',
@@ -170,7 +174,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       console.log('rowSelect:', rowSelect)
       setEditData(rowSelect)
       setId(rowSelect.id)
-      setValue('typeDevice', rowSelect.typeDevice)
+      setValue('productType', rowSelect.productType)
       setValue('marca', rowSelect.brand)
       setValue('modelo', rowSelect.model)
       setValue('nombreChequeo', rowSelect.productName)
@@ -207,14 +211,14 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
 
   const handleReset = () => {
     setEditData({
-      typeDevice: '1',
+      productType: '1',
       marca: '',
       modelo: '',
       nombreChequeo: '',
       tipoElement: ''
     })
 
-    setValue('typeDevice', '')
+    setValue('productType', '')
     setValue('marca', '')
     setValue('modelo', '')
     setValue('nombreChequeo', '')
@@ -235,19 +239,18 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
             <Controller
-              name='typeDevice'
+              name='productType'
               control={control}
               render={({ field }) => (
                 <CustomTextField
                   fullWidth
                   value={
-                    editData.productType
-                      ? typeDeviceList.find(item => item.id === parseInt(editData.productType)).typeDevice
+                    typeDeviceList.length > 0 && editData.productType? typeDeviceList.find(item => item.id === editData.productType).typeDevice
                       : ''
                   }
                   label='Tipo de dispositivo'
-                  error={Boolean(errors.typeDevice)}
-                  helperText={errors.typeDevice?.message}
+                  error={Boolean(errors.productType)}
+                  helperText={errors.productType?.message}
                 />
               )}
             />
@@ -418,6 +421,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
           </Button>
         </DialogActions>
       </Box>
+      <ToastContainer />
     </Dialog>
   )
 }

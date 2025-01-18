@@ -34,10 +34,9 @@ public class DocumentStorageService implements StorageFileService{
 
     @Override
     public String Store(MultipartFile file) {
-
         try {
             if (file.isEmpty()) {
-                throw new RuntimeException("No existe archivo");
+                throw new IllegalArgumentException("No se ha proporcionado ningún archivo.");
             }
 
             String filename = file.getOriginalFilename();
@@ -50,11 +49,11 @@ public class DocumentStorageService implements StorageFileService{
 
             return filename;
 
-        }catch (IOException e){
-
-            throw new RuntimeException("Error al cargar fichero");
+        } catch (IOException e) {
+            throw new RuntimeException("Error al cargar el archivo. Asegúrate de que el archivo sea accesible.", e);
+        } catch (IllegalArgumentException e) {
+            throw e;  // Rethrow for specific validation error
         }
-
     }
 
     @Override

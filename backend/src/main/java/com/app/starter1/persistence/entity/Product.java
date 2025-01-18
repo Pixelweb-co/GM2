@@ -1,5 +1,6 @@
 package com.app.starter1.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -113,5 +114,9 @@ public class Product {
 
     @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
      private Image image;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "productContractList")
+    private Set<Contrato> contratos = new HashSet<>();
 
 }

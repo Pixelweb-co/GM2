@@ -15,7 +15,8 @@ import {
   Grid,
   CardContent,
   Card,
-  Tab
+  Tab,
+  Alert
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -30,7 +31,7 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { userMethods } from '@/utils/userMethods'
 
 const schema = yup.object().shape({
-  typeDevice: yup.string().required('El tipo de producto es obligatorio'),
+  typeDevice: yup.string().notOneOf(['0'], 'El tipo de producto es obligatorio'),
   productCode: yup.string().required('El código de producto es obligatorio'),
   productName: yup.string().required('El nombre de producto es obligatorio'),
   brand: yup.string().required('La marca es obligatoria'),
@@ -38,9 +39,9 @@ const schema = yup.object().shape({
   licensePlate: yup.string().required('La matrícula es obligatoria'),
 
   //productClass: yup.string().required('La clase de producto es obligatoria'),
-  classification: yup.string().required('La clasificación es obligatoria'),
-  customer: userMethods.isRole('ADMIN') ? yup.string().notRequired() : yup.string().required('Cliente es requerido'),
-  status: yup.string().required('El estado es obligatorio'),
+  classification: yup.string().notOneOf(['0'], 'La clasificación es obligatoria'),
+  customer: userMethods.isRole('ADMIN') ? yup.string().notRequired() : yup.string().notOneOf(['0'], 'El cliente es requerido'),
+  status: yup.string().notOneOf(['0'], 'El estado es obligatorio'),
 
   invimaRegister: yup.string().required('El registro de inventario es obligatorio'),
   origin: yup.string().required('El origen es obligatorio'),
@@ -55,7 +56,7 @@ const schema = yup.object().shape({
   warrantyStartDate: yup.string().required('La fecha de inicio de garantía es obligatoria'),
   warrantyEndDate: yup.string().required('La fecha de fin de garantía es obligatoria'),
   manual: yup.string().required('El manual es obligatorio'),
-  periodicity: yup.string().required('La periodicidad es obligatoria'),
+  periodicity: yup.string().notOneOf(['0'], 'La periodicidad es obligatoria'),
   location: yup.string().required('La ubicación es obligatoria'),
   placement: yup.string().required('La colocación es obligatoria'),
   image: yup.string().notRequired()
@@ -73,7 +74,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   }
 
   const [editData, setEditData] = useState<any>({
-    typeDevice: '1',
+    typeDevice: '0',
     productCode: '',
     productName: '',
     brand: '',
@@ -81,9 +82,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
     licensePlate: '',
 
     //productClass: '',
-    classification: '',
-    customer: 0,
-    status: '1',
+    classification: '0',
+    customer: '0',
+    status: '0',
     invimaRegister: '',
     origin: '',
     voltage: '',
@@ -97,7 +98,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
     warrantyStartDate: '',
     warrantyEndDate: '',
     manual: '',
-    periodicity: '',
+    periodicity: '0',
     location: '',
     placement: ''
   })
@@ -147,13 +148,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     setValue,
     reset
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      typeDevice: '',
+      typeDevice: '0',
       productCode: '',
       productName: '',
       brand: '',
@@ -161,9 +162,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       licensePlate: '',
 
       //productClass: '',
-      classification: '',
-      customer: '',
-      status: '1',
+      classification: '0',
+      customer: '0',
+      status: '0',
       invimaRegister: '',
       origin: '',
       voltage: '',
@@ -177,7 +178,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       warrantyStartDate: '',
       warrantyEndDate: '',
       manual: '',
-      periodicity: '',
+      periodicity: '0',
       location: '',
       placement: ''
     },
@@ -243,7 +244,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
         console.error('Error en la respuesta:', response.data.message)
       }
 
-      setValue('typeDevice', '')
+      setValue('typeDevice', '0')
       setValue('productCode', '')
       setValue('productName', '')
       setValue('brand', '')
@@ -251,9 +252,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('licensePlate', '')
 
       //setValue('productClass', '')
-      setValue('classification', '')
-      setValue('customer', '')
-      setValue('status', '1')
+      setValue('classification', '0')
+      setValue('customer', '0')
+      setValue('status', '0')
 
       //setValue('dateAdded', '')
       setValue('invimaRegister', '')
@@ -269,13 +270,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('warrantyStartDate', '')
       setValue('warrantyEndDate', '')
       setValue('manual', '')
-      setValue('periodicity', '')
+      setValue('periodicity', '0')
       setValue('location', '')
       setValue('placement', '')
       reset()
       setId(0)
       setEditData({
-        typeDevice: '',
+        typeDevice: '0',
         productCode: '',
         productName: '',
         brand: '',
@@ -283,9 +284,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
         licensePlate: '',
 
         //productClass: '',
-        classification: '',
-        customer: '',
-        status: '1',
+        classification: '0',
+        customer: '0',
+        status: '0',
 
         //dateAdded: '',
         invimaRegister: '',
@@ -301,7 +302,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
         warrantyStartDate: '',
         warrantyEndDate: '',
         manual: '',
-        periodicity: '',
+        periodicity: '0',
         location: '',
         placement: ''
       })
@@ -348,7 +349,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('placement', rowSelect.placement)
     }else{
       console.log('rowSelect new:', rowSelect)
-      setValue('typeDevice', '')
+      setValue('typeDevice', '0')
       setValue('productCode', '')
       setValue('productName', '')
       setValue('brand', '')
@@ -356,9 +357,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('licensePlate', '')
 
       //setValue('productClass', '')
-      setValue('classification', '')
-      setValue('customer', '')
-      setValue('status', '1')
+      setValue('classification', '0')
+      setValue('customer', '0')
+      setValue('status', '0')
 
       //setValue('dateAdded', '')
       setValue('invimaRegister', '')
@@ -374,13 +375,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       setValue('warrantyStartDate', '')
       setValue('warrantyEndDate', '')
       setValue('manual', '')
-      setValue('periodicity', '')
+      setValue('periodicity', '0')
       setValue('location', '')
       setValue('placement', '')
       reset()
       setId(0)
       setEditData({
-        typeDevice: '',
+        typeDevice: '0',
         productCode: '',
         productName: '',
         brand: '',
@@ -388,9 +389,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
         licensePlate: '',
 
         //productClass: '',
-        classification: '',
-        customer: '',
-        status: '1',
+        classification: '0',
+        customer: '0',
+        status: '0',
 
         //dateAdded: '',
         invimaRegister: '',
@@ -406,7 +407,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
         warrantyStartDate: '',
         warrantyEndDate: '',
         manual: '',
-        periodicity: '',
+        periodicity: '0',
         location: '',
         placement: ''
       })
@@ -418,7 +419,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
   const handleReset = () => {
     setEditData({
-      typeDevice: '',
+      typeDevice: '0',
       productCode: '',
       productName: '',
       brand: '',
@@ -426,9 +427,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       licensePlate: '',
 
       // productClass: '',
-      classification: '',
-      customer: '',
-      status: '1',
+      classification: '0',
+      customer: '0',
+      status: '0',
       dateAdded: '',
       invimaRegister: '',
       origin: '',
@@ -443,12 +444,12 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       warrantyStartDate: '',
       warrantyEndDate: '',
       manual: '',
-      periodicity: '',
+      periodicity: '0',
       location: '',
       placement: ''
     })
 
-    setValue('typeDevice', '')
+    setValue('typeDevice', '0')
     setValue('productCode', '')
     setValue('productName', '')
     setValue('brand', '')
@@ -456,9 +457,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
     setValue('licensePlate', '')
 
     //setValue('productClass', '')
-    setValue('classification', '')
-    setValue('customer', '')
-    setValue('status', '1')
+    setValue('classification', '0')
+    setValue('customer', '0')
+    setValue('status', '0')
 
     //setValue('dateAdded', '')
     setValue('invimaRegister', '')
@@ -474,17 +475,20 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
     setValue('warrantyStartDate', '')
     setValue('warrantyEndDate', '')
     setValue('manual', '')
-    setValue('periodicity', '')
+    setValue('periodicity', '0')
     setValue('location', '')
     setValue('placement', '')
   }
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>Agregar nuevo producto</DialogTitle>
+      <DialogTitle>Información del equipo</DialogTitle>
 
       <DialogContent>
         <Card>
+
+          {isSubmitted && Object.keys(errors).length > 0 && <Alert severity='error'>El formulario contiene errores, corrigelos y intenta de nuevo</Alert>}
+
           <TabContext value={valueT}>
             <TabList variant='scrollable' onChange={handleTabChange} className='border-be'>
               <Tab label='Dispositivo' value='dispositivo' />
@@ -520,9 +524,12 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           error={Boolean(errors.typeDevice)}
                           helperText={errors.typeDevice?.message}
                         >
-                          {typeDeviceList.map((item: any) => {
+                          <MenuItem key={0} value={'0'}>
+                                Seleccionar ...
+                              </MenuItem>
+                          {typeDeviceList.map((item: any,index) => {
                             return (
-                              <MenuItem key={item.id} value={item.id}>
+                              <MenuItem key={(index+1)} value={item.id}>
                                 {item.typeDevice}
                               </MenuItem>
                             )
@@ -620,6 +627,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           helperText={errors.classification?.message}
                         >
                           {[
+                            { id: 0, name: 'Selecionar...' },
                             { id: 1, name: 'Apoyo' },
                             { id: 2, name: 'Biomedico' }
                           ].map(item => (
@@ -649,6 +657,9 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           error={Boolean(errors.customer)}
                           helperText={errors.customer?.message}
                         >
+                           <MenuItem key={0} value={'0'}>
+                                Seleccionar ...
+                              </MenuItem>
                           {customersList.map(item => (
                             <MenuItem key={item.id} value={item.id}>
                               {item.name}
@@ -812,9 +823,11 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           error={Boolean(errors.status)}
                           helperText={errors.status?.message}
                         >
+
                           {[
-                            { id: '1', name: 'Activo' },
-                            { id: '0', name: 'Inactivo' }
+                            { id: '0', name: 'Seleccione...' },
+                           { id: '2', name: 'Activo' },
+                            { id: '1', name: 'Inactivo' }
                           ].map((item: any) => {
                             return (
                               <MenuItem key={item.id} value={item.id}>
@@ -948,6 +961,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                           helperText={errors.periodicity?.message}
                         >
                           {[
+                            { id: '0', name: 'Seleccionar...' },
                             { id: 1, name: '1 Mes' },
                             { id: 2, name: '2 Meses' },
                             { id: 3, name: '3 Meses' },
@@ -1003,6 +1017,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
               </TabPanel>
             </CardContent>
           </TabContext>
+
         </Card>
       </DialogContent>
       <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>

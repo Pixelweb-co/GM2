@@ -114,6 +114,8 @@ public class SecurityConfig {
 
                     //libreria de medios
                     http.requestMatchers(HttpMethod.GET, "/media/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/document/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/document/**").permitAll();
 
 
                     // Configurar el resto de los endpoints (no especificados)

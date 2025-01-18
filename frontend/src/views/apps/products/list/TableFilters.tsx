@@ -16,25 +16,31 @@ const TableFilters = ({
   setData: (data: ProductType[]) => void
   tableData?: ProductType[]
 }) => {
-  const [status, setStatus] = useState<string>('')
+  const [status, setStatus] = useState<string>('0')
   const [customers, setCustomers] = useState<any[]>([])
   const [userLoginRole, setUserLoginRole] = useState<string | null>(null)
   const [customer, setCustomer] = useState<string>('')
 
-  // Efecto para filtrar los datos según los criterios seleccionados
   useEffect(() => {
-    if (!tableData || !Array.isArray(tableData)) return
+    if (!Array.isArray(tableData)) return;
 
     const filteredData = tableData.filter((product: any) => {
-      const matchStatus = status ? product.status === status : true
+      // Verificar el estado seleccionado (status)
 
-      const matchCustomer = userLoginRole === 'SUPERADMIN' && customer ? product.customer === customer : true
+      console.log('status:', status)
+      console.log('product:', product.status)
+      const matchStatus = status !== '0' ? product.status === status : true;
 
-      return matchStatus && matchCustomer
-    })
+      // Verificar el cliente seleccionado (customer) solo si el rol es 'SUPERADMIN'
+      const matchCustomer =
+        userLoginRole === 'SUPERADMIN' && customer ? product.customer === customer : true;
 
-    setData(filteredData)
-  }, [status, customer, tableData, setData, userLoginRole])
+      // Retornar si cumple ambas condiciones
+      return matchStatus && matchCustomer;
+    });
+
+    setData(filteredData);
+  }, [status, customer, tableData, setData, userLoginRole]);
 
   const fetchCustomers = async () => {
     try {
@@ -82,9 +88,9 @@ const TableFilters = ({
             onChange={e => setStatus(e.target.value)}
             SelectProps={{ displayEmpty: true }}
           >
-            <MenuItem value=''>Todos los estados</MenuItem>
-            <MenuItem value='1'>Activo</MenuItem>
-            <MenuItem value='0'>Inactivo</MenuItem>
+            <MenuItem value='0'>Todos los estados</MenuItem>
+            <MenuItem value='2'>Activo</MenuItem>
+            <MenuItem value='1'>Inactivo</MenuItem>
           </CustomTextField>
         </Grid>
 
