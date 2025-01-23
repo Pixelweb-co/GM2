@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,8 @@ import {
 
 import axios from 'axios';
 
+import ConfirmationDialog from './dialogs/ConfirmationDialog';
+
 interface DocumentsProps {
   product_id: any;
 }
@@ -26,6 +28,8 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
   const [tag, setTag] = useState<string>('');
   const [isReport, setIsReport] = useState<boolean>(false);
   const [documents, setDocuments] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('')
 
   const router = useRouter();
 
@@ -34,6 +38,41 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
       setFile(event.target.files[0]);
     }
   };
+
+
+
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      console.log('fetchOptions')
+
+      try {
+        const token = localStorage.getItem('AuthToken')
+
+        if (!token) {
+          throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+        }
+
+        const [documentsRes] = await Promise.all([
+          axios.get(`http://localhost:8080/document/list/${product_id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+        ])
+
+        setDocuments(documentsRes.data)
+
+        return true
+      } catch (error) {
+        console.error('Error al obtener datos:', error)
+      }
+    }
+
+    fetchOptions()
+
+  }, [])
 
   const handleUpload = async () => {
     if (!file) {
@@ -87,9 +126,50 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
     }
   };
 
-  const handleDelete = () => {
+  const handleDeleteConfirm = async(document_name:string) => {
+
+    console.log('Eliminar documento tr',document_name)
+    setName(document_name)
+    setOpen(true)
+
+  }
+
+  const handleDelete = async (document_name:string) => {
+
     // eslint-disable-next-line no-console
-    console.info('You clicked the delete icon.')
+    console.info('api.',document_name)
+
+    if(document_name ){
+
+      try {
+
+      const token = localStorage.getItem('AuthToken');
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.');
+      }
+
+      // Llamada a la API para eliminar el documento
+      const apiUrl = `http://localhost:8080/document/${name}`;
+
+      await axios.delete(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Eliminar el documento del estado local después de la confirmación
+      setDocuments((prevDocuments) =>
+        prevDocuments.filter((doc) => doc.name !== name)
+      );
+      setOpen(false)
+
+    } catch (error) {
+      console.error('Error al eliminar el documento:', error);
+
+    }
+
+  }
   }
 
   return (
@@ -155,10 +235,9 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
           variant='tonal'
           onClick={() => {
 
-            router.push(`/document/${document.name}`)
-
+            window.open(`http://localhost:8080/document/${document.name}`, '_blank');
           }}
-          onDelete={handleDelete}
+          onDelete={()=>handleDeleteConfirm(document.name)}
           deleteIcon={<i className='tabler-trash-x' />}
         />
 
@@ -169,6 +248,17 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
           </Grid>
         </CardContent>
       </Card>
+      <ConfirmationDialog
+        entitYName='Documento'
+        open={open}
+        setOpen={setOpen}
+        name={name}
+        onconfirmation={(dv:string) => {
+          console.log('Documento eliminado desde c',dv)
+          handleDelete(dv)
+          setOpen(false)
+        }}
+      />
     </>
   );
 };

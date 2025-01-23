@@ -48,4 +48,5 @@ public class Solicitud {
     @ManyToOne
     @JoinColumn(name = "id_entidad", referencedColumnName = "id")
     private Customer customer;
+
 }

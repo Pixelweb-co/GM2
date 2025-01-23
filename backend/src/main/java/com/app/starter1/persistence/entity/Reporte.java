@@ -19,7 +19,6 @@ public class Reporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "id_solicitud")
     private Long solicitud;
 

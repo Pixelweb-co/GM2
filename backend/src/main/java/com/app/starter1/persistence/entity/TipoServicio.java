@@ -20,5 +20,8 @@ public class TipoServicio {
 
     @Column(name = "desc_tipo_servicio")
     private String descripcion;
+
+    @Column(name = "color")
+    private String color;
 }
 

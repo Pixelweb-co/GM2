@@ -6,8 +6,6 @@ import ProjectListTable from './ProjectListTable'
 import UserActivityTimeLine from './UserActivityTimeline'
 import InvoiceListTable from './InvoiceListTable'
 
-// Data Imports
-import { getInvoiceData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -28,7 +26,7 @@ import { getInvoiceData } from '@/app/server/actions'
 
 const OverViewTab = async () => {
   // Vars
-  const invoiceData = await getInvoiceData()
+  const invoiceData:any = []
 
   return (
     <Grid container spacing={6}>

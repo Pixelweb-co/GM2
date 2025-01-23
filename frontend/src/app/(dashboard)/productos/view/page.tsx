@@ -7,17 +7,10 @@ import { Grid, Card, CardHeader, CardContent, Typography, TextField, Button, Box
 
 import axiosInstance from '@/utils/axiosInterceptor'
 import Documents from '@/components/Documents'
+import DeviceReports from '@/components/DeviceReports'
 
 const ProductViewLayout = () => {
-  // Estado inicial de los reportes
-  const [reportes, setReportes] = useState([
-    { id: 1, fecha: '2019-06-25', color: 'primary' },
-    { id: 2, fecha: '2022-05-31', color: 'primary' },
-    { id: 3, fecha: '2023-04-22', color: 'primary' },
-    { id: 4, fecha: '2023-10-06', color: 'error' },
-    { id: 5, fecha: '2024-04-03', color: 'error' },
-    { id: 6, fecha: '2024-10-09', color: 'primary' }
-  ])
+
 
   const [formTemplate, setFormTemplate] = useState<any[]>([])
 
@@ -26,7 +19,8 @@ const ProductViewLayout = () => {
 
   useEffect(() => {
     // Carga los datos del localStorage
-    const productData = localStorage.getItem('productview') ? JSON.parse(localStorage.getItem('productview')) : null
+    const storedData = localStorage.getItem('productview')
+    const productData = storedData ? JSON.parse(storedData) : null
 
     if (productData) {
       console.log('productData', productData)
@@ -59,15 +53,7 @@ const ProductViewLayout = () => {
     return <Typography>Cargando datos del producto...</Typography>
   }
 
-  // Función para eliminar un reporte
-  const eliminarReporte = (id: any) => {
-    setReportes(reportes.filter(reporte => reporte.id !== id))
-  }
 
-  // Función para visualizar un reporte (puedes expandirla para mostrar contenido)
-  const verReporte = (fecha: any) => {
-    alert(`Visualizando reporte del ${fecha}`)
-  }
 
   return (
     <Grid container spacing={2}>
@@ -144,12 +130,6 @@ const ProductViewLayout = () => {
               </Grid>
 
             </Grid>
-
-
-
-
-
-
 
           </CardContent>
         </Card>
@@ -266,38 +246,7 @@ const ProductViewLayout = () => {
       </Grid>
 
       <Grid item xs={12} md={12}>
-        <Card>
-          <CardHeader title='Reportes de Mantenimiento' />
-          <CardContent>
-            <Box display='flex' flexWrap='wrap' gap={1}>
-              {reportes.map(reporte => (
-                <Box
-                  key={reporte.id}
-                  display='flex'
-                  alignItems='center'
-                  gap={1}
-                  sx={{
-                    backgroundColor: 'lightgray',
-                    padding: 1,
-                    borderRadius: 1
-                  }}
-                >
-                  <Button
-                    variant='contained'
-                    color={reporte.color}
-                    onClick={() => verReporte(reporte.fecha)}
-                    startIcon={<i className='fas fa-eye'></i>}
-                  >
-                    {reporte.fecha}
-                  </Button>
-                  <Button variant='contained' color='error' onClick={() => eliminarReporte(reporte.id)}>
-                    <i className='tabler-trash text-textSecondary' />
-                  </Button>
-                </Box>
-              ))}
-            </Box>
-          </CardContent>
-        </Card>
+       <DeviceReports product_id={product.id}/>
 
 
       </Grid>

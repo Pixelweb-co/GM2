@@ -2,11 +2,9 @@ package com.app.starter1.persistence.services;
 
 import com.app.starter1.dto.SolicitudDTO;
 import com.app.starter1.dto.SolicitudResponseDTO;
-import com.app.starter1.persistence.entity.EstadoSolicitud;
-import com.app.starter1.persistence.entity.Product;
-import com.app.starter1.persistence.entity.Solicitud;
-import com.app.starter1.persistence.entity.UserEntity;
+import com.app.starter1.persistence.entity.*;
 import com.app.starter1.persistence.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,8 @@ public class SolicitudService {
     private final UserRepository userRepository;
     @Autowired
     private final EstadoSolicitudRepository estadoSolicitudRepository;
+    @Autowired
+    private final ReportRepository reportRepository;
 
     // Método para obtener todas las solicitudes y convertirlas en DTO de respuesta
     public List<SolicitudResponseDTO> getSolicitudes() {
@@ -52,6 +52,36 @@ public class SolicitudService {
                         .build())
                 .toList();
     }
+
+    // Lógica para obtener las solicitudes cerradas asociadas a un producto específico
+    public List<SolicitudResponseDTO> getSolicitudesCerradasPorProducto(Long productId) {
+        // Encuentra las solicitudes filtrando por producto y estado "FINALIZADA"
+        List<Solicitud> solicitudesCerradas = solicitudRepository.findClosedRequestsByProductId(productId);
+
+
+        return solicitudesCerradas.stream()
+                .map(solicitud -> SolicitudResponseDTO.builder()
+                        .idSolicitud(solicitud.getIdSolicitud())
+                        .fecha(solicitud.getFecha())
+                        .hora(solicitud.getHora())
+                        .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
+                        .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
+                        .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
+                        .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
+                        .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado().getId() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
+                        .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
+                        .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
+                        .color(solicitud.getTypeService() != null ? solicitud.getTypeService().getColor() : null)
+                        .reporte(reportRepository.findBySolicitud(solicitud.getIdSolicitud()))
+                        .typeServiceServiceList(typeServiceRepository.findAll())
+                        .customer(solicitud.getCustomer())
+                        .equipo(solicitud.getEquipo())
+                        .build())
+                .toList();
+    }
+
 
     // Método para crear solicitudes a partir del DTO
     public List<Solicitud> createSolicitudes(SolicitudDTO solicitudDTO) {
@@ -147,5 +177,11 @@ public class SolicitudService {
                         .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
                         .build())
                 .toList();
+    }
+
+    public Solicitud getSolicitudWithDetails(Long idSolicitud) {
+        // Buscar la solicitud por ID incluyendo las relaciones necesarias
+        return solicitudRepository.findById(idSolicitud)
+                .orElseThrow(() -> new EntityNotFoundException("Solicitud not found with id " + idSolicitud));
     }
 }

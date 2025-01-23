@@ -39,22 +39,31 @@ public class DocumentStorageService implements StorageFileService{
                 throw new IllegalArgumentException("No se ha proporcionado ningún archivo.");
             }
 
-            String filename = file.getOriginalFilename();
-            Path destinationFile = rootLocation.resolve(Paths.get(filename))
+            // Obtener el nombre del archivo y reemplazar espacios en blanco por guiones bajos
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null) {
+                throw new IllegalArgumentException("El archivo no tiene un nombre válido.");
+            }
+            String sanitizedFilename = originalFilename.replaceAll("\\s+", "_");
+
+            // Construir la ruta de destino
+            Path destinationFile = rootLocation.resolve(Paths.get(sanitizedFilename))
                     .normalize().toAbsolutePath();
 
+            // Copiar el archivo al almacenamiento
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            return filename;
+            return sanitizedFilename;
 
         } catch (IOException e) {
             throw new RuntimeException("Error al cargar el archivo. Asegúrate de que el archivo sea accesible.", e);
         } catch (IllegalArgumentException e) {
-            throw e;  // Rethrow for specific validation error
+            throw e;  // Relanzar para errores de validación específicos
         }
     }
+
 
     @Override
     public Resource LoadAsResource(String filename) {

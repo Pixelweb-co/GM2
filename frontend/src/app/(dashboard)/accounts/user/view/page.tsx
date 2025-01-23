@@ -7,15 +7,13 @@ import dynamic from 'next/dynamic'
 // MUI Imports
 import Grid from '@mui/material/Grid'
 
-// Type Imports
-import type { PricingPlanType } from '@/types/pages/pricingTypes'
 
 // Component Imports
 import UserLeftOverview from '@views/apps/user/view/user-left-overview'
 import UserRight from '@views/apps/user/view/user-right'
 
-// Data Imports
-import { getPricingData } from '@/app/server/actions'
+// Type Imports
+import type { PricingPlanType } from '@/types/pages/pricingTypes'
 
 const OverViewTab = dynamic(() => import('@views/apps/user/view/user-right/overview'))
 const SecurityTab = dynamic(() => import('@views/apps/user/view/user-right/security'))
@@ -52,7 +50,7 @@ const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement
 
 const UserViewTab = async () => {
   // Vars
-  const data = await getPricingData()
+  const data:any = []
 
   return (
     <Grid container spacing={6}>

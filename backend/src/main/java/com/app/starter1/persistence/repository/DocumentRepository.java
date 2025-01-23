@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByEquipment(Long productId);
+    Document findByName(String name);
 }

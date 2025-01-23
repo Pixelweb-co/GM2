@@ -10,12 +10,14 @@ import lombok.Setter;
 public class TypeServiceDTO {
     private Long id;
     private String typeService;
+    private String color;
 
 
     // Constructor con todos los campos
-    public TypeServiceDTO(Long id, String typeService) {
+    public TypeServiceDTO(Long id, String typeService, String color) {
         this.id = id;
         this.typeService = typeService;
+        this.color = color;
 
     }
 

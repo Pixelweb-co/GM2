@@ -32,6 +32,18 @@ public class DocumentController {
     @Autowired
     DocumentRepository documentRepository;
 
+
+    @GetMapping("/list/{id}")
+    public ResponseEntity<List<Document>> getDocuments(@PathVariable Long id){
+
+
+        List<Document> documents = documentRepository.findByEquipment(id);
+
+        return ResponseEntity.ok(documents);
+
+
+    }
+
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
@@ -94,4 +106,26 @@ public class DocumentController {
 
 
     }
+
+    @DeleteMapping("/{filename:.+}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable String filename) {
+        try {
+            // Verificar si el documento existe en la base de datos
+            Document document = documentRepository.findByName(filename);
+            if (document == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Documento no encontrado: " + filename);
+            }
+            System.out.println(filename);
+            // Eliminar el archivo del almacenamiento
+            documentStorageService.delete(filename);
+
+            // Eliminar el registro de la base de datos
+            documentRepository.delete(document);
+
+            return ResponseEntity.noContent().build(); // Responder con HTTP 204 No Content
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar el documento: " + filename, e);
+        }
+    }
+
 }

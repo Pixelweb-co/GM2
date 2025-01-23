@@ -56,7 +56,8 @@ public class TypeServiceService {
     public TypeServiceDTO mapToDTO(TipoServicio tipoServicio) {
         return new TypeServiceDTO(
                 tipoServicio.getId(),
-                tipoServicio.getDescripcion()
+                tipoServicio.getDescripcion(),
+                tipoServicio.getColor()
 
         );
     }
@@ -68,13 +69,14 @@ public class TypeServiceService {
         return TipoServicio.builder()
                 .id(tipoServicioDTO.getId())
                 .descripcion(tipoServicioDTO.getTypeService())
+                .color(tipoServicioDTO.getColor())
                 .build();
     }
 
     // Método para actualizar entidad desde DTO
     public void updateEntityFromDTO(TipoServicio existingTipoServicio, TypeServiceDTO tipoServicioDTO) {
         existingTipoServicio.setDescripcion(tipoServicioDTO.getTypeService());
-
+        existingTipoServicio.setColor(tipoServicioDTO.getColor());
 
     }
 }

@@ -26,7 +26,7 @@ import type { TypeServiceType } from '@/views/apps/typeService/type/typeServiceT
 
 const schema = yup.object().shape({
   typeService: yup.string().required('El nombre es obligatorio'),
-
+  color: yup.string().required('El color es obligatorio')
 })
 
 const TypeServiceForm = ({
@@ -53,7 +53,8 @@ const TypeServiceForm = ({
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      typeService: ''
+      typeService: '',
+      color: ''
 
     }
   })
@@ -94,6 +95,7 @@ const TypeServiceForm = ({
 
       setEditData(null)
       setValue('typeService', '')
+      setValue('color', '')
 
       reset()
       setId(null)
@@ -111,6 +113,7 @@ const TypeServiceForm = ({
       console.log('rowSelect', rowSelect)
       setId(rowSelect.id)
       setValue('typeService', rowSelect.typeService || '')
+      setValue('color', rowSelect.color || '')
       setEditData(rowSelect)
 
     }
@@ -121,8 +124,8 @@ const TypeServiceForm = ({
       <DialogTitle>{!id? 'Agregar nuevo tipo de servicio' : 'Editar tipo de servicio'}</DialogTitle>
       <DialogContent>
         <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 2 }}>
-          <Grid container >
-            <Grid item xs={12} sm={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={6} sm={6}>
               <Controller
                 name='typeService'
                 control={control}
@@ -138,6 +141,28 @@ const TypeServiceForm = ({
                     label='Nombre'
                     error={!!errors.typeService}
                     helperText={errors.typeService?.message}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={6} sm={6}>
+              <Controller
+                name='color'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    type='color'
+                    value={editData ? editData.color : ''}
+                    onChange={e => {
+                      setEditData({ ...editData, color: e.target.value })
+                      setValue('color', e.target.value)
+                    }}
+                    label='Color'
+                    error={!!errors.color}
+                    helperText={errors.color?.message}
                   />
                 )}
               />

@@ -46,6 +46,7 @@ import tableStyles from '../../../../@core/styles/table.module.css'
 import type { TypeServiceType } from '@/views/apps/typeService/type/typeServiceType.js'
 
 import TypeServiceForm from '../form'
+import CustomAvatar from '@/@core/components/mui/Avatar'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -189,6 +190,18 @@ const deleteItem = async (id: string) => {
           </div>
         )
       }),
+      columnHelper.accessor('color', {
+        header: 'Color',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            <div style={{alignItems:"center",textAlign:"center" }}>
+            <div style={{backgroundColor:row.original.color,width:30,height:30,borderRadius:50  }}></div>
+
+            </div>
+          </div>
+        )
+      }),
+
 
       columnHelper.accessor('action', {
         header: 'Action',

@@ -1,10 +1,12 @@
 package com.app.starter1.dto;
 
-import com.app.starter1.persistence.entity.EstadoSolicitud;
+import com.app.starter1.persistence.entity.*;
+import com.app.starter1.persistence.services.TypeServiceService;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -22,4 +24,9 @@ public class SolicitudResponseDTO {
     private Long entidad;
     private Long tipoServicio;
     private String descripcion;
+    private String color;
+    private Reporte reporte;
+    private List<TipoServicio> typeServiceServiceList;
+    private Customer customer;
+    private Product equipo;
 }
