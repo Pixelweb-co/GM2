@@ -1,3 +1,4 @@
+'use client'
 // MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -5,6 +6,7 @@ import Grid from '@mui/material/Grid'
 import ProjectListTable from './ProjectListTable'
 import UserActivityTimeLine from './UserActivityTimeline'
 import InvoiceListTable from './InvoiceListTable'
+import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
 
 
 /**
@@ -31,14 +33,9 @@ const OverViewTab = async () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <ProjectListTable />
+      <ListaTrabajo />
       </Grid>
-      <Grid item xs={12}>
-        <UserActivityTimeLine />
-      </Grid>
-      <Grid item xs={12}>
-        <InvoiceListTable invoiceData={invoiceData} />
-      </Grid>
+
     </Grid>
   )
 }

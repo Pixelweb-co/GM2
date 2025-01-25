@@ -1,10 +1,13 @@
 package com.app.starter1.controllers;
 
 
-import com.app.starter1.dto.DocumentRequest;
-import com.app.starter1.persistence.entity.Document;
-import com.app.starter1.persistence.repository.DocumentRepository;
-import com.app.starter1.persistence.services.DocumentStorageService;
+
+import com.app.starter1.dto.UserRequest;
+import com.app.starter1.persistence.entity.FirmaSoporte;
+import com.app.starter1.persistence.repository.FirmaSoporteRepository;
+import com.app.starter1.persistence.services.SingStorageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,38 +20,29 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/document")
-public class DocumentController {
+@RequestMapping("/firma-user")
+public class SignController {
 
     @Autowired
-    DocumentStorageService documentStorageService;
+    SingStorageService singStorageService;
 
     @Autowired
-    DocumentRepository documentRepository;
+    FirmaSoporteRepository firmaSoporteRepository;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
 
-    @GetMapping("/list/{id}")
-    public ResponseEntity<List<Document>> getDocuments(@PathVariable Long id){
-
-
-        List<Document> documents = documentRepository.findByEquipment(id);
-
-        return ResponseEntity.ok(documents);
-
-
-    }
 
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
             // Cargar el archivo como recurso
-            Resource file = documentStorageService.LoadAsResource(filename);
+            Resource file = singStorageService.LoadAsResource(filename);
 
             // Verificar si el archivo existe
             if (file == null || !file.exists()) {
@@ -73,59 +67,48 @@ public class DocumentController {
         }
     }
 
+    @GetMapping("/sign/{id}")
+    public ResponseEntity<Optional<FirmaSoporte>> getFirmaUser(@PathVariable Long id) {
+
+        Optional<FirmaSoporte> firmaSoporte = firmaSoporteRepository.findByIdUsuario(id);
+
+        if (firmaSoporte.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(firmaSoporte);
+    }
+
+
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<List<Document>> saveDocument(DocumentRequest documentRequest)  {
+    public ResponseEntity<FirmaSoporte> saveFirma(
+            @RequestPart("user") String userJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws JsonProcessingException {
+
+        UserRequest userRequest = objectMapper.readValue(userJson, UserRequest.class);
+
+        //delete
+
+        firmaSoporteRepository.deleteByIdUsuario(userRequest.getId());
+
+        String path = singStorageService.Store(file);
+        FirmaSoporte firmaSoporte = new FirmaSoporte();
+
+        System.out.println("id usuario firma "+userRequest.getId().toString());
+
+        firmaSoporte.setFirma(path);
+        firmaSoporte.setIdUsuario(userRequest.getId());
+
+        FirmaSoporte firmaSaved = firmaSoporteRepository.save(firmaSoporte);
 
 
-        String path = documentStorageService.Store(documentRequest.getFile());
-        Document document = new Document();
-        // Establecer la fecha formateada
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yy");
-        String formattedDate = LocalDate.now().format(dateFormatter);
 
-        // Establecer la hora formateada
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String formattedTime = LocalTime.now().format(timeFormatter);
-
-        document.setDate(formattedDate);  // Fecha formateada en MM-dd-yy
-        document.setHour(formattedTime);  // Hora formateada en HH:mm:ss
-        document.setTag(documentRequest.getTag());
-        document.setName(path);
-        document.setEnabled(1);
-        document.setReport(documentRequest.isReport());
-        document.setEquipment(documentRequest.getProduct_id());
-        Document saved = documentRepository.save(document);
-
-        List<Document> documents = documentRepository.findByEquipment(documentRequest.getProduct_id());
-
-        if (documents.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(documents);
-        }
-
-        return ResponseEntity.ok(documents);
+        return ResponseEntity.ok(firmaSaved);
 
 
     }
 
-    @DeleteMapping("/{filename:.+}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable String filename) {
-        try {
-            // Verificar si el documento existe en la base de datos
-            Document document = documentRepository.findByName(filename);
-            if (document == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Documento no encontrado: " + filename);
-            }
-            System.out.println(filename);
-            // Eliminar el archivo del almacenamiento
-            documentStorageService.delete(filename);
 
-            // Eliminar el registro de la base de datos
-            documentRepository.delete(document);
-
-            return ResponseEntity.noContent().build(); // Responder con HTTP 204 No Content
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar el documento: " + filename, e);
-        }
-    }
 
 }

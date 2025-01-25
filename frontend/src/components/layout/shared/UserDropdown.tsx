@@ -65,6 +65,12 @@ const UserDropdown = () => {
     setOpen(false)
   }
 
+  const handleUSerProfile = () => {
+
+    router.push('/accounts/user/view')
+
+  }
+
   const handleUserLogout = async () => {
     // Redirect to login page
 
@@ -122,7 +128,7 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e)}>
+                  <MenuItem className='mli-2 gap-3' onClick={e => handleUSerProfile()}>
                     <i className='tabler-user' />
                     <Typography color='text.primary'>Mi perfil</Typography>
                   </MenuItem>

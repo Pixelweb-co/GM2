@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import SignatureDialog from '@components/dialogs/SignatureDialog'
+import { Button } from '@mui/material';
+import Image from 'next/image';
+
 
 const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
   const input = document.getElementById(componentId);
@@ -54,8 +59,72 @@ const downloadPDF = async (componentId: string, pdfFileName: string = 'Maintenan
   pdf.save(pdfFileName); // Descargar el PDF
 };
 
+
 const MaintenanceReport = ({data}:{data:any}) => {
-    return (
+
+  const [sign,setSign]=useState<string>('');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [firma_solicitud,setFirmaSolicitud]=useState(null)
+
+
+  const handleOpenDialog = () => setDialogOpen(true);
+  const handleCloseDialog = () => setDialogOpen(false);
+
+  const handleSaveSignature = (file:any) => {
+    console.log("Archivo guardado:", file);
+    setUploadedFile(file); // Guardar el archivo en el estado
+    // Crear una URL para la previsualización
+    const fileUrl = URL.createObjectURL(file);
+    setPreviewUrl(fileUrl);
+  };
+
+
+
+  const fetchOptions = async (data:any) => {
+    console.log('fetchOptions')
+
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+      }
+
+      const [firmaRes] = await Promise.all([
+        axios.get(`http://localhost:8080/firma-user/sign/${data.asig.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      setSign(firmaRes.data)
+
+
+
+      return true
+    } catch (error) {
+      console.error('Error al obtener datos:', error)
+    }
+  }
+
+  useEffect(() => {
+
+
+    if(data){
+
+      console.log("report data: ",data)
+    fetchOptions(data)
+    }
+
+  }, [data])
+
+
+
+  return (
 
         <><div className="text-right p-4">
         <button
@@ -194,16 +263,26 @@ const MaintenanceReport = ({data}:{data:any}) => {
                         <tr>
                             <th className="w-1/6">Firma</th>
                             <td className="w-2/6">
-                                <img src="/applications/images/signature/files/90192cfea7f4aa9e8939a55e3e7ca012.jpg" alt="Firma 1" className="w-48 h-16" />
+                                <Image src={`http://localhost:8080/firma-user/${sign.firma}`} alt="Firma 1" width={180} height={64} />
                             </td>
                             <th className="w-1/6">Firma</th>
                             <td>
-                                <img src="/ingenieria/modal/doc_signs/cb68ca9b7ee87087cb30e38a29a34447.png" alt="Firma 2" className="w-48 h-16" />
+
+                                {firma_solicitud?.firma ?
+
+                                <Image src={`http://localhost:8080/firma-solicitud/${firma_solicitud}`} alt="Firma 2" className="w-48 h-16" />
+
+                                :
+                                      <Button variant="contained" onClick={handleOpenDialog}>
+        Abrir Dialogo de Firma
+      </Button>
+
+                                }
                             </td>
                         </tr>
                         <tr>
                             <th>Ingeniero</th>
-                            <td>JORGE GOMEZ</td>
+                            <td>{data.asig.nombres} {data.asig.apellidos}</td>
                             <th>Recibe</th>
                             <td>&nbsp;</td>
                         </tr>
@@ -211,6 +290,46 @@ const MaintenanceReport = ({data}:{data:any}) => {
                 </table>
             </div>
         </div>
+
+        <SignatureDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSaveSignature}
+      />
+
+<div style={{ padding: "20px" }}>
+      <SignatureDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSaveSignature}
+      />
+
+      {uploadedFile && (
+        <div style={{ marginTop: "20px" }}>
+          <h3>Archivo de Firma:</h3>
+          <p><strong>Nombre:</strong> {uploadedFile.name}</p>
+          <p><strong>Tamaño:</strong> {uploadedFile.size} bytes</p>
+          <p><strong>Tipo:</strong> {uploadedFile.type}</p>
+          {previewUrl && (
+            <div>
+              <h4>Previsualización:</h4>
+              <img
+                src={previewUrl}
+                alt="Previsualización de la Firma"
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: "4px",
+                  width: "192px",
+                  height: "64px",
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+
         </>
     );
 };

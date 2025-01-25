@@ -24,18 +24,18 @@ const ChangePassword = () => {
 
   return (
     <Card>
-      <CardHeader title='Change Password' />
+      <CardHeader title='Cambiar contraseña' />
       <CardContent className='flex flex-col gap-4'>
         <Alert icon={false} severity='warning' onClose={() => {}}>
-          <AlertTitle>Ensure that these requirements are met</AlertTitle>
-          Minimum 8 characters long, uppercase & symbol
+          <AlertTitle>Asegúrate de que se cumplan estos requisitos.</AlertTitle>
+          Mínimo de 8 caracteres, con al menos una mayúscula un número y un símbolo.
         </Alert>
         <form>
           <Grid container spacing={4}>
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 fullWidth
-                label='Password'
+                label='Nueva Contraseña'
                 type={isPasswordShown ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (
@@ -55,7 +55,7 @@ const ChangePassword = () => {
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 fullWidth
-                label='Confirm Password'
+                label='Confirmar Contraseña'
                 type={isConfirmPasswordShown ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (
@@ -74,7 +74,7 @@ const ChangePassword = () => {
             </Grid>
 
             <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained'>Change Password</Button>
+              <Button variant='contained'>Cambiar contraseña</Button>
             </Grid>
           </Grid>
         </form>

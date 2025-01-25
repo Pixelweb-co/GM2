@@ -17,9 +17,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class DocumentStorageService implements StorageFileService{
+public class SingStorageService implements StorageFileService{
 
-    @Value("${document.location}")
+    @Value("${sign.location}")
     private String mediaLocation;
 
     private Path rootLocation;

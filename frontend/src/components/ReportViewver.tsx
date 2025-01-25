@@ -51,13 +51,6 @@ const ReportViewver = ({open,onClose,rowSelect}:{open:boolean,onClose:any,rowSel
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleClose}>Cerrar</Button>
-          <PDFDownloadLink
-          document={<MaintenanceReport data={rowSelect} />}
-          fileName={`reporte_${rowSelect.idSolicitud || 'mantenimiento'}.pdf`}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          {({ loading }: { loading: boolean }) => loading ? 'Generando PDF...' : 'Descargar PDF'}
-        </PDFDownloadLink>
         </DialogActions>
       </Dialog>
     </>

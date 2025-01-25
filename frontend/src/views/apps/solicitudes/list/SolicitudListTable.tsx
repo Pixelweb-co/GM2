@@ -40,6 +40,8 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
+import Tooltip from '@mui/material/Tooltip'
+
 import CustomTextField from '@core/components/mui/TextField'
 
 import SolicitudForm from '@/components/dialogs/form-solicitud'
@@ -53,6 +55,7 @@ import type { SolicitudType } from '@/types/apps/solicitudType'
 import { userMethods } from '@/utils/userMethods'
 import { AuthManager } from '@/utils/authManager'
 import ReporteForm from '../components/page'
+
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -232,7 +235,10 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
         cell: ({ row }) =>
           (
             <div className='flex items-center'>
-            {userMethods.isRole("SUPERADMIN") && (<IconButton
+            {userMethods.isRole("SUPERADMIN") && (
+               <Tooltip title="Eliminar">
+
+              <IconButton
               onClick={() =>
                 setData(
                   data?.filter((product: any) => {
@@ -242,25 +248,41 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
               }
             >
               <i className='tabler-trash text-textSecondary' />
-            </IconButton>)}
+            </IconButton>
 
-            {userMethods.isRole("SUPERADMIN") && (<IconButton
-              onClick={() => {
-                setRowSelection(row.original)
-                setOpenForm(true)
-              }}
-            >
-              <i className='tabler-edit text-textSecondary' />
-            </IconButton>)}
+          </Tooltip>
+          )}
 
-            {(userMethods.isRole("SUPERADMIN") || userMethods.isRole("BIOMEDICAL")) && (<IconButton
+            {userMethods.isRole("SUPERADMIN") && (
+              <Tooltip title="Editar">
+
+                  <IconButton
+                    onClick={() => {
+                      setRowSelection(row.original)
+                      setOpenForm(true)
+                    }}
+                  >
+                    <i className='tabler-edit text-textSecondary' />
+                  </IconButton>
+
+              </Tooltip>
+            )}
+
+            {(userMethods.isRole("SUPERADMIN") || userMethods.isRole("BIOMEDICAL")) && (
+            <Tooltip title="Crear reporte">
+
+              <IconButton
               onClick={() => {
                 setRowSelection(row.original)
                 setOpenFormPlanilla(true)
               }}
             >
               <i className='tabler-list text-textSecondary' />
-            </IconButton>)}
+            </IconButton>
+
+
+          </Tooltip>
+          )}
           </div>
         ),
         enableSorting: false

@@ -57,7 +57,7 @@ const TypeDeviceListApp = () => {
     try {
       const data = await getTypeDeviceData()
 
-      console.log('Datostp', data)
+   //   console.log('Datostp', data)
       setTypeDeviceData(data)
     } catch (err: any) {
       setError(err)
@@ -71,7 +71,7 @@ const TypeDeviceListApp = () => {
       try {
         const data = await getTypeDeviceData()
 
-        console.log('Datos', data)
+     //   console.log('Datos', data)
         setTypeDeviceData(data)
       } catch (err: any) {
         setError(err)

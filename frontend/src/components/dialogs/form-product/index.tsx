@@ -68,7 +68,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
 
   const [selectedFile, setSelectedFile] = useState(null)
 
-  const handleFileChange = event => {
+  const handleFileChange = (event:any) => {
     // Obtiene el archivo seleccionado
     setSelectedFile(event.target.files[0])
   }
