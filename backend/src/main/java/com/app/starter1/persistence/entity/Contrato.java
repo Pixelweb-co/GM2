@@ -25,11 +25,15 @@ public class Contrato {
     private Long id;
 
 
-    @Column(name = "fecha_inicio", nullable = false)
+    @Column(name = "fecha_inicio", nullable = true)
     private LocalDate fechaInicio;
 
-    @Column(name = "fecha_final", nullable = false)
+    @Column(name = "fecha_final", nullable = true)
     private LocalDate fechaFinal;
+
+    @Column(name = "numero", nullable = true)
+    private String numero;
+
 
     @Column(name = "descripcion", nullable = true)
     private String descripcionContrato;

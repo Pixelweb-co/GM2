@@ -17,6 +17,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [firma_solicitud,setFirmaSolicitud]=useState(null)
   const [pdfG,setPdfG]=useState(false)
+  const [tcheckeo, setTcheckeo] = useState([])
 
 
   const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
@@ -127,6 +128,21 @@ const MaintenanceReport = ({data}:{data:any}) => {
 
       setFirmaSolicitud(firmaSolicitudRes.data.firma)
 
+
+
+      const [CheckeoT] = await Promise.all([
+
+
+        axios.get(`http://localhost:8080/checkeo/${data.idSolicitud}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      console.log("tch",CheckeoT.data)
+      setTcheckeo(CheckeoT.data)
 
 
 
@@ -281,6 +297,39 @@ const MaintenanceReport = ({data}:{data:any}) => {
                     <div className="p-2">EQUIPO FUNCIONAL, SE ENTREGA PROBADO AL PERSONAL ENCARGADO.</div>
                 </div>
             </div>
+
+
+            {data.tipoServicio === 1 && <div className="w-4/5 p-2 mx-auto">
+                <div className="border rounded shadow-md">
+
+                    <div >
+
+                    <table className="table-auto border w-full h-24">
+                    <thead className="bg-gray-200 font-bold p-2">
+                    <th className="w-1/6 text-left p-2">ACTIVIDAD</th>
+                    <th className="w-1/6 text-left p-2">APROBADO</th>
+                    </thead>
+
+                    <tbody>
+                    {tcheckeo && tcheckeo.map((item,index)=>{
+
+                        return (<tr key={index}>
+
+                            <td className="w-2/6 p-2">{item.nombre}</td>
+                            <td className="w-2/6 p-2">{item.valor}</td>
+
+                        </tr>)
+
+                      })}
+                    </tbody>
+                </table>
+
+                    </div>
+                </div>
+            </div>}
+
+
+
 
             <div className="container w-4/5 p-1 mx-auto">
                 <table className="table-auto border w-full">

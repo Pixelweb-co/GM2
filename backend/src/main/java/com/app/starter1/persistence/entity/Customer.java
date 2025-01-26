@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Builder
-@Table(name = "customers")
+@Table(name = "clientes")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -58,9 +58,9 @@ public class Customer {
         }
     }
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Contrato contrato;
 
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private Contrato contrato = new Contrato();
 
 }

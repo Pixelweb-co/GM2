@@ -12,6 +12,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findByStatus(Boolean status); // Filtrar clientes por estado
     List<Customer> findByNameContaining(String keyword); // Buscar clientes por nombre parcial
 
-    interface TypeServiceRepository extends JpaRepository<TypeDevice, Long> {
-        }
 }
