@@ -5,59 +5,8 @@ import html2canvas from 'html2canvas';
 import SignatureDialog from '@components/dialogs/SignatureDialog'
 import { Button } from '@mui/material';
 import Image from 'next/image';
+import { userMethods } from '@/utils/userMethods';
 
-
-const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
-  const input = document.getElementById(componentId);
-  if (!input) {
-    console.error(`No se encontró el componente con ID: ${componentId}`);
-    return;
-  }
-
-  // Captura el contenido del componente como imagen
-  const canvas = await html2canvas(input, {
-    scale: 2, // Incrementa la calidad de la imagen
-    useCORS: true, // Permite cargar imágenes externas
-  });
-
-  const imgData = canvas.toDataURL('image/png');
-
-  // Configurar PDF a tamaño carta
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'pt',
-    format: 'letter', // Tamaño carta: 612 x 792 puntos
-  });
-
-  const pageWidth = 612; // Ancho de página carta
-  const pageHeight = 792; // Altura de página carta
-
-  // Calcular dimensiones de la imagen dentro del tamaño carta
-  const imgWidth = pageWidth;
-  const imgHeight = (canvas.height * pageWidth) / canvas.width;
-
-  // Verificar si la imagen excede la altura de la página y dividirla en varias páginas si es necesario
-  let position = 0;
-
-  while (position < imgHeight) {
-
-    pdf.addImage(
-      imgData,
-      'PNG',
-      0,
-      position > 0 ? 0 : position, // Agregar imagen desde la parte superior o continuar en la siguiente página
-      imgWidth,
-      imgHeight > pageHeight ? pageHeight : imgHeight,
-    );
-    position += pageHeight;
-
-    if (position < imgHeight) {
-      pdf.addPage(); // Agregar una nueva página si la imagen excede la altura
-    }
-  }
-
-  pdf.save(pdfFileName); // Descargar el PDF
-};
 
 
 const MaintenanceReport = ({data}:{data:any}) => {
@@ -67,6 +16,68 @@ const MaintenanceReport = ({data}:{data:any}) => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [firma_solicitud,setFirmaSolicitud]=useState(null)
+  const [pdfG,setPdfG]=useState(false)
+
+
+  const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
+    const input = document.getElementById(componentId);
+
+    setPdfG(true)
+
+    if (!input) {
+      console.error(`No se encontró el componente con ID: ${componentId}`);
+
+      return;
+    }
+
+    setTimeout(async()=>{
+    // Captura el contenido del componente como imagen
+    const canvas = await html2canvas(input, {
+      scale: 2, // Incrementa la calidad de la imagen
+      useCORS: true, // Permite cargar imágenes externas
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+
+    // Configurar PDF a tamaño carta
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'letter', // Tamaño carta: 612 x 792 puntos
+    });
+
+    const pageWidth = 612; // Ancho de página carta
+    const pageHeight = 792; // Altura de página carta
+
+    // Calcular dimensiones de la imagen dentro del tamaño carta
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+    // Verificar si la imagen excede la altura de la página y dividirla en varias páginas si es necesario
+    let position = 0;
+
+    while (position < imgHeight) {
+
+      pdf.addImage(
+        imgData,
+        'PNG',
+        0,
+        position > 0 ? 0 : position, // Agregar imagen desde la parte superior o continuar en la siguiente página
+        imgWidth,
+        imgHeight > pageHeight ? pageHeight : imgHeight,
+      );
+      position += pageHeight;
+
+      if (position < imgHeight) {
+        pdf.addPage(); // Agregar una nueva página si la imagen excede la altura
+      }
+    }
+
+    pdf.save(pdfFileName); // Descargar el PDF
+
+    setPdfG(false)
+  },1000)
+  };
 
 
   const handleOpenDialog = () => setDialogOpen(true);
@@ -74,10 +85,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
 
   const handleSaveSignature = (file:any) => {
     console.log("Archivo guardado:", file);
-    setUploadedFile(file); // Guardar el archivo en el estado
-    // Crear una URL para la previsualización
-    const fileUrl = URL.createObjectURL(file);
-    setPreviewUrl(fileUrl);
+    fetchOptions(data)
   };
 
 
@@ -93,6 +101,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
       }
 
       const [firmaRes] = await Promise.all([
+
         axios.get(`http://localhost:8080/firma-user/sign/${data.asig.id}`, {
           headers: {
             'Content-Type': 'application/json',
@@ -101,7 +110,23 @@ const MaintenanceReport = ({data}:{data:any}) => {
         })
       ])
 
-      setSign(firmaRes.data)
+
+      setSign(firmaRes.data.firma)
+
+      const [firmaSolicitudRes] = await Promise.all([
+
+
+        axios.get(`http://localhost:8080/firma-solicitud/sign/${data.idSolicitud}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+
+      setFirmaSolicitud(firmaSolicitudRes.data.firma)
+
 
 
 
@@ -129,7 +154,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
         <><div className="text-right p-4">
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={() => downloadPDF('5674', 'MaintenanceReport.pdf')}
+          onClick={() => downloadPDF('5674', `MaintenanceReport-${data.idSolicitud}.pdf`)}
         >
           Descargar PDF
         </button>
@@ -263,21 +288,22 @@ const MaintenanceReport = ({data}:{data:any}) => {
                         <tr>
                             <th className="w-1/6">Firma</th>
                             <td className="w-2/6">
-                                <Image src={`http://localhost:8080/firma-user/${sign.firma}`} alt="Firma 1" width={180} height={64} />
+                               {sign && <Image src={`http://localhost:8080/firma-user/${sign}`} alt="Firma 1" width={180} height={64} />}
                             </td>
                             <th className="w-1/6">Firma</th>
                             <td>
 
-                                {firma_solicitud?.firma ?
+                                {firma_solicitud &&
 
-                                <Image src={`http://localhost:8080/firma-solicitud/${firma_solicitud}`} alt="Firma 2" className="w-48 h-16" />
+                                <Image src={`http://localhost:8080/firma-solicitud/${firma_solicitud}`} alt="Firma 2" width={180} height={64} />
 
-                                :
-                                      <Button variant="contained" onClick={handleOpenDialog}>
-        Abrir Dialogo de Firma
-      </Button>
 
                                 }
+
+
+{!pdfG && (userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) && <Button variant="contained" onClick={handleOpenDialog}>
+        Abrir Dialogo de Firma
+      </Button>}
                             </td>
                         </tr>
                         <tr>
@@ -293,41 +319,12 @@ const MaintenanceReport = ({data}:{data:any}) => {
 
         <SignatureDialog
         open={dialogOpen}
+        solicitud_id={data.idSolicitud}
         onClose={handleCloseDialog}
         onSave={handleSaveSignature}
       />
 
-<div style={{ padding: "20px" }}>
-      <SignatureDialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        onSave={handleSaveSignature}
-      />
 
-      {uploadedFile && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Archivo de Firma:</h3>
-          <p><strong>Nombre:</strong> {uploadedFile.name}</p>
-          <p><strong>Tamaño:</strong> {uploadedFile.size} bytes</p>
-          <p><strong>Tipo:</strong> {uploadedFile.type}</p>
-          {previewUrl && (
-            <div>
-              <h4>Previsualización:</h4>
-              <img
-                src={previewUrl}
-                alt="Previsualización de la Firma"
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
-                  width: "192px",
-                  height: "64px",
-                }}
-              />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
 
 
         </>

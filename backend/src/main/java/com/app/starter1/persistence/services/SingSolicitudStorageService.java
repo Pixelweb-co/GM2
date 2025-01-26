@@ -17,9 +17,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class SingStorageService implements StorageFileService{
+public class SingSolicitudStorageService implements StorageFileService{
 
-    @Value("${sign.location}")
+    @Value("${biomedical.firma}")
     private String mediaLocation;
 
     private Path rootLocation;

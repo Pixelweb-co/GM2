@@ -1,10 +1,12 @@
 package com.app.starter1.controllers;
 
 
-
+import com.app.starter1.dto.SolicitudFirmaRequest;
 import com.app.starter1.dto.UserRequest;
-import com.app.starter1.persistence.entity.FirmaSoporte;
-import com.app.starter1.persistence.repository.FirmaSoporteRepository;
+import com.app.starter1.persistence.entity.FirmaSolicitud;
+import com.app.starter1.persistence.entity.FirmaSolicitud;
+import com.app.starter1.persistence.repository.FirmaSolicitudRepository;
+import com.app.starter1.persistence.repository.FirmaSolicitudRepository;
 import com.app.starter1.persistence.services.SingStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,23 +22,20 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/firma-user")
-public class SignController {
+@RequestMapping("/firma-solicitud")
+public class SignSolicitudController {
 
     @Autowired
     SingStorageService singStorageService;
 
     @Autowired
-    FirmaSoporteRepository firmaSoporteRepository;
+    FirmaSolicitudRepository firmaSolicitudRepository;
 
     @Autowired
     ObjectMapper objectMapper;
-
-
 
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
@@ -68,47 +67,34 @@ public class SignController {
     }
 
     @GetMapping("/sign/{id}")
-    public ResponseEntity<Optional<FirmaSoporte>> getFirmaUser(@PathVariable Long id) {
+    public ResponseEntity<Optional<FirmaSolicitud>> getFirmaUser(@PathVariable Long id) {
 
-        Optional<FirmaSoporte> firmaSoporte = firmaSoporteRepository.findByIdUsuario(id);
+        Optional<FirmaSolicitud> firmaSolicitud = firmaSolicitudRepository.findByIdSolicitud(id);
 
-        if (firmaSoporte.isEmpty()) {
+        if (firmaSolicitud.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(firmaSoporte);
+        return ResponseEntity.ok(firmaSolicitud);
     }
 
-
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<FirmaSoporte> saveFirma(
-            @RequestPart("user") String userJson,
+    public ResponseEntity<FirmaSolicitud> saveFirma(
+            @RequestPart("solicitud_id") String solicitudjson,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {
 
-        UserRequest userRequest = objectMapper.readValue(userJson, UserRequest.class);
+        SolicitudFirmaRequest solicitudFirmaRequest = objectMapper.readValue(solicitudjson, SolicitudFirmaRequest.class);
 
-        //delete
-
-        firmaSoporteRepository.deleteByIdUsuario(userRequest.getId());
-
+        firmaSolicitudRepository.deleteByIdSolicitud(solicitudFirmaRequest.getId_solicitud());
         String path = singStorageService.Store(file);
-        FirmaSoporte firmaSoporte = new FirmaSoporte();
-
-        System.out.println("id usuario firma "+userRequest.getId().toString());
-
-        firmaSoporte.setFirma(path);
-        firmaSoporte.setIdUsuario(userRequest.getId());
-
-        FirmaSoporte firmaSaved = firmaSoporteRepository.save(firmaSoporte);
-
-
+        FirmaSolicitud firmaSolicitud = new FirmaSolicitud();
+        System.out.println("id sol firma "+solicitudFirmaRequest.getId_solicitud().toString());
+        firmaSolicitud.setFirma(path);
+        firmaSolicitud.setIdSolicitud(solicitudFirmaRequest.getId_solicitud());
+        FirmaSolicitud firmaSaved = firmaSolicitudRepository.save(firmaSolicitud);
 
         return ResponseEntity.ok(firmaSaved);
 
-
     }
-
-
-
 }

@@ -122,6 +122,9 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/firma-user/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/firma-user/**").permitAll();
                     http.requestMatchers(HttpMethod.DELETE, "/firma-user/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/firma-solicitud/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/firma-solicitud/**").permitAll();
+                    http.requestMatchers(HttpMethod.DELETE, "/firma-solicitud/**").permitAll();
 
 
                     // Configurar el resto de los endpoints (no especificados)
