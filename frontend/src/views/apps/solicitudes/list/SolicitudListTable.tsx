@@ -268,7 +268,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
               </Tooltip>
             )}
 
-            {(userMethods.isRole("SUPERADMIN") || userMethods.isRole("BIOMEDICAL")) && (
+            {(userMethods.isRole("SUPERADMIN") || userMethods.isRole("BIOMEDICAL")) && row.original.status?.id == 1 && (
             <Tooltip title="Crear reporte">
 
               <IconButton

@@ -34,12 +34,12 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import type { UsersType } from '@/types/apps/userType'
 
 const schema = yup.object().shape({
-  entidad: yup.string().required('El cliente es obligatorio'),
+  entidad: yup.string().notOneOf(['0'], 'El cliente es obligatorio'),
   fecha: yup.string().required('La fecha es obligatoria'),
   hora: yup.string().required('La hora es obligatoria'),
-  tipoServicio: yup.string().required('El tipo de servicio es obligatorio'),
+  tipoServicio:  yup.string().notOneOf(['0'], 'El tipo de servicio es obligatorio'),
   descr: yup.string().required('descripcion es obligatorio'),
-  asig: yup.string().notRequired(),
+  asig:  yup.string().notOneOf(['0'], 'El ingeniero asignado es obligatorio'),
   fchasg: yup.string().notRequired(),
   horasg: yup.string().notRequired()
 })
@@ -123,7 +123,7 @@ const SolicitudForm = ({
         })
       ])
 
-      setProductsList(productsRes.data.productContractList)
+      setProductsList(productsRes.data.productos)
 
 
       return true
@@ -147,12 +147,12 @@ const SolicitudForm = ({
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      entidad: '',
+      entidad: '0',
       fecha: '',
       hora: '',
-      tipoServicio: '',
+      tipoServicio: '0',
       descr: '',
-      asig: '',
+      asig: '0',
       fchasg: '',
       horasg: ''
     }
@@ -196,12 +196,13 @@ const SolicitudForm = ({
       }
 
       setEditData(null)
-      setValue('entidad', '')
+      setProductsList([])
+      setValue('entidad', '0')
       setValue('fecha', '')
       setValue('hora', '')
-      setValue('tipoServicio', '')
+      setValue('tipoServicio', '0')
       setValue('descr', '')
-      setValue('asig', '')
+      setValue('asig', '0')
       setValue('fchasg', '')
       setValue('horasg', '')
 
@@ -220,35 +221,36 @@ const SolicitudForm = ({
     if (rowSelect.idSolicitud) {
       console.log('rowSelect', rowSelect)
       setId(rowSelect.idSolicitud)
-      setValue('entidad', rowSelect.entidad || '')
+      setValue('entidad', rowSelect.entidad || '0')
       setValue('fecha', rowSelect.fecha || '')
       setValue('hora', rowSelect.hora || '')
-      setValue('tipoServicio', rowSelect.tipoServicio || '')
+      setValue('tipoServicio', rowSelect.tipoServicio || '0')
       setValue('descr', rowSelect.descr || '')
-      setValue('asig', rowSelect.asig || '')
+      setValue('asig', rowSelect?.asig.id || '0')
       setValue('fchasg', rowSelect.fchasg || '')
       setValue('horasg', rowSelect.horasg || '')
-
+      fetchProducts(rowSelect.entidad)
       setEditData(rowSelect)
     } else {
-      setValue('entidad', '')
+      setValue('entidad', '0')
       setValue('fecha', '')
       setValue('hora', '')
-      setValue('tipoServicio', '')
+      setValue('tipoServicio', '0')
       setValue('descr', '')
-      setValue('asig', '')
+      setValue('asig', '0')
       setValue('fchasg', '')
       setValue('horasg', '')
+      setProductsList([])
 
       reset()
       setId(null)
       setEditData({
-        entidad: '',
+        entidad: '0',
         fecha: '',
         hora: '',
-        tipoServicio: '',
+        tipoServicio: '0',
         descr: '',
-        asig: '',
+        asig: '0',
         fchasg: '',
         horasg: ''
       })
@@ -257,7 +259,7 @@ const SolicitudForm = ({
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>Agregar nueva solicitud</DialogTitle>
+      <DialogTitle>Datos de la solicitud</DialogTitle>
       <DialogContent>
         <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 2 }}>
           <Grid container spacing={2}>
@@ -271,6 +273,7 @@ const SolicitudForm = ({
                     {...field}
                     select
                     fullWidth
+                    disabled={!!id}
                     className='mt-2'
                     value={editData?.entidad ? editData?.entidad : '1'}
                     onChange={e => {
@@ -282,6 +285,10 @@ const SolicitudForm = ({
                     error={Boolean(errors.entidad)}
                     helperText={errors.entidad?.message}
                   >
+                   <MenuItem key={0} value={'0'}>
+                        Seleccionar ...
+                    </MenuItem>
+
                     {customersList.map(item => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.name}
@@ -344,6 +351,10 @@ const SolicitudForm = ({
                     error={Boolean(errors.tipoServicio)}
                     helperText={errors.tipoServicio?.message}
                   >
+                    <MenuItem key={0} value={'0'}>
+                        Seleccionar ...
+                    </MenuItem>
+
                     {typeServiceList.map(item => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.typeService}
@@ -361,9 +372,9 @@ const SolicitudForm = ({
                     className='mt-2'
                     select
                     fullWidth
-                    value={editData?.asig ? editData?.asig : '1'}
+                    value={editData?.asig.id ? editData?.asig.id : '0'}
                     onChange={e => {
-                      setEditData({ ...editData, asig: e.target.value })
+                      setEditData({ ...editData, asig: {...editData.asig, id: e.target.value }})
                       setValue('asig', e.target.value)
 
                     }}
@@ -371,6 +382,9 @@ const SolicitudForm = ({
                     error={Boolean(errors.asig)}
                     helperText={errors.asig?.message}
                   >
+                    <MenuItem key={0} value={'0'}>
+                        Seleccionar ...
+                    </MenuItem>
                     {userList.filter((user)=>user.roles?.find((rol)=>['BIOMEDICAL','SUPERADMIN'].find(roln=>roln === rol.roleEnum )))?.map(item => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.nombres} {item.apellidos} {`(${item?.roles[0].roleEnum})`}
@@ -428,13 +442,12 @@ const SolicitudForm = ({
                     >
                       <ListItemButton role={undefined} onClick={handleToggle(value.id)} dense>
                         <ListItemIcon>
-                          <Checkbox
+                          {!id && <Checkbox
                             edge='start'
                             checked={checked.includes(value.id)}
                             tabIndex={-1}
-                            disableRipple
                             inputProps={{ 'aria-labelledby': labelId }}
-                          />
+                          />}
                         </ListItemIcon>
                         <ListItemText id={labelId} primary={`${value.productName}`} />
                       </ListItemButton>

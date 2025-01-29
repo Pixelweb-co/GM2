@@ -184,4 +184,57 @@ public class SolicitudService {
         return solicitudRepository.findById(idSolicitud)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitud not found with id " + idSolicitud));
     }
+
+    public Solicitud updateSolicitud(Long idSolicitud, SolicitudDTO solicitudDTO) {
+        // Buscar la solicitud existente por su ID
+        Solicitud solicitudExistente = solicitudRepository.findById(idSolicitud)
+                .orElseThrow(() -> new EntityNotFoundException("Solicitud no encontrada con ID " + idSolicitud));
+
+        // Actualizar los campos de la solicitud con los valores del DTO
+        if (solicitudDTO.getFecha() != null) {
+            solicitudExistente.setFecha(solicitudDTO.getFecha());
+        }
+        if (solicitudDTO.getHora() != null) {
+            solicitudExistente.setHora(solicitudDTO.getHora());
+        }
+
+        // Actualizar el estado de la solicitud
+        if (solicitudDTO.getStatus() != null) {
+            EstadoSolicitud estadoSolicitud = estadoSolicitudRepository.findById(solicitudDTO.getStatus())
+                    .orElseThrow(() -> new RuntimeException("Estado de solicitud no encontrado"));
+            solicitudExistente.setStatus(estadoSolicitud);
+        }
+
+        // Actualizar el tipo de servicio
+        if (solicitudDTO.getTipoServicio() != null) {
+            TipoServicio tipoServicio = typeServiceRepository.findById(Long.parseLong(solicitudDTO.getTipoServicio()))
+                    .orElseThrow(() -> new RuntimeException("Tipo de servicio no encontrado"));
+            solicitudExistente.setTypeService(tipoServicio);
+        }
+
+        // Actualizar la entidad (cliente)
+        if (solicitudDTO.getEntidad() != null) {
+            Customer entidad = customerRepository.findById(Long.parseLong(solicitudDTO.getEntidad()))
+                    .orElseThrow(() -> new RuntimeException("Entidad no encontrada"));
+            solicitudExistente.setCustomer(entidad);
+        }
+
+        // Actualizar el usuario asignado
+        if (solicitudDTO.getAsig() != null) {
+            UserEntity usuarioAsignado = userRepository.findById(Long.parseLong(solicitudDTO.getAsig()))
+                    .orElseThrow(() -> new RuntimeException("Usuario asignado no encontrado"));
+            solicitudExistente.setUsuarioAsignado(usuarioAsignado);
+        }
+
+        // Actualizar el producto (equipo)
+        if (solicitudDTO.getProductsToInsert() != null && !solicitudDTO.getProductsToInsert().isEmpty()) {
+            Long productId = solicitudDTO.getProductsToInsert().get(0); // Suponiendo que solo hay un producto a actualizar
+            Product equipo = productRepository.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            solicitudExistente.setEquipo(equipo);
+        }
+
+        // Guardar la solicitud actualizada
+        return solicitudRepository.save(solicitudExistente);
+    }
 }
