@@ -9,6 +9,7 @@ import com.app.starter1.persistence.repository.ContratoRepository;
 import com.app.starter1.persistence.repository.CustomerRepository;
 import com.app.starter1.persistence.repository.ImageRepository;
 import com.app.starter1.persistence.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Contract;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,19 +58,23 @@ public class ProductService {
      * @param clienteId ID del cliente asociado al producto
      * @return Producto guardado
      */
-    public Product guardarProductoConContrato(Product producto, Long clienteId) {
-        // Guardar el producto en la base de datos
+    @Transactional
+    public Product guardarProductoConContrato(Product producto, Long customerId) {
+        // Obtener el contrato asociado al cliente
+        Optional<Contrato> contratoOpt = contratoRepository.findByClienteId(customerId);
+        if (!contratoOpt.isPresent()) {
+            throw new RuntimeException("Contrato no encontrado para el cliente");
+        }
+
+        Contrato contrato = contratoOpt.get();
+
+
+        // Guardar el producto
         Product productoGuardado = productRepository.save(producto);
 
-        // Manejar la relación con el contrato como antes
-        Customer cliente = customerRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
-        Contrato contrato = contratoRepository.findByCliente(cliente)
-                .orElseThrow(() -> new RuntimeException("Contrato no encontrado para el cliente"));
-
-        contrato.getProductContractList().add(productoGuardado);
-        contratoRepository.save(contrato);
+        // Agregar el producto a la lista de productos del contrato
+        contrato.getProductos().add(productoGuardado);
+        contratoRepository.save(contrato); // Guardar el contrato con el producto asociado
 
         return productoGuardado;
     }

@@ -17,6 +17,10 @@ import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 
+// Third-party Imports
+
+import { toast } from 'react-toastify'
+
 // Third-party Importss
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -53,6 +57,9 @@ import tableStyles from '@core/styles/table.module.css'
 
 import CheckListForm from '@/components/dialogs/form-checklist'
 import { userMethods } from '@/utils/userMethods'
+import { Tooltip } from '@mui/material'
+import axiosInstance from '@/utils/axiosInterceptor'
+import ErrorDialog from '@/components/dialogs/ErrorDialog'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -116,13 +123,33 @@ const ProductsListTable = ({ reload, tableData }: any) => {
   // States
   // const [addProductOpen, setAddProductOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(tableData.sort((a, b) => b.id - a.id))
+  const [data, setData] = useState(tableData.sort((a:any, b:any) => b.id - a.id))
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setLoadForm] = useState(false)
+  const [errorDeleteItem, setErrorDeleteItem] = useState<any | null>(null)
 
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
   const router = useRouter()
+
+  const deleteItem = async (id: any) => {
+
+    try{
+
+    const res = await axiosInstance.delete(`http://localhost:8080/products/${id}`)
+
+     console.log("res.data", res.data)
+     errorDeleteItem("Eliminado correctamente!")
+
+     reload(true)
+
+  } catch (error:any) {
+    console.log('Eliminar el producto:', error)
+    setErrorDeleteItem(error.response.data)
+
+  }
+
+    }
 
   const columns = useMemo<ColumnDef<ProductTypeWithAction, any>[]>(
     () => [
@@ -211,6 +238,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
 
           {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) &&
+            <Tooltip title='Lista de checkeo'>
             <IconButton
               onClick={() => {
                 setRowSelection(row.original)
@@ -219,8 +247,10 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             >
               <i className='tabler-list text-textSecondary' />
             </IconButton>
+            </Tooltip>
             }
 
+            <Tooltip title='Ficha técnica'>
             <IconButton
               onClick={() => {
                 localStorage.removeItem('productview')
@@ -234,6 +264,8 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             >
               <i className='tabler-eye text-textSecondary' />
             </IconButton>
+            </Tooltip>
+            <Tooltip title='Editar'>
             <IconButton
               onClick={() => {
                 console.log('row', row.original)
@@ -243,9 +275,12 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             >
               <i className='tabler-edit text-textSecondary' />
             </IconButton>
-            <IconButton onClick={() => setData(data?.filter((product: ProductType) => product.id !== row.original.id))}>
+            </Tooltip>
+            <Tooltip title='Eliminar'>
+            <IconButton onClick={() => deleteItem(row.original.id)}>
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
+            </Tooltip>
           </div>
         ),
         enableSorting: false
@@ -495,6 +530,8 @@ const ProductsListTable = ({ reload, tableData }: any) => {
       />
 
     }
+
+{errorDeleteItem && <ErrorDialog entitYName='Eliminar equipo' open={errorDeleteItem} error={errorDeleteItem} setOpen={setErrorDeleteItem} />}
 
     {loadFormCheck &&  <CheckListForm
         open={loadFormCheck}

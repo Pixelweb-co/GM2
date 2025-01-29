@@ -6,46 +6,9 @@ import axios from 'axios'
 
 import ProductList from '@views/apps/products/list'
 import { userMethods } from '@/utils/userMethods'
+import { LinearProgress } from '@mui/material'
+import axiosInstance from '@/utils/axiosInterceptor'
 
-const getProductData = async () => {
-  console.log('productList ', process.env.BACKEND_PUBLIC_APP_URL)
-
-  try {
-    // Recupera el token desde localStorage
-    const token = localStorage.getItem('AuthToken')
-
-    console.log('token ', token)
-
-    if (!token) {
-      throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
-    }
-
-    const user = userMethods.getUserLogin()
-
-    console.log('user ', user)
-
-    let product_url = `http://localhost:8080/products`
-
-    if (user.roles[0].roleEnum === 'ADMIN' || user.roles[0].roleEnum === 'USER') {
-      const id_customer = user.customer.id
-
-      product_url = `http://localhost:8080/products/customer/${id_customer}`
-    }
-
-    // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(product_url, {
-      headers: {
-        'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
-        Authorization: `Bearer ${token}` // Añade el token en el encabezado
-      }
-    })
-
-    return res.data
-  } catch (error) {
-    console.error('Error fetching product data:', error)
-    throw error
-  }
-}
 
 const ProductListApp = () => {
   const [productData, setProductData] = useState<any[]>([])
@@ -54,43 +17,65 @@ const ProductListApp = () => {
   const [reload, setReload] = useState(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getProductData()
-
-        setProductData(data)
-      } catch (err: any) {
-        setError(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchData()
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getProductData()
 
-        console.log('Datos productos', data)
-        setProductData(data)
-      } catch (err: any) {
-        setError(err)
-      } finally {
-        setLoading(false)
+  const fetchData = async () => {
+    setLoading(true)
+
+    try {
+
+      // Recupera el token desde localStorage
+      const token = localStorage.getItem('AuthToken')
+
+      const user = userMethods.getUserLogin()
+
+
+      let product_url = `http://localhost:8080/products`
+
+      if (user.roles[0].roleEnum === 'ADMIN' || user.roles[0].roleEnum === 'USER') {
+
+        const id_customer = user.customer.id
+
+        product_url = `http://localhost:8080/products/customer/${id_customer}`
+
       }
+
+      const res = await axiosInstance.get(product_url, {
+        headers: {
+          'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
+          Authorization: `Bearer ${token}` // Añade el token en el encabezado
+        }
+      })
+
+
+      setLoading(false)
+      setProductData(res.data)
+
+      return res.data
+
+
+    } catch (error) {
+      console.error('Error fetching Product data:', error)
+      setLoading(false)
+      throw error
+
     }
 
-    console.log('reload 1', reload)
+
+  }
+
+
+  useEffect(() => {
 
     fetchData()
     setReload(false)
   }, [reload])
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error loading product data: {String(error)}</p>
+  if (loading) return <LinearProgress color='info' />
+
+  if (error) return window.location.href = '/login'
 
   return <ProductList productData={productData} reload={() => setReload(true)} />
 }

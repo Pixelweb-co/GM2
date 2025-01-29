@@ -9,7 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -47,11 +49,13 @@ public class Contrato {
     private Customer cliente;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "equipos_contrato",
-            joinColumns = @JoinColumn(name = "id_contrato"), // Se refiere a la columna de la tabla Contrato
-            inverseJoinColumns = @JoinColumn(name = "id_producto")) // Se refiere a la columna de la tabla Product
-    private Set<Product> productContractList = new HashSet<>();
-
+    // Relación ManyToMany con Producto usando la tabla intermedia "productos_contrato"
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "productos_contrato",  // Nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_contrato"),  // Columna que hace referencia al contrato
+            inverseJoinColumns = @JoinColumn(name = "id_producto")  // Columna que hace referencia al producto
+    )
+    private Set<Product> productos = new HashSet<>();
 
 }

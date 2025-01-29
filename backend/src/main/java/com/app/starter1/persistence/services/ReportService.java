@@ -9,6 +9,7 @@ import com.app.starter1.persistence.repository.CheckeoRepository;
 import com.app.starter1.persistence.repository.EstadoSolicitudRepository;
 import com.app.starter1.persistence.repository.ReportRepository;
 import com.app.starter1.persistence.repository.SolicitudRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.app.starter1.persistence.entity.Checkeo;
@@ -126,11 +127,26 @@ public class ReportService {
      *
      * @param id ID del reporte.
      */
-    public void deleteById(Long id) {
-        if (!reportRepository.existsById(id)) {
+
+    @Transactional
+    public void deleteBySolicitud(Long id) {
+        if (!reportRepository.existsBySolicitud(id)) {
             throw new RuntimeException("Reporte no encontrado con el ID: " + id);
         }
-        reportRepository.deleteById(id);
+
+        reportRepository.deleteBySolicitud(id);
+
+
+        Solicitud solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        EstadoSolicitud estado = estadoSolicitudRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Estado de solicitud no encontrado"));
+
+        // Actualizar el estado de la solicitud
+        solicitud.setStatus(estado);
+        solicitudRepository.save(solicitud);  // Guardar los cambios
+
     }
 
     /**

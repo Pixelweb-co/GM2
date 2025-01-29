@@ -8,7 +8,6 @@ import ProductsListTable from './ProductsListTable'
 import type { ProductType } from '@/types/apps/productType'
 
 const ProductList = ({ reload, productData }: { reload: any; productData: ProductType[] }) => {
-  console.log('productData', productData)
 
   return (
     <Grid container spacing={6}>

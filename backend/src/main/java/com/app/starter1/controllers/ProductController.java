@@ -2,11 +2,14 @@ package com.app.starter1.controllers;
 
 import com.app.starter1.dto.ProductFileRequest;
 import com.app.starter1.dto.ProductoRequest;
+import com.app.starter1.persistence.entity.Contrato;
 import com.app.starter1.persistence.entity.Customer;
 import com.app.starter1.persistence.entity.Image;
 import com.app.starter1.persistence.entity.Product;
+import com.app.starter1.persistence.repository.ContratoRepository;
 import com.app.starter1.persistence.repository.ImageRepository;
 import com.app.starter1.persistence.repository.ProductRepository;
+import com.app.starter1.persistence.repository.SolicitudRepository;
 import com.app.starter1.persistence.services.ProductService;
 import com.app.starter1.persistence.services.StorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -48,6 +52,12 @@ public class ProductController {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    ContratoRepository contratoRepository;
+
+    @Autowired
+    SolicitudRepository solicitudRepository;
 
     @GetMapping
     @Transactional
@@ -81,8 +91,8 @@ public class ProductController {
         ProductoRequest productoRequest = objectMapper.readValue(productoJson, ProductoRequest.class);
         Product producto = convertirAEntidad(productoRequest);
 
-
         Product productoGuardado = productService.guardarProductoConContrato(producto, productoRequest.getCustomer());
+
 
         //elacion imagen
 
@@ -139,6 +149,32 @@ public class ProductController {
                 .build();
     }
 
+    @Transactional
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<String> EliminarProducto(@PathVariable Long id) {
+        // Verificar si el producto existe
+        Optional<Product> producto = productRepository.findById(id);
+        if (!producto.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado.");
+        }
+
+        Product product = producto.get();
+        Long clienteId = product.getCustomer();
+
+        // Verificar si el producto está asociado a un contrato y eliminar la relación
+        Optional<Contrato> contratoOpt = contratoRepository.findByClienteId(clienteId);
+        if (contratoOpt.isPresent()) {
+            Contrato contrato = contratoOpt.get();
+            contrato.getProductos().remove(product);  // Eliminar producto del contrato
+            contratoRepository.save(contrato);  // Guardar cambios en el contrato
+        }
+
+
+        // Eliminar el producto
+        productRepository.deleteById(product.getId());
+
+        return ResponseEntity.ok("Producto eliminado correctamente.");
+    }
 
     @Transactional
     @PutMapping(path = "/{id}", consumes = {"multipart/form-data"})

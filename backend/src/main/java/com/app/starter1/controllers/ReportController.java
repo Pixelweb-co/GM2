@@ -70,9 +70,13 @@ public class ReportController {
      * @param id ID del reporte a eliminar.
      * @return Respuesta indicando éxito.
      */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReport(@PathVariable Long id) {
-        reportService.deleteById(id);
+        System.out.println("eliminando repote "+id.toString());
+
+        reportService.deleteBySolicitud(id);
+
         return ResponseEntity.ok("Reporte eliminado con éxito.");
     }
 }

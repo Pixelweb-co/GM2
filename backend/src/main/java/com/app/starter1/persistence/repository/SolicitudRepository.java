@@ -36,5 +36,5 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     @Query("SELECT s FROM Solicitud s WHERE s.equipo.id = :productId AND s.status.descripcion = 'FINALIZADA'")
     List<Solicitud> findClosedRequestsByProductId(@Param("productId") Long productId);
 
-
+    long countByEquipoId(Long equipoId);
 }

@@ -11,4 +11,7 @@ public interface ReportRepository extends CrudRepository<Reporte,Long> {
     // Consulta basada en el nombre del campo
     Reporte findBySolicitud(Long idSolicitud);
 
+    void deleteBySolicitud(Long idSolicitud);
+
+    boolean existsBySolicitud(Long id);
 }

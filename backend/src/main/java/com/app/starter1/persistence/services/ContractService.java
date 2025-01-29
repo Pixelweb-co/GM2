@@ -4,6 +4,7 @@ import com.app.starter1.persistence.entity.Customer;
 import com.app.starter1.dto.CustomerDTO;
 import com.app.starter1.persistence.entity.Contrato;
 import com.app.starter1.persistence.repository.ContratoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +35,13 @@ public class ContractService {
     }
 
     // Método para guardar contratos
+    @Transactional
     public Contrato save(Contrato contrato) {
         return contratoRepository.save(contrato);
     }
 
     // Método para actualizar un contrato existente
+    @Transactional
     public Contrato updateEntityFromDTO(Contrato existingContract, CustomerDTO customerDTO) {
 
 
@@ -46,12 +49,14 @@ public class ContractService {
     }
 
     // Método para obtener un contrato por su ID
+    @Transactional
     public Contrato findById(Long id) {
         return contratoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contrato not found"));
     }
 
     // Método para eliminar un contrato por su ID
+    @Transactional
     public void deleteById(Long id) {
         if (!contratoRepository.existsById(id)) {
             throw new RuntimeException("Contrato not found");
@@ -60,6 +65,7 @@ public class ContractService {
     }
 
     // Método para obtener todos los contratos
+    @Transactional
     public List<Contrato> findAll() {
         return contratoRepository.findAll();
     }
@@ -69,6 +75,7 @@ public class ContractService {
     }
 
     // Método para eliminar todos los contratos
+    @Transactional
     public void deleteAll() {
         contratoRepository.deleteAll();
     }

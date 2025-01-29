@@ -1,5 +1,6 @@
 package com.app.starter1.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -113,10 +115,11 @@ public class Product {
     private String placement;
 
     @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-     private Image image;
+    private Image image;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "productContractList")
-    private Set<Contrato> contratos = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_contrato")
+    private Contrato contrato;
+
 
 }

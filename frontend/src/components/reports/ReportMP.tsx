@@ -206,16 +206,16 @@ const MaintenanceReport = ({data}:{data:any}) => {
                 <table className="table-auto border w-full">
                     <tbody>
                         <tr>
-                            <th className="w-1/6">CUIDAD</th>
-                            <td className="w-2/6">{data.reporte.ciudad}</td>
-                            <th className="w-1/6">FECHA REPORTE</th>
-                            <td>{data.fecha}</td>
+                            <th className="w-1/6 text-left">CUIDAD</th>
+                            <td className="w-2/6 text-left">{data.reporte.ciudad}</td>
+                            <th className="w-1/6 text-left">FECHA REPORTE</th>
+                            <td className="text-left">{data.fecha}</td>
                         </tr>
                         <tr>
-                            <th>INSTITUCION</th>
-                            <td>{data.customer.name}</td>
-                            <th>SEDE</th>
-                            <td></td>
+                            <th className="w-1/6 text-left">INSTITUCION</th>
+                            <td className="w-1/6 text-left">{data.customer.name}</td>
+                            <th className="w-1/6 text-left">SEDE</th>
+                            <td className="w-1/6 text-left">l</td>
                         </tr>
                     </tbody>
                 </table>
