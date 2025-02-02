@@ -4,6 +4,7 @@ package com.app.starter1.controllers;
 import com.app.starter1.dto.ScheduleRequest;
 import com.app.starter1.persistence.entity.Schedule;
 import com.app.starter1.persistence.repository.ScheduleRepository;
+
 import com.app.starter1.persistence.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/schedule")
 public class ScheduleController  {
 
     @Autowired
@@ -23,8 +24,16 @@ public class ScheduleController  {
 
     // Endpoint para obtener los schedules de un dispositivo específico
     @GetMapping("/device/{deviceId}")
-    public List<Schedule> getSchedulesByDevice(@PathVariable int deviceId) {
+    public List<Schedule> getSchedulesByDevice(@PathVariable Long deviceId) {
         return scheduleRepository.findByDeviceId(deviceId);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Schedule>> findAll(){
+
+        List<Schedule> schedules = scheduleService.getAllSchedules();
+
+        return ResponseEntity.ok(schedules);
     }
 
     // Endpoint para programar un mantenimiento (crear un schedule)

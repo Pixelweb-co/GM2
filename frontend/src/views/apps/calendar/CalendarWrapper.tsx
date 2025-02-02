@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import { use, useEffect, useState } from 'react'
 
 // MUI Imports
 import { useMediaQuery } from '@mui/material'
@@ -17,14 +17,13 @@ import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 import Calendar from './Calendar'
 import SidebarLeft from './SidebarLeft'
 import AddEventSidebar from './AddEventSidebar'
+import { fetchEvents } from '@/redux-store/slices/calendar'
+
 
 // CalendarColors Object
 const calendarsColor: CalendarColors = {
-  Personal: 'error',
-  Business: 'primary',
-  Family: 'warning',
-  Holiday: 'success',
-  ETC: 'info'
+  Equipos: 'error',
+  Solicitudes: 'primary',
 }
 
 const AppCalendar = () => {
@@ -35,12 +34,29 @@ const AppCalendar = () => {
 
   // Hooks
   const dispatch = useDispatch()
+
   const calendarStore = useSelector((state: { calendarReducer: CalendarType }) => state.calendarReducer)
+
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
 
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
 
   const handleAddEventSidebarToggle = () => setAddEventSidebarOpen(!addEventSidebarOpen)
+
+
+  useEffect(() => {
+    dispatch(fetchEvents())
+  }, [dispatch])
+
+
+  useEffect(() => {
+
+  console.log("store",calendarStore)
+
+}, [calendarStore]
+
+
+)
 
   return (
     <>

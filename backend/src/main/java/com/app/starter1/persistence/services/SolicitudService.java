@@ -237,4 +237,15 @@ public class SolicitudService {
         // Guardar la solicitud actualizada
         return solicitudRepository.save(solicitudExistente);
     }
+    
+    public Solicitud deleteSolicitud(Long idSolicitud) {
+        // Buscar la solicitud por ID
+        Solicitud solicitud = solicitudRepository.findById(idSolicitud)
+                .orElseThrow(() -> new EntityNotFoundException("Solicitud no encontrada con ID " + idSolicitud));       
+
+        // Eliminar la solicitud
+        solicitudRepository.delete(solicitud);
+
+        return solicitud;
+    }
 }

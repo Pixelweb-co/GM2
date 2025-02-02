@@ -118,6 +118,12 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/checkeo/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.DELETE, "/checkeo/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
+                    //schedule calendar
+                    http.requestMatchers(HttpMethod.GET, "/schedule/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+
 
                     //libreria de medios
                     http.requestMatchers(HttpMethod.POST, "/media/**").permitAll();

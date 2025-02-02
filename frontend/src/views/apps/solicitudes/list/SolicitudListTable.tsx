@@ -55,6 +55,8 @@ import type { SolicitudType } from '@/types/apps/solicitudType'
 import { userMethods } from '@/utils/userMethods'
 import { AuthManager } from '@/utils/authManager'
 import ReporteForm from '../components/page'
+import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog'
+import axiosInstance from '@/utils/axiosInterceptor'
 
 
 declare module '@tanstack/table-core' {
@@ -143,6 +145,27 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
 
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [deleteSolicitud, setDelete] = useState(false)
+
+  const DodeleteSolicitud = async (id: any) => {
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      const res = await axiosInstance.delete(`http://localhost:8080/solicitudes/${id}`, {
+        headers: {
+          'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
+          Authorization: `Bearer ${token}` // Añade el token en el encabezado
+        }
+      })
+
+      console.log('Delete', res.data)
+      reload(true)
+    } catch (error) {
+      console.error('Error fetching Solicitud data:', error)
+      throw error
+    }
+  }
+
 
   const columns = useMemo<ColumnDef<SolicitudTypeWithAction, any>[]>(
     () => [
@@ -239,19 +262,21 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
                <Tooltip title="Eliminar">
 
               <IconButton
-              onClick={() =>
-                setData(
-                  data?.filter((product: any) => {
-                    return product.idSolicituds !== row.original.idSolicitud
-                  })
-                )
-              }
-            >
+              onClick={() =>{
+
+                setRowSelection(row.original),
+
+                setDelete(true)
+                console.log("row",row.original)
+              }}
+              >
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
 
           </Tooltip>
           )}
+
+
 
             {userMethods.isRole("SUPERADMIN") && (
               <Tooltip title="Editar">
@@ -493,6 +518,19 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
         }}
         setOpen={() => setOpenForm(true)}
         rowSelect={rowSelection}
+      />
+
+      <ConfirmationDialog
+      entitYName={`Solicitud ${rowSelection?.nombreTipoServicio}`}
+      open={deleteSolicitud}
+      setOpen={(p: any) => setDelete(p)}
+      onConfirmation={() => {
+        console.log('Delete', rowSelection)
+        setDelete(false)
+        DodeleteSolicitud(rowSelection?.idSolicitud)
+      }}
+      name={rowSelection?.nombreTipoServicio}
+
       />
     </>
   )

@@ -89,17 +89,7 @@ const SidebarLeft = (props: SidebarLeftProps) => {
           }
         }}
       >
-        <div className='is-full p-6'>
-          <Button
-            fullWidth
-            variant='contained'
-            onClick={handleSidebarToggleSidebar}
-            startIcon={<i className='tabler-plus' />}
-          >
-            Add Event
-          </Button>
-        </div>
-        <Divider className='is-full' />
+
         <AppReactDatepicker
           inline
           onChange={date => calendarApi.gotoDate(date)}
@@ -112,11 +102,11 @@ const SidebarLeft = (props: SidebarLeftProps) => {
 
         <div className='flex flex-col p-6 is-full'>
           <Typography variant='h5' className='mbe-4'>
-            Event Filters
+            Filtrar por etiqueta
           </Typography>
           <FormControlLabel
             className='mbe-1'
-            label='View All'
+            label='Ver todos'
             control={
               <Checkbox
                 color='secondary'

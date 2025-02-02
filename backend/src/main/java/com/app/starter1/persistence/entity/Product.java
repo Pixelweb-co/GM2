@@ -121,5 +121,7 @@ public class Product {
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;
 
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Schedule> schedules;
 
 }

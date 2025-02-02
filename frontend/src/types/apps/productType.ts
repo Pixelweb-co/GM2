@@ -27,4 +27,5 @@ export type ProductType = {
   periodicity?: string
   location?: string
   placement?: string
+  schedules?: []
 }

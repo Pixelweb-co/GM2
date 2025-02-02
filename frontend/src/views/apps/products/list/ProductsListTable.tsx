@@ -57,9 +57,10 @@ import tableStyles from '@core/styles/table.module.css'
 
 import CheckListForm from '@/components/dialogs/form-checklist'
 import { userMethods } from '@/utils/userMethods'
-import { Tooltip } from '@mui/material'
+import { Badge, Tooltip } from '@mui/material'
 import axiosInstance from '@/utils/axiosInterceptor'
 import ErrorDialog from '@/components/dialogs/ErrorDialog'
+import ProgramacionMantenimiento from '@/components/dialogs/form-shedule/index'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -128,6 +129,8 @@ const ProductsListTable = ({ reload, tableData }: any) => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setLoadForm] = useState(false)
   const [errorDeleteItem, setErrorDeleteItem] = useState<any | null>(null)
+
+  const [programacionModal, setProgramacionModal] = useState(false)
 
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
   const router = useRouter()
@@ -281,6 +284,33 @@ const ProductsListTable = ({ reload, tableData }: any) => {
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
             </Tooltip>
+            {userMethods.isRole("SUPERADMIN") && (
+              <>
+
+              <Tooltip title="Programación de mantenimiento">
+
+                  <IconButton
+                    onClick={() => {
+                      setRowSelection(row.original)
+                      setProgramacionModal(true)
+
+                    }}
+                  >
+
+                    <i className='tabler-calendar text-textSecondary' />
+                  </IconButton>
+                  </Tooltip>
+
+
+                 {row && row.original && (row.original.schedules?.length ?? 0) > 0 && <Tooltip title="Equipo programado">
+                  <Badge variant='dot' color='success' className='ml-4'>
+                    <i className='tabler-dot' />
+                    </Badge>
+
+                  </Tooltip>}
+</>
+
+            )}
           </div>
         ),
         enableSorting: false
@@ -530,6 +560,13 @@ const ProductsListTable = ({ reload, tableData }: any) => {
       />
 
     }
+
+ {programacionModal && <ProgramacionMantenimiento
+        open={programacionModal}
+        onClose={() => setProgramacionModal(false)}
+        setOpen={() => setProgramacionModal(true)}
+        rowSelect={rowSelection}
+      />}
 
 {errorDeleteItem && <ErrorDialog entitYName='Eliminar equipo' open={errorDeleteItem} error={errorDeleteItem} setOpen={setErrorDeleteItem} />}
 
