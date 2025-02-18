@@ -88,46 +88,41 @@ public class ProductService {
      * @return Producto actualizado
      */
     public Product actualizarProducto(Long productId, Product updatedProduct) {
-        // Buscar el producto existente por su ID
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Producto con ID " + productId + " no encontrado"));
 
-        // Actualizar los campos del producto
-        existingProduct.setProductType(updatedProduct.getProductType());
-        existingProduct.setProductCode(updatedProduct.getProductCode());
-        existingProduct.setProductName(updatedProduct.getProductName());
-        existingProduct.setBrand(updatedProduct.getBrand());
-        existingProduct.setModel(updatedProduct.getModel());
-        existingProduct.setLicensePlate(updatedProduct.getLicensePlate());
-        existingProduct.setProductClass(updatedProduct.getProductClass());
-        existingProduct.setClassification(updatedProduct.getClassification());
-        existingProduct.setStatus(updatedProduct.getStatus());
-        existingProduct.setDateAdded(updatedProduct.getDateAdded());
-        existingProduct.setInvimaRegister(updatedProduct.getInvimaRegister());
-        existingProduct.setOrigin(updatedProduct.getOrigin());
-        existingProduct.setVoltage(updatedProduct.getVoltage());
-        existingProduct.setPower(updatedProduct.getPower());
-        existingProduct.setFrequency(updatedProduct.getFrequency());
-        existingProduct.setAmperage(updatedProduct.getAmperage());
-        existingProduct.setPurchaseDate(updatedProduct.getPurchaseDate());
-        existingProduct.setBookValue(updatedProduct.getBookValue());
-        existingProduct.setSupplier(updatedProduct.getSupplier());
-        existingProduct.setWarranty(updatedProduct.getWarranty());
-        existingProduct.setWarrantyStartDate(updatedProduct.getWarrantyStartDate());
-        existingProduct.setWarrantyEndDate(updatedProduct.getWarrantyEndDate());
-        existingProduct.setManual(updatedProduct.getManual());
-        existingProduct.setPeriodicity(updatedProduct.getPeriodicity());
-        existingProduct.setLocation(updatedProduct.getLocation());
-        existingProduct.setPlacement(updatedProduct.getPlacement());
+        if (updatedProduct.getProductType() != null) existingProduct.setProductType(updatedProduct.getProductType());
+        if (updatedProduct.getProductCode() != null) existingProduct.setProductCode(updatedProduct.getProductCode());
+        if (updatedProduct.getProductName() != null) existingProduct.setProductName(updatedProduct.getProductName());
+        if (updatedProduct.getBrand() != null) existingProduct.setBrand(updatedProduct.getBrand());
+        if (updatedProduct.getModel() != null) existingProduct.setModel(updatedProduct.getModel());
+        if (updatedProduct.getLicensePlate() != null) existingProduct.setLicensePlate(updatedProduct.getLicensePlate());
+        if (updatedProduct.getProductClass() != null) existingProduct.setProductClass(updatedProduct.getProductClass());
+        if (updatedProduct.getClassification() != null) existingProduct.setClassification(updatedProduct.getClassification());
+        if (updatedProduct.getStatus() != null) existingProduct.setStatus(updatedProduct.getStatus());
+        if (updatedProduct.getDateAdded() != null) existingProduct.setDateAdded(updatedProduct.getDateAdded());
+        if (updatedProduct.getInvimaRegister() != null) existingProduct.setInvimaRegister(updatedProduct.getInvimaRegister());
+        if (updatedProduct.getOrigin() != null) existingProduct.setOrigin(updatedProduct.getOrigin());
+        if (updatedProduct.getVoltage() != null) existingProduct.setVoltage(updatedProduct.getVoltage());
+        if (updatedProduct.getPower() != null) existingProduct.setPower(updatedProduct.getPower());
+        if (updatedProduct.getFrequency() != null) existingProduct.setFrequency(updatedProduct.getFrequency());
+        if (updatedProduct.getAmperage() != null) existingProduct.setAmperage(updatedProduct.getAmperage());
+        if (updatedProduct.getPurchaseDate() != null) existingProduct.setPurchaseDate(updatedProduct.getPurchaseDate());
+        if (updatedProduct.getBookValue() != null) existingProduct.setBookValue(updatedProduct.getBookValue());
+        if (updatedProduct.getSupplier() != null) existingProduct.setSupplier(updatedProduct.getSupplier());
+        if (updatedProduct.getWarranty() != null) existingProduct.setWarranty(updatedProduct.getWarranty());
+        if (updatedProduct.getWarrantyStartDate() != null) existingProduct.setWarrantyStartDate(updatedProduct.getWarrantyStartDate());
+        if (updatedProduct.getWarrantyEndDate() != null) existingProduct.setWarrantyEndDate(updatedProduct.getWarrantyEndDate());
+        if (updatedProduct.getManual() != null) existingProduct.setManual(updatedProduct.getManual());
+        if (updatedProduct.getPeriodicity() != null) existingProduct.setPeriodicity(updatedProduct.getPeriodicity());
+        if (updatedProduct.getLocation() != null) existingProduct.setLocation(updatedProduct.getLocation());
+        if (updatedProduct.getPlacement() != null) existingProduct.setPlacement(updatedProduct.getPlacement());
+        if (updatedProduct.getVerification() != null) existingProduct.setVerification(updatedProduct.getVerification());
+        if (updatedProduct.getImage() != null) existingProduct.setImage(updatedProduct.getImage());
 
-
-        existingProduct.setImage(updatedProduct.getImage());
-
-       
-
-        // Guardar el producto actualizado
         return productRepository.save(existingProduct);
     }
+
 
     private void eliminarImagen(Image imagen) {
         try {

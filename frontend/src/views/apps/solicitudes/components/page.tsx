@@ -21,6 +21,7 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Switch,
   TextField,
   Typography
 } from '@mui/material'
@@ -34,17 +35,16 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
   const [formTemplate, setFormTemplate] = useState<any[]>([])
   const [product, setProduct] = useState<any>(null)
   const [ciudad, setCiudad] = useState<any>('')
-  const [ubicacion, setUbicacion] = useState<any>('')
-  const [descripcion, setDescripcion] = useState<any>('')
+
   const [observacion, setObservacion] = useState<any>('')
   const [resumen, setResumen] = useState<any>('')
 
-   // States
-   const [value, setValueR] = useState<string>('1')
+  // States
+  const [value, setValueR] = useState<string>('1')
 
-   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-     setValueR((event.target as HTMLInputElement).value)
-   }
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValueR((event.target as HTMLInputElement).value)
+  }
 
   const handleExpandChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
@@ -98,56 +98,52 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
     return `${year}-${month}-${day} | ${hours}:${minutes}:${seconds}`
   }
 
-
   const handleInputChange = (id: number, value: any) => {
-    setFormTemplate((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, valor: value } : item // Actualiza solo el campo modificado
+    console.log('value:', value)
+
+    setFormTemplate(prev =>
+      prev.map(
+        item => (item.id === id ? { ...item, valor: value } : item) // Actualiza solo el campo modificado
       )
-    );
-  };
-
-const handleSubmitForm = async () => {
-  console.log("formtemplates", formTemplate);
-
-
-  const data = {
-    idSolicitud: RecordData.idSolicitud,
-    idTipoServicio: RecordData.idTipoServicio,
-    idEquipo: RecordData.idEquipo,
-    idEntidad: RecordData.idEntidad,
-    ciudad: ciudad,
-    ubicacion: ubicacion,
-    descripcion: descripcion,
-    estado: value,
-    resumen: resumen,
-    observacion: observacion,
-    plantillas: formTemplate,
-    nombreTypoServicio: RecordData.nombreTipoServicio,
-    estadoEquipo: value,
-}
-
-console.log("data", data);
-
-try {
-  const res = await axiosInstance.post('/reportes', data)
-
-  console.log('res', res)
-
-  if (res.status === 201) {
-    alert('Reporte creado exitosamente')
-    handleClose()
+    )
   }
 
-} catch (error) {
-  console.error('Error creating report:', error)
-  alert('Error creando el reporte')
-}
+  const handleSubmitForm = async () => {
+    console.log('formtemplates', formTemplate)
 
-}
+    const data = {
+      idSolicitud: RecordData.idSolicitud,
+      idTipoServicio: RecordData.idTipoServicio,
+      idEquipo: RecordData.idEquipo,
+      idEntidad: RecordData.idEntidad,
+      ciudad: ciudad,
 
+      estado: value,
+      resumen: resumen,
+      observacion: observacion,
+      plantillas: formTemplate,
+      nombreTypoServicio: RecordData.nombreTipoServicio,
+      estadoEquipo: value
+    }
 
-return (
+    console.log('data', data)
+
+    try {
+      const res = await axiosInstance.post('/reportes', data)
+
+      console.log('res', res)
+
+      if (res.status === 201) {
+        alert('Reporte creado exitosamente')
+        handleClose()
+      }
+    } catch (error) {
+      console.error('Error creating report:', error)
+      alert('Error creando el reporte')
+    }
+  }
+
+  return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' closeAfterTransition={false}>
         <DialogTitle id='form-dialog-title'>Reporte #21354{RecordData.id}</DialogTitle>
@@ -232,14 +228,18 @@ return (
                   <Controller
                     name='ciudad'
                     control={control}
-                    render={({ field }) => <CustomTextField fullWidth label='Ciudad'
-                    onChange={(e) => setCiudad(e.target.value)}
-                    value={ciudad}
-                    />}
+                    render={({ field }) => (
+                      <CustomTextField
+                        fullWidth
+                        label='Ciudad'
+                        onChange={e => setCiudad(e.target.value)}
+                        value={ciudad}
+                      />
+                    )}
                   />
                 </Grid>
 
-                <Grid item xs={12} md={12} sm={12}>
+                {/* <Grid item xs={12} md={12} sm={12}>
                   <Controller
                     name='ubicacion'
                     control={control}
@@ -261,7 +261,7 @@ return (
                     onChange={(e) => setDescripcion(e.target.value)}
                     value={descripcion}
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -291,35 +291,36 @@ return (
                             name='tipoElementDt'
                             control={control}
                             render={({ field }) => (
-                              <CustomTextField
-                              className='mt-4'
-                              fullWidth
-                              label={plantillar.nom}
-                              value={plantillar.valor || ""} // Valor inicial
-                              onChange={(e) => handleInputChange(plantillar.id, e.target.value)}
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={plantillar.valor === 'SI'} // Asegura que el estado refleje correctamente el valor guardado
+                                    onChange={e => handleInputChange(plantillar.id, e.target.checked ? 'SI' : 'NO')}
+                                  />
+                                }
+                                label={plantillar.nom}
                               />
                             )}
                           />
                         )}
 
-                {plantillar.tipo == 3 && (
-                  <Controller
-                    name='tipoElementcx'
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        className="mt-4"
-                        control={
-                          <Checkbox
-                            checked={plantillar.valor || false}
-                            onChange={(e) => handleInputChange(plantillar.id, e.target.checked)}
+                        {plantillar.tipo == 3 && (
+                          <Controller
+                            name='tipoElementcx'
+                            control={control}
+                            render={({ field }) => (
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={plantillar.valor === 'SI'} // Asegura que el estado refleje correctamente el valor guardado
+                                    onChange={e => handleInputChange(plantillar.id, e.target.checked ? 'SI' : 'NO')}
+                                  />
+                                }
+                                label={plantillar.nom}
+                              />
+                            )}
                           />
-                        }
-                        label={plantillar.nom}
-                      />
-                    )}
-                  />
-                )}
+                        )}
                       </Grid>
                     </Grid>
                   </div>
@@ -327,7 +328,81 @@ return (
             </AccordionDetails>
           </Accordion>
 
-          <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
+          {product && product.verification && 
+            <>
+            <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
+            <AccordionSummary
+              sx={{
+                backgroundColor: '#7367f0',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#9e97f5' // Color más claro
+                }
+              }}
+              expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
+            >
+              <Typography>Prueba de verificación</Typography>
+            </AccordionSummary>
+            <Divider />
+            <AccordionDetails className='!pbs-6'>
+            <Grid container spacing={4}>
+                <Grid item xs={12} md={12} sm={12}>
+                  <TextField
+                    rows={4}
+                    fullWidth
+                    multiline
+                    label='Detalle de la prueba'
+                    variant='outlined'
+                    onChange={e => setObservacion(e.target.value)}
+                    value={observacion}
+                    id='textarea-standard-static'
+                    placeholder='Detalle'
+                  />
+                </Grid>
+                
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+         
+          <Accordion expanded={expanded === 'panel4'} onChange={handleExpandChange('panel4')}>
+            <AccordionSummary
+              sx={{
+                backgroundColor: '#7367f0',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#9e97f5' // Color más claro
+                }
+              }}
+              expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
+            >
+              <Typography> Información del equipo patrón</Typography>
+            </AccordionSummary>
+            <Divider />
+            <AccordionDetails className='!pbs-6'>
+            <Grid container spacing={4}>
+                <Grid item xs={12} md={12} sm={12}>
+                  <TextField
+                    rows={4}
+                    fullWidth
+                    multiline
+                    label='Detalle del equipo patrón'
+                    variant='outlined'
+                    onChange={e => setObservacion(e.target.value)}
+                    value={observacion}
+                    id='textarea-standard-static'
+                    placeholder='Detalle'
+                  />
+                </Grid>
+                
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+          </>
+
+          
+          }
+
+          <Accordion expanded={expanded === 'panel5'} onChange={handleExpandChange('panel5')}>
             <AccordionSummary
               sx={{
                 backgroundColor: '#7367f0',
@@ -344,19 +419,17 @@ return (
             <AccordionDetails className='!pbs-6'>
               <Grid container spacing={4}>
                 <Grid item xs={12} md={12} sm={12}>
+                  <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={handleChange}>
+                    <FormControlLabel value='1' label='Funcional' control={<Radio defaultChecked color='success' />} />
 
-                <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={handleChange}>
-                  <FormControlLabel value='1' label='Funcional' control={<Radio defaultChecked color='success' />} />
+                    <FormControlLabel value='2' label='Con fallas' control={<Radio defaultChecked color='warning' />} />
 
-                  <FormControlLabel value='2' label='Con fallas' control={<Radio defaultChecked color='warning' />} />
-
-                  <FormControlLabel
-                    value='3'
-                    label='Fuera de servicio'
-                    control={<Radio defaultChecked color='error' />}
-                  />
-                </RadioGroup>
-
+                    <FormControlLabel
+                      value='3'
+                      label='Fuera de servicio'
+                      control={<Radio defaultChecked color='error' />}
+                    />
+                  </RadioGroup>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12}>
                   <TextField
@@ -365,7 +438,7 @@ return (
                     multiline
                     label='Trabajo realizado'
                     variant='outlined'
-                    onChange={(e) => setResumen(e.target.value)}
+                    onChange={e => setResumen(e.target.value)}
                     value={resumen}
                     id='textarea-standard-static'
                     placeholder='Describa el trabajo realizado'
@@ -375,7 +448,7 @@ return (
             </AccordionDetails>
           </Accordion>
 
-          <Accordion expanded={expanded === 'panel4'} onChange={handleExpandChange('panel4')}>
+          <Accordion expanded={expanded === 'panel6'} onChange={handleExpandChange('panel6')}>
             <AccordionSummary
               sx={{
                 backgroundColor: '#7367f0',
@@ -398,7 +471,7 @@ return (
                     multiline
                     label='Observaciones'
                     variant='outlined'
-                    onChange={(e) => setObservacion(e.target.value)}
+                    onChange={e => setObservacion(e.target.value)}
                     value={observacion}
                     id='textarea-standard-static'
                     placeholder='Observaciones'

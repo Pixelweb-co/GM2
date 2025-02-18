@@ -96,8 +96,6 @@ public class UserDetailServiceAP implements UserDetailsService {
                 .orElse(new UserEntity());  // Si no existe, crear uno nuevo
 
         userEntity.setUsername(request.getUsername());
-
-
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userEntity.setEmail(request.getEmail());
@@ -239,7 +237,8 @@ public class UserDetailServiceAP implements UserDetailsService {
         String type = "register";
 
 
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
+
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to, subject, body,type,username);
         producerService.sendMessage("email-notifications", message);
         System.out.println("Notificación enviada a la cola.");
 

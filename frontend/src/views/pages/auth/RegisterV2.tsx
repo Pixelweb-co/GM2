@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -35,6 +35,10 @@ import Logo from '@components/layout/shared/Logo'
 // Third-party Imports
 
 import CustomTextField from '@core/components/mui/TextField'
+import { Alert } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import DangerousIcon from '@mui/icons-material/Dangerous'
+import { set } from 'date-fns'
 
 // Styled Custom Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -64,6 +68,17 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false)
+
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
+  const [disabled, setDisabled] = useState(true)
+
+
+  useEffect(() => {
+
+    setDisabled(false)
+
+  } , [])
 
   // Vars
   const darkImg = '/images/pages/auth-mask-dark.png'
@@ -161,14 +176,26 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
         }
       }
 
-      console.log('Data to send:', roleData)
+      //console.log('Data to send:', roleData)
       const response = await AuthManager.register(roleData)
 
       console.log('Registro exitoso:', response)
 
+      setSuccess(true)
+      setError(null)
+      setDisabled(false)
+
       router.push('/verify-email') // Redirigir al usuario al home después de login exitoso
-    } catch (error) {
+
+
+    } catch (error:any) {
+
       console.error('Error al registrar:', error)
+      setError(error.message)
+      setSuccess(false)
+
+      setDisabled(false)
+
     }
   }
 
@@ -200,6 +227,19 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
             <Typography variant='h4'>¡La aventura comienza aquí 🚀</Typography>
             <Typography>¡Haz que la gestión de tu aplicación sea fácil y divertida!</Typography>
           </div>
+
+          {success && (
+            <Alert icon={<CheckIcon fontSize='inherit' />} severity='success'>
+              Bienvenido te haz registrado exitosamente!
+            </Alert>
+          )}
+
+          {error && (
+            <Alert icon={<DangerousIcon fontSize='inherit' />} severity='error'>
+              {error}
+            </Alert>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)} noValidate autoComplete='off' className='flex flex-col gap-6'>
             <CustomTextField
               autoFocus
@@ -292,7 +332,7 @@ const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
                 </>
               }
             />
-            <Button fullWidth variant='contained' type='submit'>
+            <Button disabled={disabled} fullWidth variant='contained' type='submit'>
               Registrarse
             </Button>
             <div className='flex justify-center items-center flex-wrap gap-2'>

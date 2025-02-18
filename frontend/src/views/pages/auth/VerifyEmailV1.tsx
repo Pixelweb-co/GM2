@@ -21,8 +21,12 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 // Styled Component Imports
 import AuthIllustrationWrapper from './AuthIllustrationWrapper'
+import { userMethods } from '@/utils/userMethods'
 
 const VerifyEmailV1 = () => {
+
+  const userLogin = userMethods.getUserLogin();
+
   return (
     <AuthIllustrationWrapper>
       <Card className='flex flex-col sm:is-[450px]'>
@@ -33,8 +37,8 @@ const VerifyEmailV1 = () => {
           <div className='flex flex-col gap-1 mbe-6'>
             <Typography variant='h4'>Verifica tu cuenta ✉️</Typography>
             <Typography>
-              Un enlace de activacion se ha enviado a el correo electronico:{' '}
-              <span className='font-medium text-textPrimary'>john.doe@email.com</span> Profa vor haz click en el enlace
+            {userLogin.nombres} un enlace de activacion se ha enviado a el correo electronico:{' '}
+              <span className='font-medium text-textPrimary'>{userLogin.email}</span> Por favor haz click en el enlace
               para activar tu cuenta.
             </Typography>
           </div>
@@ -43,12 +47,12 @@ const VerifyEmailV1 = () => {
               Acceder
             </Button>
           </Link>
-          <div className='flex justify-center items-center flex-wrap gap-2'>
+          {/* <div className='flex justify-center items-center flex-wrap gap-2'>
             <Typography>No llego el correo electronico?</Typography>
             <Typography color='primary' component={Link}>
               Reenviar
             </Typography>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </AuthIllustrationWrapper>

@@ -24,22 +24,19 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import CustomTextField from '@/@core/components/mui/TextField'
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 const schema = yup.object().shape({
-  fecha: yup.string().required('La fecha es obligatoria'),
-  fechafin: yup.string().required('La fecha final es obligatoria'),
-  numero: yup.string().required('El número de mantenimientos es obligatorio')
-})
+  fecha: yup.string().required("La fecha es obligatoria"),
+  fechafin: yup.string().required("La fecha final es obligatoria"),
+  numero: yup
+    .string()
+    .matches(/^\d+$/, "El número de mantenimientos debe ser numérico")
+    .required("El número de mantenimientos es obligatorio"),
+});
 
-const SheduleForm = ({
-  open,
-  onClose,
-  rowSelect
-}: {
-  open: boolean
-  onClose: () => void
-  rowSelect: any
-}) => {
+
+const SheduleForm = ({ open, onClose, rowSelect }: { open: boolean; onClose: () => void; rowSelect: any }) => {
   const [fechas, setFechas] = useState<any[]>([])
   const [checked, setChecked] = useState<number[]>([])
 
@@ -58,7 +55,6 @@ const SheduleForm = ({
     }
   })
 
-
   useEffect(() => {
     if (fechas.length > 0) {
       // Seleccionar todas las fechas por defecto
@@ -68,42 +64,42 @@ const SheduleForm = ({
 
   // Función para generar las fechas entre la fecha de inicio y la fecha de fin
   const generarFechasServicio = (fechaInicio: string, fechaFin: string, numVeces: number, idServicio: number) => {
-    console.log('Generando fechas con:', { fechaInicio, fechaFin, numVeces, idServicio });
+    console.log('Generando fechas con:', { fechaInicio, fechaFin, numVeces, idServicio })
 
     if (!fechaInicio || !fechaFin || isNaN(numVeces) || numVeces <= 0) {
-      console.error('Datos de entrada inválidos.');
-      return [];
+      console.error('Datos de entrada inválidos.')
+      return []
     }
 
-    const startDate = new Date(fechaInicio);
-    const endDate = new Date(fechaFin);
-    const diffTime = endDate.getTime() - startDate.getTime();
+    const startDate = new Date(fechaInicio)
+    const endDate = new Date(fechaFin)
+    const diffTime = endDate.getTime() - startDate.getTime()
 
     if (diffTime < 0) {
-      console.error('La fecha de inicio es mayor que la fecha de fin.');
-      return [];
+      console.error('La fecha de inicio es mayor que la fecha de fin.')
+      return []
     }
 
-    const fechasGeneradas = [];
+    const fechasGeneradas = []
 
     // Generar las fechas distribuidas entre la fecha de inicio y la fecha de fin
     if (numVeces === 1) {
-      fechasGeneradas.push({ fecha: startDate.toISOString().split('T')[0], id_servicio: idServicio });
+      fechasGeneradas.push({ fecha: startDate.toISOString().split('T')[0], id_servicio: idServicio })
     } else {
-      const interval = diffTime / (numVeces - 1);
+      const interval = diffTime / (numVeces - 1)
       for (let i = 0; i < numVeces; i++) {
-        const fecha = new Date(startDate.getTime() + interval * i);
-        fechasGeneradas.push({ fecha: fecha.toISOString().split('T')[0], id_servicio: idServicio });
+        const fecha = new Date(startDate.getTime() + interval * i)
+        fechasGeneradas.push({ fecha: fecha.toISOString().split('T')[0], id_servicio: idServicio })
       }
     }
 
-    console.log('Fechas generadas:', fechasGeneradas);
-    setFechas(fechasGeneradas);
-  };
+    console.log('Fechas generadas:', fechasGeneradas)
+    setFechas(fechasGeneradas)
+  }
 
   // Manejo del envío del formulario
   const onSubmit = async (data: any) => {
-    console.log('data', data);
+    console.log('data', data)
     generarFechasServicio(data.fecha, data.fechafin, parseInt(data.numero, 10), rowSelect.id)
   }
 
@@ -114,13 +110,13 @@ const SheduleForm = ({
     )
   }
 
-  const doShedule = async() => {
+  const doShedule = async () => {
     // Obtener las fechas seleccionadas
     const fechasSeleccionadas = fechas.filter((_, index) => checked.includes(index)).map(value => value.fecha)
 
     if (fechasSeleccionadas.length === 0) {
-      alert('Debe seleccionar al menos una fecha.');
-      return;
+      alert('Debe seleccionar al menos una fecha.')
+      return
     }
 
     try {
@@ -142,17 +138,17 @@ const SheduleForm = ({
           fechas: fechasSeleccionadas,
           deviceId: rowSelect.id
         })
-      });
+      })
 
       if (response.ok) {
-        alert('Mantenimiento programado con éxito');
-        onClose();
+        alert('Mantenimiento programado con éxito')
+        onClose()
       } else {
-        alert('Error al programar el mantenimiento');
+        alert('Error al programar el mantenimiento')
       }
     } catch (error) {
-      console.error('Error en la solicitud:', error);
-      alert('Hubo un error al programar el mantenimiento');
+      console.error('Error en la solicitud:', error)
+      alert('Hubo un error al programar el mantenimiento')
     }
   }
 
@@ -205,15 +201,16 @@ const SheduleForm = ({
                     {...field}
                     className='mt-4'
                     fullWidth
+                    type='number'
                     label='Número de mantenimientos'
                     error={!!errors.numero}
                     helperText={errors.numero?.message}
                   />
                 )}
               />
-               <Button className='mt-4' type='submit' variant='contained' color='warning'>
-          Obtener fechas
-        </Button>
+              <Button className='mt-4' type='submit' variant='contained' color='warning'>
+                Obtener fechas
+              </Button>
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -224,34 +221,58 @@ const SheduleForm = ({
                     {fechas.map((value, index) => {
                       return (
                         <ListItem key={index} disablePadding>
-                          <ListItemButton onClick={() => handleToggle(index)}>
+                          <ListItemButton>
                             <ListItemIcon>
-                              <Checkbox edge='start' checked={checked.includes(index)} disableRipple />
+                              <Checkbox
+                                edge='start'
+                                checked={checked.includes(index)}
+                                disableRipple
+                                onClick={() => handleToggle(index)}
+                              />
                             </ListItemIcon>
-                            <Chip variant='outlined' label={`${value.fecha}`} icon={<i className='tabler-calendar' />} color='primary' />
 
+                            <CustomTextField
+            value={value.fecha}
+            className="mt-2"
+            fullWidth
+            type="date"
+            onChange={(e) => {
+              const newFecha = e.target.value;
+
+              // Obtener el nuevo valor
+
+               setFechas(
+
+                fechas.map((item, i) =>
+
+                  i === index ? { ...item, fecha: newFecha } : item
+
+                )
+
+              );
+
+            }}
+          />
                           </ListItemButton>
                         </ListItem>
                       )
                     })}
                   </List>
-
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color='secondary'>
+            Cerrar
+          </Button>
 
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color='secondary'>
-          Cerrar
-        </Button>
-
-        <Button onClick={doShedule} color='primary' variant='contained' disabled={fechas.length === 0}>
-          Programar equipo
-        </Button>
-
-      </DialogActions> </Box>
+          <Button onClick={doShedule} color='primary' variant='contained' disabled={fechas.length === 0}>
+            Programar equipo
+          </Button>
+        </DialogActions>{' '}
+      </Box>
     </Dialog>
   )
 }

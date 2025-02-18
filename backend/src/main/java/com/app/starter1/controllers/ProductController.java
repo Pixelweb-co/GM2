@@ -2,6 +2,7 @@ package com.app.starter1.controllers;
 
 import com.app.starter1.dto.ProductFileRequest;
 import com.app.starter1.dto.ProductoRequest;
+import com.app.starter1.dto.ProductoRequestV;
 import com.app.starter1.persistence.entity.Contrato;
 import com.app.starter1.persistence.entity.Customer;
 import com.app.starter1.persistence.entity.Image;
@@ -119,6 +120,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productoGuardado);
     }
 
+    private Product convertirAEntidadF(ProductoRequestV productoRequestV) {
+        return Product.builder()
+
+                .verification(productoRequestV.getVerification())
+                .build();
+    }
+
     private Product convertirAEntidad(ProductoRequest productoRequest) {
         return Product.builder()
                 .placement(productoRequest.getPlacement())
@@ -146,6 +154,7 @@ public class ProductController {
                 .productCode(productoRequest.getProductCode())
                 .productType(productoRequest.getTypeDevice())
                 .customer(productoRequest.getCustomer())
+                .verification(productoRequest.getVerification())
                 .build();
     }
 
@@ -175,6 +184,25 @@ public class ProductController {
 
         return ResponseEntity.ok("Producto eliminado correctamente.");
     }
+
+
+    @Transactional
+    @PutMapping(path = "/verification/{id}")
+    public ResponseEntity<Product> actualizarProductoVerification(
+            @PathVariable Long id,
+            @RequestBody String productoJson
+    ) throws JsonProcessingException {
+
+        System.out.println(productoJson);
+
+        ProductoRequestV productoRequest = objectMapper.readValue(productoJson, ProductoRequestV.class);
+        Product updatedProduct = convertirAEntidadF(productoRequest);
+
+        // Actualizar el producto
+        Product updatedEntity = productService.actualizarProducto(id, updatedProduct);
+        return ResponseEntity.ok(updatedEntity);
+    }
+
 
     @Transactional
     @PutMapping(path = "/{id}", consumes = {"multipart/form-data"})

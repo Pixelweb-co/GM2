@@ -105,6 +105,13 @@
         "roles": [
           "SUPERADMIN"
         ]
+      },
+      {
+        "label": "Plantillas de verificación",
+        "route": "/administracion/plantillasverificacion/list",
+        "roles": [
+          "SUPERADMIN"
+        ]
       }
     ]
   }

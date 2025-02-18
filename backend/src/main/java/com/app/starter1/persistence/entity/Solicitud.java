@@ -25,6 +25,9 @@ public class Solicitud {
     @Column(name = "hora", length = 10)
     private String hora;
 
+    @Column(name = "description", length = 10)
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "id_equipo", referencedColumnName = "id_producto")
     private Product equipo;

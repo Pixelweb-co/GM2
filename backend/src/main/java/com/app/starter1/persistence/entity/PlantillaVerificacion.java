@@ -1,9 +1,9 @@
 package com.app.starter1.persistence.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "plantillas")
 @NoArgsConstructor
-public class Plantilla {
+public class PlantillaVerificacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,5 +44,7 @@ public class Plantilla {
 
     @Column(name = "date_time")
     private LocalDateTime dateTime;
+
+
 }
 

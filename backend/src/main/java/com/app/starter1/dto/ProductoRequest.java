@@ -29,5 +29,6 @@ public class ProductoRequest {
     private String productName;
     private String productCode;
     private Long typeDevice;
+    private Boolean verification;
 }
 

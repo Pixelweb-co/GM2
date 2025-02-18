@@ -16,7 +16,7 @@ public class SolicitudDTO {
     private Long idEquipo;
     private String entidad;
     private String tipoServicio;
-    private String descripcion;
+    private String descr;
     private String color;
     private List<Long> productsToInsert;
 }

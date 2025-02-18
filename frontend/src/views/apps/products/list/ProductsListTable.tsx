@@ -57,7 +57,7 @@ import tableStyles from '@core/styles/table.module.css'
 
 import CheckListForm from '@/components/dialogs/form-checklist'
 import { userMethods } from '@/utils/userMethods'
-import { Badge, Tooltip } from '@mui/material'
+import { Badge, Switch, Tooltip } from '@mui/material'
 import axiosInstance from '@/utils/axiosInterceptor'
 import ErrorDialog from '@/components/dialogs/ErrorDialog'
 import ProgramacionMantenimiento from '@/components/dialogs/form-shedule/index'
@@ -128,12 +128,38 @@ const ProductsListTable = ({ reload, tableData }: any) => {
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setLoadForm] = useState(false)
+  const [errorUpdateItem, setErrorUpdateItem] = useState<any | null>(null)
   const [errorDeleteItem, setErrorDeleteItem] = useState<any | null>(null)
 
   const [programacionModal, setProgramacionModal] = useState(false)
 
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
   const router = useRouter()
+
+  const handleInputChange = async (id: number, value: any) => {
+    console.log('value:', value)
+
+    try{
+
+      const res = await axiosInstance.put(`http://localhost:8080/products/verification/${id}`, JSON.stringify({ verification: value }), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+       console.log("res.data", res.data)
+       setErrorUpdateItem("Actualizado correctamente!")
+  
+       reload(true)
+  
+    } catch (error:any) {
+      console.log('Actualizar el producto:', error)
+      setErrorUpdateItem(error.response.data)
+  
+    }
+
+
+  }
 
   const deleteItem = async (id: any) => {
 
@@ -232,6 +258,17 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           <Typography className='font-medium' color='text.primary'>
             {row.original.location}
           </Typography>
+        )
+      }),
+      columnHelper.accessor('location', {
+        header: 'Verificación',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+              <Switch color='primary'
+               checked={row.original.verification ? true:false} 
+               onChange={e => handleInputChange(row.original.id, e.target.checked)}
+               />
+          </div>
         )
       }),
       columnHelper.accessor('action', {

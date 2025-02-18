@@ -21,4 +21,8 @@ public class TypeDevice {
 
     @Column(name = "type_device")
     private String typeDevice;
+
+    @ManyToOne
+    @JoinColumn(name = "id_plantilla", referencedColumnName = "id_plantilla")
+    private PlantillaVerificacion plantillaVerificacion;
 }

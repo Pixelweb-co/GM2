@@ -17,6 +17,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import MaintenanceReport from './reports/ReportMP'
 
 import axiosInstance from '@/utils/axiosInterceptor'
+import ReporteMantenimientoV from './reports/ReporteMantenimientoV'
 
 const ReportViewver = ({open,onClose,rowSelect}:{open:boolean,onClose:any,rowSelect:any}) => {
   // States
@@ -43,7 +44,9 @@ const ReportViewver = ({open,onClose,rowSelect}:{open:boolean,onClose:any,rowSel
         <DialogContent>
 
         <div>
-            <MaintenanceReport data={rowSelect} />
+
+            {rowSelect && <ReporteMantenimientoV data={rowSelect}/>}
+
         </div>
 
 

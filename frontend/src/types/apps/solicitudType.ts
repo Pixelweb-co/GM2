@@ -12,7 +12,7 @@ export interface SolicitudType {
   nombreEquipo?:string
   estadoSolicitud?: string // Objeto de tipo EstadoSolicitud (opcional)
   nombreEstadoSolicitud?:string
-  descr?:string
+  descripcion?:string
   asig?:string
   fchasg?:string
   horasg?:string

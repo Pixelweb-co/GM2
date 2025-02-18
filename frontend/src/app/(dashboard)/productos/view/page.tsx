@@ -125,7 +125,7 @@ const ProductViewLayout = () => {
 
               <Grid item xs={4} sm={4}>
               <Typography>
-              <strong>Ubicación:</strong> {product.location}
+              <strong>Ubicación:</strong> {product.placement}
             </Typography>
               </Grid>
 
@@ -250,7 +250,7 @@ const ProductViewLayout = () => {
 
 
       </Grid>
-
+{/*
       <Grid item xs={12} md={12}>
         <Card>
           <CardHeader title='Herramientas' />
@@ -265,7 +265,7 @@ const ProductViewLayout = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

@@ -40,6 +40,7 @@ public class SolicitudService {
                         .idSolicitud(solicitud.getIdSolicitud())
                         .fecha(solicitud.getFecha())
                         .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
                         .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
@@ -64,6 +65,7 @@ public class SolicitudService {
                         .idSolicitud(solicitud.getIdSolicitud())
                         .fecha(solicitud.getFecha())
                         .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
                         .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
@@ -95,6 +97,7 @@ public class SolicitudService {
         System.out.println("Entidad ID: " + solicitudDTO.getEntidad());
         System.out.println("Usuario Asignado ID: " + solicitudDTO.getAsig());
         System.out.println("Productos: " + solicitudDTO.getProductsToInsert());
+        System.out.println("descripcion: " + solicitudDTO.getDescr());
 
         // Validar y buscar el usuario asignado si aplica
         UserEntity usuarioAsignado = null;
@@ -117,6 +120,7 @@ public class SolicitudService {
             Solicitud solicitud = Solicitud.builder()
                     .fecha(solicitudDTO.getFecha())
                     .hora(solicitudDTO.getHora())
+                    .description(solicitudDTO.getDescr())
                     .equipo(equipo)
                     .status(estadoSolicitud)
                     .typeService(typeServiceRepository.findById(Long.parseLong(solicitudDTO.getTipoServicio()))
@@ -142,6 +146,7 @@ public class SolicitudService {
                         .idSolicitud(solicitud.getIdSolicitud())
                         .fecha(solicitud.getFecha())
                         .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
                         .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
@@ -166,6 +171,7 @@ public class SolicitudService {
                         .idSolicitud(solicitud.getIdSolicitud())
                         .fecha(solicitud.getFecha())
                         .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
                         .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
@@ -196,6 +202,11 @@ public class SolicitudService {
         }
         if (solicitudDTO.getHora() != null) {
             solicitudExistente.setHora(solicitudDTO.getHora());
+        }
+
+        if(solicitudDTO.getDescr() != null){
+
+            solicitudExistente.setDescription(solicitudDTO.getDescr());
         }
 
         // Actualizar el estado de la solicitud

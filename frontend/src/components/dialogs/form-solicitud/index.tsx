@@ -36,7 +36,7 @@ import type { UsersType } from '@/types/apps/userType'
 const schema = yup.object().shape({
   entidad: yup.string().notOneOf(['0'], 'El cliente es obligatorio'),
   fecha: yup.string().required('La fecha es obligatoria'),
-  hora: yup.string().required('La hora es obligatoria'),
+  
   tipoServicio:  yup.string().notOneOf(['0'], 'El tipo de servicio es obligatorio'),
   descr: yup.string().required('descripcion es obligatorio'),
   asig:  yup.string().notOneOf(['0'], 'El ingeniero asignado es obligatorio'),
@@ -149,7 +149,7 @@ const SolicitudForm = ({
     defaultValues: {
       entidad: '0',
       fecha: '',
-      hora: '',
+      
       tipoServicio: '0',
       descr: '',
       asig: '0',
@@ -199,7 +199,7 @@ const SolicitudForm = ({
       setProductsList([])
       setValue('entidad', '0')
       setValue('fecha', '')
-      setValue('hora', '')
+
       setValue('tipoServicio', '0')
       setValue('descr', '')
       setValue('asig', '0')
@@ -223,9 +223,9 @@ const SolicitudForm = ({
       setId(rowSelect.idSolicitud)
       setValue('entidad', rowSelect.entidad || '0')
       setValue('fecha', rowSelect.fecha || '')
-      setValue('hora', rowSelect.hora || '')
+
       setValue('tipoServicio', rowSelect.tipoServicio || '0')
-      setValue('descr', rowSelect.descr || '')
+      setValue('descr', rowSelect.descripcion || '')
       setValue('asig', rowSelect?.asig.id || '0')
       setValue('fchasg', rowSelect.fchasg || '')
       setValue('horasg', rowSelect.horasg || '')
@@ -234,7 +234,7 @@ const SolicitudForm = ({
     } else {
       setValue('entidad', '0')
       setValue('fecha', '')
-      setValue('hora', '')
+
       setValue('tipoServicio', '0')
       setValue('descr', '')
       setValue('asig', '0')
@@ -247,7 +247,7 @@ const SolicitudForm = ({
       setEditData({
         entidad: '0',
         fecha: '',
-        hora: '',
+
         tipoServicio: '0',
         descr: '',
         asig: '0',
@@ -316,21 +316,7 @@ const SolicitudForm = ({
                     />
 
 
-            <Controller
-                      name='hora'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          className='mt-2'
-                          fullWidth
-                          type='time'
-                          label='Hora'
-                          error={Boolean(errors.hora)}
-                          helperText={errors.hora?.message}
-                        />
-                      )}
-                    />
+
 
 <Controller
                 name='tipoServicio'
@@ -402,11 +388,11 @@ const SolicitudForm = ({
                                   {...field}
                                   className='mt-4'
                                   fullWidth
-                                  value={editData?.descr ? editData.descr : ''}
+                                  value={editData?.descripcion ? editData.descripcion : ''}
                                   onChange={e => {
                                     setEditData({
                                       ...editData,
-                                      descr: e.target.value
+                                      descripcion: e.target.value
                                     })
                                     setValue('descr', e.target.value)
                                   }}
@@ -434,6 +420,34 @@ const SolicitudForm = ({
                   const labelId = `checkbox-list-label-${value.id}`
                   const handleToggle = (value: any) => () => {setChecked((prevChecked) => (prevChecked.includes(value) ? prevChecked.filter((item) => item !== value) : [...prevChecked, value]));};
 
+
+
+                if(rowSelect.idSolicitud && value.id === editData.idEquipo){
+
+                  return (
+
+                    <ListItem
+                      key={value.id}
+
+                      disablePadding
+                    >
+                      <ListItemButton role={undefined} onClick={handleToggle(value.id)} dense>
+                        <ListItemIcon>
+                          {!id && <Checkbox
+                            edge='start'
+                            checked={checked.includes(value.id)}
+                            tabIndex={-1}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />}
+                        </ListItemIcon>
+                        <ListItemText id={labelId} primary={`${value.productName}`} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+
+                }
+
+                if(!rowSelect.idSolicitud){
                   return (
                     <ListItem
                       key={value.id}
@@ -453,6 +467,8 @@ const SolicitudForm = ({
                       </ListItemButton>
                     </ListItem>
                   )
+                }
+
                 })}
               </List>
               </CardContent>

@@ -114,6 +114,9 @@ public class Product {
     @Column(name = "ubicacion_producto")
     private String placement;
 
+    @Column(name = "verification")
+    private Boolean verification;
+
     @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Image image;
 

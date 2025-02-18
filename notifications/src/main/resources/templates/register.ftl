@@ -40,17 +40,17 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h2>Bienvenido a Tornillos Protor</h2>
+            <h2>Bienvenido a GM2</h2>
         </div>
         <div class="email-body">
             <p>Hola <strong>${name}</strong>,</p>
-            <p>Gracias por registrarte en Tornillos Protor. Ahora puedes disfrutar de todos nuestros servicios.</p>
+            <p>Gracias por registrarte en GM2. Ahora puedes disfrutar de todos nuestros servicios.</p>
             <p>Debes validar tu cuenta en el siguiente enlace</p>
             <p><a href="${activateLink}">Activa tu cuenta aqui!</a></p>
             <p>Si tienes alguna duda, no dudes en contactarnos.</p>
         </div>
         <div class="email-footer">
-            <p>&copy; 2024 Tornillos Protor. Todos los derechos reservados.</p>
+            <p>&copy; 2025 GM2. Todos los derechos reservados.</p>
         </div>
     </div>
 </body>

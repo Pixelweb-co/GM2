@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // Next Imports
 import { useRouter } from 'next/navigation'
@@ -82,6 +82,10 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+  const [disabled, setDisabled] = useState(false)
+
+
+  useEffect(() => { setDisabled(false) }, [])
 
   const router = useRouter()
   const { settings } = useSettings()
@@ -104,19 +108,14 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
     try {
       const result = await AuthManager.authorize(data) // Enviar username y password al backend
 
-      console.log('vf ', result.userEntity.verificationToken)
-      console.log('customer ', result.userEntity.customer)
-
       if (result.status) {
         if (result.userEntity.verificationToken != '') {
-          {
             router.push('/verify-email')
 
             return false
-          }
         } else {
-          {
-            setSuccess(false)
+
+            setSuccess(true)
             setError(null)
 
             if (!result.userEntity.customer) {
@@ -130,7 +129,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
             router.push('/home') // Redirigir al usuario al home después de login exitoso
 
             return true
-          }
+
         }
       }
     } catch (error: any) {
@@ -181,8 +180,8 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
             <CustomTextField
               fullWidth
-              label='Email o Nombre de usuario'
-              placeholder='Ingresa tu email o nombre de usuario'
+              label='Nombre de usuario'
+              placeholder='Ingresa tu nombre de usuario'
               error={!!errors.username}
               helperText={errors.username?.message}
               {...register('username', { required: 'El nombre de usuario es requerido' })}
@@ -211,7 +210,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
                 Olvidé mi contraseña?
               </Typography>
             </div>
-            <Button fullWidth variant='contained' type='submit'>
+            <Button fullWidth variant='contained' type='submit' disabled={disabled}>
               Acceder
             </Button>
             <div className='flex justify-center items-center flex-wrap gap-2'>

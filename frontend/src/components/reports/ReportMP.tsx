@@ -203,19 +203,19 @@ const MaintenanceReport = ({data}:{data:any}) => {
             </div>
 
             <div className="container w-4/5 p-1 mx-auto">
-                <table className="table-auto border w-full">
+                <table className="table-auto border border-collapse w-full">
                     <tbody>
                         <tr>
-                            <th className="w-1/6 text-left">CUIDAD</th>
-                            <td className="w-2/6 text-left">{data.reporte.ciudad}</td>
-                            <th className="w-1/6 text-left">FECHA REPORTE</th>
-                            <td className="text-left">{data.fecha}</td>
+                            <th className="w-1/6 text-left border pl-1">CUIDAD</th>
+                            <td className="w-2/6 text-left border pl-1">{data.reporte.ciudad}</td>
+                            <th className="w-1/6 text-left border pl-1">FECHA REPORTE</th>
+                            <td className="text-left border pl-1">{data.fecha}</td>
                         </tr>
                         <tr>
-                            <th className="w-1/6 text-left">INSTITUCION</th>
-                            <td className="w-1/6 text-left">{data.customer.name}</td>
-                            <th className="w-1/6 text-left">SEDE</th>
-                            <td className="w-1/6 text-left">l</td>
+                            <th className="w-1/6 text-left border pl-1">INSTITUCION</th>
+                            <td className="w-1/6 text-left border pl-1">{data.customer.name}</td>
+                            <th className="w-1/6 text-left border pl-1">SEDE</th>
+                            <td className="w-1/6 text-left border pl-1">{data.equipo.location}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -223,52 +223,58 @@ const MaintenanceReport = ({data}:{data:any}) => {
 
             <div className="container flex w-4/5 p-1 mx-auto">
 
-                <table className="table-auto border w-full h-24">
+                <table className="table-auto border border-collapse w-full h-24">
                     <tbody>
                         <tr>
-                            <th className="w-1/6 text-left">EQUIPO</th>
-                            <td className="w-2/6 ">{data.equipo.productName}</td>
+                            <th className=" pl-1 w-1/6 text-left border">EQUIPO</th>
+                            <td className=" pl-1 w-2/6 border">{data.equipo.productName}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">MARCA</th>
-                            <td>{data.equipo.brand}</td>
+                            <th className=" pl-1 text-left border">MARCA</th>
+                            <td className='border  pl-1'>{data.equipo.brand}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">MODELO</th>
-                            <td>{data.equipo.model}</td>
+                            <th className=" pl-1 text-left border">MODELO</th>
+                            <td className='border  pl-1'>{data.equipo.model}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">SERIE</th>
-                            <td>{data.equipo.licensePlate}</td>
+                            <th className=" pl-1 text-left border">SERIE</th>
+                            <td className='border  pl-1'>{data.equipo.licensePlate}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">CODIGO INT</th>
-                            <td>{data.equipo.bookValue}</td>
+                            <th className=" pl-1 text-left border">CODIGO INT</th>
+                            <td className='border  pl-1'>{data.equipo.bookValue}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">UBICACION</th>
-                            <td>{data.equipo.location}</td>
+                            <th className=" pl-1 text-left border">UBICACION</th>
+                            <td className='border  pl-1'>{data.equipo.placement}</td>
 
                         </tr>
                         <tr>
-                            <th className="text-left">ESTADO DEL EQUIPO</th>
-                            <td>FUNCIONAL</td>
+                            <th className=" pl-1 text-left border">ESTADO DEL EQUIPO</th>
+                            <td className='border  pl-1'>{data.reporte?.estadoEquipo &&
+                            [
+                              {id:1, name: 'FUNCIONAL'},
+                              {id:2, name: 'CON FALLAS'},
+                              {id:3, name: 'FUERA DE SERVICIO'}
+                            ].find((item)=>item.id === data.reporte?.estadoEquipo)?.name}</td>
 
                         </tr>
                     </tbody>
                 </table>
 
-                <table className="table-auto border w-full">
+                <table className=" table-auto border border-collapse w-full">
                     <tbody>
                     {data.typeServiceServiceList.map((typeService:any, index:any) => {
+
                         return(<tr key={index}>
-                          <th className="w-3/6 text-left">{typeService.descripcion}</th>
-                          <td className="w-2/6 ">{typeService.id === data.tipoServicio? 'X':''}</td>
+                          <th className="w-5/6 text-left border pl-1">{typeService.descripcion}</th>
+                          <td className="w-1/6 border pl-1 text-center">{typeService.id === data.tipoServicio? 'X':''}</td>
 
                       </tr>)
                     })}
@@ -280,21 +286,21 @@ const MaintenanceReport = ({data}:{data:any}) => {
             <div className="w-4/5 p-1 mx-auto">
                 <div className="border rounded shadow-md">
                     <div className="bg-gray-200 font-bold p-2">SOLICITUD Y/O FALLA REPORTADA</div>
-                    <div className="p-2">EQUIPO NO ENCIENDE</div>
+                    <div className="p-2">{data.descripcion}</div>
                 </div>
             </div>
 
             <div className="w-4/5 p-1 mx-auto">
                 <div className="border rounded shadow-md">
                     <div className="bg-gray-200 font-bold p-2">TRABAJO REALIZADO</div>
-                    <div className="p-2">SE REVISA EL EQUIPO ENCONTRANDO EL PAD TECLADO MALO, SE REALIZA CAMBIO DE ESTE Y EL EQUIPO FUNCIONA OK</div>
+                    <div className="p-2"> {data.reporte?.trabajoRealizado}</div>
                 </div>
             </div>
 
             <div className="w-4/5 p-1 mx-auto">
                 <div className="border rounded shadow-md">
                     <div className="bg-gray-200 font-bold p-2">OBSERVACIONES</div>
-                    <div className="p-2">EQUIPO FUNCIONAL, SE ENTREGA PROBADO AL PERSONAL ENCARGADO.</div>
+                    <div className="p-2"> {data.reporte?.observaciones}</div>
                 </div>
             </div>
 

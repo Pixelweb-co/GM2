@@ -18,7 +18,9 @@ import {
   Typography,
   CardHeader,
   IconButton,
-  Tooltip
+  Tooltip,
+  FormControlLabel,
+  Switch
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -57,6 +59,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
   const [typeDeviceList, setTypeDeviceList] = useState<any[]>([])
   const [customersList, setCustomersList] = useState<any[]>([])
   const [plantillasList, setPlantillasList] = useState<any[]>([])
+  const [disabledAdd, setDisabledAdd] = useState(true)
 
   const [formTemplate, setFormTemplate] = useState<any[]>([])
 
@@ -190,7 +193,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
 
           console.log('Datos recibidostp :', response.data);
 
-          setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: (item.tipo).toString() })));
+          setFormTemplate(response.data.map((item:any) => ({ nom: item.nom})));
 
         } catch (error) {
 
@@ -298,10 +301,24 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
                   {...field}
                   className='mt-4'
                   fullWidth
-                  onChange={e => {
+                  onKeyUp={e => {
+                    console.log('Check:', e.target.value)
+
+                    if(e.target.value === ''){
+                      setDisabledAdd(true)
+
+
+                    }else{
+                      setDisabledAdd(false)
+                    }
+                  }}
+                  onBlur={e => {
+
                     setEditData({ ...editData, nombreChequeo: e.target.value })
                     setValue('nombreChequeo', e.target.value)
-                  }}
+
+
+                }}
                   label='Nombre del chequeo'
                   error={Boolean(errors.nombreChequeo)}
                   helperText={errors.nombreChequeo?.message}
@@ -309,46 +326,21 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
               )}
             />
 
-            <Controller
-              name='tipoElement'
-              control={control}
-              render={({ field }) => (
-                <CustomTextField
-                  {...field}
-                  className='mt-4'
-                  select
-                  fullWidth
-                  value={editData?.tipoElement ? editData?.tipoElement : '1'}
-                  onChange={e => {
-                    setEditData({ ...editData, tipoElement: e.target.value })
-                    setValue('tipoElement', e.target.value)
-                  }}
-                  label='Tipo elemento'
-                  error={Boolean(errors.tipoElement)}
-                  helperText={errors.tipoElement?.message}
-                >
-                  {[
-                    { id: '1', name: 'Selecciona un control' },
-                    { id: '2', name: 'Caja de texto' },
-                    { id: '3', name: 'Caja de checkeo' }
-                  ].map((item, index) => (
-                    <MenuItem key={index} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              )}
-            />
+
 
             <Button
               type='button'
               variant='contained'
               color='success'
+              disabled={disabledAdd}
               className='mt-4'
               onClick={() => {
                 console.log('editData', editData)
 
-                setFormTemplate([...formTemplate, { nom: editData.nombreChequeo, tipo: editData.tipoElement }])
+                setFormTemplate([...formTemplate, { nom: editData.nombreChequeo}])
+
+                setEditData({ ...editData, nombreChequeo: '' })
+
               }}
             >
               Agregar campo
@@ -365,31 +357,30 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
                     <div key={index}>
                       <Grid container spacing={2}>
                         <Grid item xs={10} sm={10}>
-                          {plantillar.tipo == 2 && (
-                            <Controller
-                              name='tipoElementDt'
-                              control={control}
-                              render={({ field }) => (
-                                <CustomTextField className='mt-4' fullWidth label={plantillar.nom} />
-                              )}
-                            />
-                          )}
 
-                          {plantillar.tipo == 3 && (
-                            <Controller
-                              name='tipoElementcx'
-                              control={control}
-                              render={({ field }) => (
-                                <CustomTextField type='checkbox' className='mt-4' label={plantillar.nom} />
-                              )}
-                            />
-                          )}
+                                                    <Controller
+                                                      name='tipoElement'
+                                                      control={control}
+                                                      render={({ field }) => (
+                                                        <FormControlLabel
+                                                          control={
+                                                            <Switch
+                                                              checked={false} // Asegura que el estado refleje correctamente el valor guardado
+                                                            />
+                                                          }
+                                                          label={plantillar.nom}
+                                                        />
+                                                      )}
+                                                    />
+
+
+
                         </Grid>
 
                         <Grid item xs={2} sm={2}>
                           <Tooltip title='Eliminar campo' placement='top'>
                           <IconButton
-                          className='mt-8'
+                          className='mt-1'
                             onClick={() => {
                               setFormTemplate(formTemplate.filter((item, i) => i !== index))
                             }}

@@ -19,9 +19,10 @@ public class NotificationController {
             @RequestParam String to,
             @RequestParam String subject,
             @RequestParam String body,
-            @RequestParam String type
+            @RequestParam String type,
+            @RequestParam String username
     ) {
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to, subject, body,type,username);
         producerService.sendMessage("email-notifications", message);
         return "Notificación enviada a la cola.";
     }
