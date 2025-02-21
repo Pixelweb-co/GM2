@@ -1,7 +1,7 @@
 'use client'
 import type { SyntheticEvent } from 'react'
 import React, { useEffect, useState } from 'react'
-
+import { Delete, Add } from '@mui/icons-material';
 import {
   Dialog,
   DialogTitle,
@@ -43,9 +43,10 @@ import TabList from '@mui/lab/TabList'
 import CustomTextField from '@/@core/components/mui/TextField'
 import axiosInstance from '@/utils/axiosInterceptor'
 import JsonTreeBuilder from './treeBuilder'
+import Equipment from './equipment'
 
 const schema = yup.object().shape({
-  nameEquipment: yup.string().notRequired()
+  templateName: yup.string().required("El nombre de la plantilla es obligatorio")
 })
 
 const VerificationForm = ({ open, onClose, rowSelect }: any) => {
@@ -53,7 +54,7 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
   const [valueT, setValueT] = useState('itemsf')
 
   const [editData, setEditData] = useState<any>({
-    nameEquipment: '1',
+    templateName: '',
    
   })
 
@@ -61,10 +62,10 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
   const [customersList, setCustomersList] = useState<any[]>([])
   const [plantillasList, setPlantillasList] = useState<any[]>([])
   const [disabledAdd, setDisabledAdd] = useState(true)
-  const [equimentlist, setEquipmentList] = useState<any>([{id:'4521',equipment:{nom:''},groupsdata:[{idItem:'1',name:'Grupo 1',items:[{idItem:'1',name:'Item 1',value:'0',type:'number'}]}]}])
-
+  const [equimentlist, setEquipmentList] = useState<any>([{id:uuidv4(),equipment:{nom:''},groupsData:[{id:'1',name:'Grupo 1',options:[{id:'1',name:'Item 1'}]}]}])
+  const [validate,setValidate] = useState<any>(false)
   const [formTemplate, setFormTemplate] = useState<any[]>()
-
+ const [errorsEquipments, setErrorsEquipments] = useState<any[]>([])
   const [openCh, setOpenCh] = useState<boolean>(true)
 
   const handleClick = () => {
@@ -109,7 +110,9 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
     reset
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {},
+    defaultValues: {
+      templateName:''
+    },
     mode: 'onSubmit'
   })
 
@@ -118,6 +121,12 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
   }, [errors])
 
   const onSubmit = async (data: any) => {
+
+    setValidate(true)
+
+    console.log('data:', data)
+
+
     try {
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
@@ -128,13 +137,12 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
         data: {
-          marca: data.marca,
-          modelo: data.modelo,
-
-          tipoElement: rowSelect.productType,
-          campos: formTemplate // Incluye los campos dinámicos generados
+          templateName: data.templateName,
+          equimentlist: JSON.stringify(equimentlist)
         }
       })
+
+      setValidate(false)
 
       // Procesar la respuesta
       toast.success('Hey 👋!', {
@@ -146,25 +154,19 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
 
       // Aquí puedes redirigir o mostrar un mensaje de éxito
 
-      setValue('productType', '')
-      setValue('marca', '')
-      setValue('modelo', '')
-      setValue('nombreChequeo', '')
-      setValue('tipoElement', '')
+      setValue('templateName', '')
+      
 
       reset()
       setId(0)
       setEditData({
-        productType: '1',
-        marca: '',
-        modelo: '',
-        nombreChequeo: '',
-        tipoElement: '0'
+        templateName: ''
       })
 
       onClose()
     } catch (error) {
       console.error('Error al enviar los datos:', error)
+      setValidate(false)
     }
   }
 
@@ -172,13 +174,57 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
 
   const handleReset = () => {
    
-    setValue('nameEquipment', '')
+    setValue('templateName', '')
+    setEquipmentList([])
     
   }
 
   useEffect(() => {
     console.log('formTemplate:', formTemplate)
+
+
   }, [formTemplate])
+
+
+  useEffect(() => {
+
+    console.log('equimentlist:', equimentlist)
+
+  }, [equimentlist])
+
+  const onDeleteEquiment = (id:any) =>{
+
+    console.log("eliminar equipo",id)
+
+    const newData = equimentlist.filter((item:any)=>item.id !== id)
+
+    setEquipmentList(newData)
+  }
+
+  const handleUpdateEquipment = (id: string, field: string, value: any) => {
+   
+    console.log('Update:', id, field, value)
+
+    setEquipmentList((prevList:any) =>
+      prevList.map((equipment:any) =>
+        equipment.id === id
+          ? { ...equipment, equipment: { ...equipment.equipment, [field]: value } }
+          : equipment
+      )
+    );
+  };
+
+
+  const handleUpdateEquipmentGroupData = (id: string, field: string, value: any) => {
+    console.log('Update:', id, field, value)
+    setEquipmentList((prevList:any) =>
+      prevList.map((equipment:any) =>
+        equipment.id === id
+          ? { ...equipment, groupsData: value  }
+          : equipment
+      )
+    );
+  };
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
@@ -190,124 +236,51 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <Controller
-              name='productType'
+              name='templateName'
               control={control}
               render={({ field }) => (
                 <CustomTextField
                   fullWidth
-                  value={
-                    typeDeviceList.length > 0 && editData.productType
-                      ? typeDeviceList.find(item => item.id === editData.productType).typeDevice
-                      : ''
-                  }
-                  label='Tipo de dispositivo'
-                  error={Boolean(errors.productType)}
-                  helperText={errors.productType?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name='nombreChequeo'
-              control={control}
-              render={({ field }) => (
-                <CustomTextField
                   {...field}
-                  className='mt-4'
-                  fullWidth
-                  onKeyUp={e => {
-                    console.log('Check:', e.target.value)
-
-                    if (e.target.value === '') {
-                      setDisabledAdd(true)
-                    } else {
-                      setDisabledAdd(false)
-                    }
+                  onChange={(e) => {
+                    setValue('templateName', e.target.value)
+                    setEditData({ ...editData, templateName: e.target.value })
                   }}
-                  onBlur={e => {
-                    setEditData({ ...editData, nombreChequeo: e.target.value })
-                    setValue('nombreChequeo', e.target.value)
-                  }}
-                  label='Nombre del chequeo'
-                  error={Boolean(errors.nombreChequeo)}
-                  helperText={errors.nombreChequeo?.message}
+                  label='Nombre plantillla'
+                  error={Boolean(errors.templateName)}
+                  helperText={errors.templateName?.message}
                 />
               )}
             />
+
+           
           </Grid>
 
           <Grid item xs={12} sm={8}>
 
-          <Button variant='contained' color='success' className='mb-6' onClick={() => setEquipmentList(
-            [...equimentlist, [
+              <div className='mb-4 text-right'>
+          <Button startIcon={<Add />} variant="outlined" size="small" color='success' className='mb-6' onClick={() => setEquipmentList(
+            [...equimentlist, 
             {
               id:uuidv4(),
               equipment:{nom:''},
-              groupsdata:[]
-            }]])}>Agregar equipo</Button>
+              groupsData:[]
+            }])}>Agregar equipo</Button>
+
+            </div>
       
-          {equimentlist && equimentlist.map((item: any, index: number) => (
+          {equimentlist && equimentlist.slice().reverse().map((item: any, index: number) => (
+            
             <div key={index}>
-
-            <Card className="mt-5">
-              <CardHeader title='Equipo' />
-
-              <CardContent>
-              <Grid container spacing={4}>
-                <Grid item xs={12} sm={3}>
-                  <Controller
-                    name='nombreChequeo'
-                    control={control}
-                    render={({ field }) => (
-                      <CustomTextField
-                        {...field}
-                        fullWidth
-                        onKeyUp={e => {
-                          console.log('Check:', e.target.value)
-
-                         
-                        }}
-                        onBlur={e => {
-                          setEditData({ ...editData, nombreChequeo: e.target.value })
-                          setValue('nombreChequeo', e.target.value)
-                        }}
-                        label='Nombre del equipo'
-                        error={Boolean(errors.nombreChequeo)}
-                        helperText={errors.nombreChequeo?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={3}>
-                  SERIE:
-                </Grid>
-
-                <Grid item xs={12} sm={3}>
-                  <Controller
-                    name='nombreChequeo'
-                    control={control}
-                    render={({ field }) => (
-                      <CustomTextField
-                        {...field}
-                        fullWidth
-                       
-                        onBlur={e => {
-                         
-                        }}
-                        label='Nombre del chequeo'
-                        error={Boolean(errors.nombreChequeo)}
-                        helperText={errors.nombreChequeo?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-               
-                <JsonTreeBuilder />          
-
-              </CardContent>
-            </Card>
+             
+              <Equipment 
+                item={item} 
+                onDelete={(id:any)=>onDeleteEquiment(id)}
+                onUpdate={handleUpdateEquipment}
+                onUpdateGroupsData={handleUpdateEquipmentGroupData}
+                validate={validate}
+                onErrors={errorsEquipments} 
+                />
 
             
             </div>
