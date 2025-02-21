@@ -35,8 +35,8 @@ const Equipment = ({ item, onUpdate, onDelete,onUpdateGroupsData,validate,onErro
 
 
   const handleUpdateField = (field: string, value: any) => {
-   console.log('update',field)
-   console.log('value',value)
+    console.log('update',field)
+    console.log('value',value)
     onUpdate(item.id, field, value);
   };
 
@@ -59,6 +59,7 @@ const Equipment = ({ item, onUpdate, onDelete,onUpdateGroupsData,validate,onErro
           </Tooltip>
         }
       />
+      
       <CardContent>
         <div className="p-2 border rounded border-gray-300 bg-white">
           <Grid container spacing={4}>
