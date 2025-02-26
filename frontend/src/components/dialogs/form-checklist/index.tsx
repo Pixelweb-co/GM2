@@ -302,9 +302,9 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
                   className='mt-4'
                   fullWidth
                   onKeyUp={e => {
-                    console.log('Check:', e.target.value)
+                    console.log('Check:', (e.target as HTMLInputElement).value)
 
-                    if(e.target.value === ''){
+                    if((e.target as HTMLInputElement).value === ''){
                       setDisabledAdd(true)
 
 

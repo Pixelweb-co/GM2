@@ -16,12 +16,12 @@ import SignatureCanvas from "react-signature-canvas";
 import axios from "axios";
 
 const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,onClose:any,solicitud_id:any,onSave:any}) => {
-  const signatureRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const signatureRef = useRef<SignatureCanvas | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [activeTab, setActiveTab] = useState(0);
   const [error, setError] = useState("");
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Limpiar firma del canvas
   const clearSignature = () => {
@@ -30,7 +30,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
   };
 
   // Manejar el cambio de pestañas
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event:any, newValue:any) => {
     setActiveTab(newValue);
     setError("");
     setPreviewImage(null);
@@ -127,7 +127,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
   // Guardar archivo cargado
   const handleSaveUploadedFile = () => {
 
-    const file = fileInputRef.current?.files[0];
+    const file = fileInputRef.current?.files?.[0];
 
     if (!file) {
       setError("Por favor, cargue un archivo.");

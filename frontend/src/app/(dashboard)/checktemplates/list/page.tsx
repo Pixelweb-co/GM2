@@ -79,7 +79,7 @@ const ChecktemplateListApp = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error loading checktemplate data: {String(error)}</p>
 
-  return <ChecktemplateList checktemplateData={checktemplateData} reload={() => setReload(true)} />
+  return <ChecktemplateList checkTemplateData={checktemplateData} reload={() => setReload(true)} />
 }
 
 export default ChecktemplateListApp

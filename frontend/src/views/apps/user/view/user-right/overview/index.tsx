@@ -26,8 +26,8 @@ import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
   return res.json()
 } */
 
-const OverViewTab = async () => {
-  // Vars
+const OverViewTab =  () => {
+ 
   const invoiceData:any = []
 
   return (

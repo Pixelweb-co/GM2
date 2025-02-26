@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import type { UsersType } from '@/types/apps/userType'
 
 // Component Imports
+// eslint-disable-next-line import/no-unresolved
 import CustomTextField from '@core/components/mui/TextField'
 
 const TableFilters = ({ setData, tableData }: { setData: (data: UsersType[]) => void; tableData?: UsersType[] }) => {
@@ -21,7 +22,7 @@ const TableFilters = ({ setData, tableData }: { setData: (data: UsersType[]) => 
     if (!tableData || !Array.isArray(tableData)) return // Verificar si tableData es un array
 
     const filteredData = tableData.filter(user => {
-      const matchRole = role ? user.roles.some(r => r.roleEnum === role) : true // Comparar roles
+      const matchRole = role ? user?.roles?.some(r => r.roleEnum === role) : true // Comparar roles
 
       const matchStatus = status !== '' ? user.enabled === status : true // Comparar el estado
 

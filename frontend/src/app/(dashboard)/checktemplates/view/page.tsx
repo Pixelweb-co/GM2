@@ -14,11 +14,34 @@ const ProductViewLayout = () => {
     { id: 6, fecha: '2024-10-09', color: 'primary' }
   ])
 
-  const [product, setProduct] = useState(null)
+  interface Product {
+    productName: string;
+    brand: string;
+    model: string;
+    productCode: string;
+    invimaRegister: string;
+    origin: string;
+    location: string;
+    voltage: string;
+    amperage: string;
+    power: string;
+    frequency: string;
+    manual: string;
+    purchaseDate: string;
+    bookValue: string;
+    supplier: string;
+    warranty: string;
+    warrantyStartDate: string;
+    warrantyEndDate: string;
+    periodicity: string;
+  }
+
+  const [product, setProduct] = useState<Product | null>(null)
 
   useEffect(() => {
     // Carga los datos del localStorage
-    const productData = localStorage.getItem('productview') ? JSON.parse(localStorage.getItem('productview')) : null
+    const storedProductView = localStorage.getItem('productview');
+    const productData = storedProductView ? JSON.parse(storedProductView) : null;
 
     if (productData) {
       console.log('productData', productData)
@@ -26,17 +49,18 @@ const ProductViewLayout = () => {
     }
   }, [])
 
+
   if (!product) {
     return <Typography>Cargando datos del producto...</Typography>
   }
 
   // Función para eliminar un reporte
-  const eliminarReporte = id => {
+  const eliminarReporte = (id:any) => {
     setReportes(reportes.filter(reporte => reporte.id !== id))
   }
 
   // Función para visualizar un reporte (puedes expandirla para mostrar contenido)
-  const verReporte = fecha => {
+  const verReporte = (fecha:any) => {
     alert(`Visualizando reporte del ${fecha}`)
   }
 
@@ -184,7 +208,7 @@ const ProductViewLayout = () => {
                 >
                   <Button
                     variant='contained'
-                    color={reporte.color}
+                    color={reporte.color as 'primary' | 'error'}
                     onClick={() => verReporte(reporte.fecha)}
                     startIcon={<i className='fas fa-eye'></i>}
                   >

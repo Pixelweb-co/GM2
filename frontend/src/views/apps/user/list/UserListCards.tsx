@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid'
 import type { UserDataType } from '@components/card-statistics/HorizontalWithSubtitle'
 
 // Component Imports
+// eslint-disable-next-line import/no-unresolved
 import HorizontalWithSubtitle from '@components/card-statistics/HorizontalWithSubtitle'
 
 // Vars
@@ -47,7 +48,7 @@ const data: UserDataType[] = [
   }
 ]
 
-const UserListCards = ({ users }) => {
+const UserListCards = ({ users }:{users:any}) => {
   return (
     <Grid container spacing={6}>
       {data.map((item, i) => {
@@ -56,11 +57,11 @@ const UserListCards = ({ users }) => {
         }
 
         if (item.title == 'Activos') {
-          item.stats = users.length ? users.filter(user => user.enabled === true).length.toString() : '0'
+          item.stats = users.length ? users.filter((user:any) => user.enabled === true).length.toString() : '0'
         }
 
         if (item.title == 'Inactivos') {
-          item.stats = users.length ? users.filter(user => user.enabled === false).length.toString() : '0'
+          item.stats = users.length ? users.filter((user:any) => user.enabled === false).length.toString() : '0'
         }
 
         return (

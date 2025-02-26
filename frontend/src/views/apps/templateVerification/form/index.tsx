@@ -22,7 +22,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import axios from 'axios'
 
-import type { TypeDeviceType } from '../type/TemplateVerificationType'
+import type { TemplateVerificationType } from '../type/TemplateVerificationType'
 
 const schema = yup.object().shape({
   typeDevice: yup.string().required('El nombre es obligatorio'),
@@ -38,7 +38,7 @@ const TypeDeviceForm = ({
   open: boolean
   onClose: () => void
   setOpen: () => void
-  rowSelect: TypeDeviceType
+  rowSelect: TemplateVerificationType
 }) => {
   const [id, setId] = useState<any>(null)
 
@@ -110,7 +110,7 @@ const TypeDeviceForm = ({
     if (rowSelect.id) {
       console.log('rowSelect', rowSelect)
       setId(rowSelect.id)
-      setValue('typeDevice', rowSelect.typeDevice || '')
+      setValue('typeDevice', rowSelect?.typeDevice || '')
       setEditData(rowSelect)
 
     }

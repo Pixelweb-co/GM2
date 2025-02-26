@@ -1,11 +1,12 @@
 'use client'
+
 // MUI Imports
+
 import Grid from '@mui/material/Grid'
 
 // Component Imports
+
 import ChangePassword from './ChangePassword'
-import TwoStepVerification from './TwoStepVerification'
-import RecentDevice from './RecentDevice'
 
 const SecurityTab = () => {
   return (

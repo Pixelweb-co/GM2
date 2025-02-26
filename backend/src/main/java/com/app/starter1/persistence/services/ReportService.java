@@ -1,18 +1,13 @@
 package com.app.starter1.persistence.services;
 
 import com.app.starter1.dto.PlantillaDTO;
+import com.app.starter1.dto.PlantillaVerificationDTO;
 import com.app.starter1.dto.ReportDTO;
-import com.app.starter1.persistence.entity.EstadoSolicitud;
-import com.app.starter1.persistence.entity.Reporte;
-import com.app.starter1.persistence.entity.Solicitud;
-import com.app.starter1.persistence.repository.CheckeoRepository;
-import com.app.starter1.persistence.repository.EstadoSolicitudRepository;
-import com.app.starter1.persistence.repository.ReportRepository;
-import com.app.starter1.persistence.repository.SolicitudRepository;
+import com.app.starter1.persistence.entity.*;
+import com.app.starter1.persistence.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.app.starter1.persistence.entity.Checkeo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +30,9 @@ public class ReportService {
 
     @Autowired
     private EstadoSolicitudRepository estadoSolicitudRepository;
+
+    @Autowired
+    private VerificationRepository verificationRepository;
 
     /**
      * Crear o guardar un reporte.
@@ -59,6 +57,21 @@ public class ReportService {
                 checkeo.setDateTime(formattedDateTime); // Asignamos la fecha formateada
                 checkeo.setIdOrden(savedReport.getSolicitud()); // Relacionamos el checkeo con el reporte creado
                 checkeoRepository.save(checkeo);
+            }
+        }
+
+        // Guardar los checkeos
+        if (reportDTO.getVtemplatesData() != null) {
+            for (PlantillaVerificationDTO plantillaV : reportDTO.getVtemplatesData()) {
+                PlantillaVerificacionData pverification = new PlantillaVerificacionData();
+
+                pverification.setIdPlantilla(plantillaV.getId_plantilla());
+                pverification.setEquipment(plantillaV.getEquipment());
+                pverification.setId_grupo(plantillaV.getId_grupo());
+                pverification.setOptionid(plantillaV.getOption());
+                pverification.setValue(plantillaV.getValue());
+
+                verificationRepository.save(pverification);
             }
         }
 

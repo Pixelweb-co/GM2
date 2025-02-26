@@ -144,7 +144,7 @@ const TemplateVerificationListTable = ({
         throw new Error('No token found')
       }
 
-      const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
+      const res = await axios.delete(`http://localhost:8080/plantillas-verificacion/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
@@ -182,13 +182,13 @@ const TemplateVerificationListTable = ({
           />
         )
       },
-      columnHelper.accessor('templateVerification', {
+      columnHelper.accessor('templateName', {
         header: 'Nombre',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
             <div className='flex flex-col'>
               <Typography color='text.primary' className='font-medium'>
-                {row.original.templateVerification}
+                {row.original.templateName}
               </Typography>
             </div>
           </div>
@@ -212,7 +212,7 @@ const TemplateVerificationListTable = ({
 
             <IconButton
               onClick={() => {
-                console.log('delete', row.original.id)
+                console.log('delete', row.original)
                 deleteItem(row.original.id)
                 reload(true)
               }}

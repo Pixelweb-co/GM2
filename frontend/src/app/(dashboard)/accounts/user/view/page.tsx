@@ -23,7 +23,7 @@ const SignatureTab = dynamic(() => import('@views/apps/user/view/user-right/sign
 
 // Tab Content Function
 const tabContentList = () => {
-  let contentTabs: any = {
+  const contentTabs: any = {
     overview: <OverViewTab />,
     security: <SecurityTab />,
   };

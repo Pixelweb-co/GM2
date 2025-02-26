@@ -9,10 +9,10 @@ import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeD
 import axiosInstance from '@/utils/axiosInterceptor'
 import TemplateVerificationListTable from '@/views/apps/templateVerification/list/TemplateVerificationListTable'
 
-const getTypeDeviceData = async () => {
+const getTemplatesVerification = async () => {
 
   try {
-    const response = await axiosInstance.get('/type-device');
+    const response = await axiosInstance.get('/plantillas-verificacion');
 
     console.log('Datos recibidosnw:', response.data);
 
@@ -32,7 +32,7 @@ const TemplateVListApp = () => {
 
   const reload = async () => {
     try {
-      const data = await getTypeDeviceData()
+      const data = await getTemplatesVerification()
 
    //   console.log('Datostp', data)
       setTypeDeviceData(data)
@@ -46,7 +46,7 @@ const TemplateVListApp = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getTypeDeviceData()
+        const data = await getTemplatesVerification()
 
      //   console.log('Datos', data)
         setTypeDeviceData(data)

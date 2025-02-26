@@ -29,8 +29,8 @@ import CustomTextField from '@core/components/mui/TextField'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 // Slice Imports
-import { addEvent, deleteEvent, updateEvent, selectedEvent, filterEvents } from '@/redux-store/slices/calendar'
 
+import { addEvent, deleteEvent, updateEvent, selectedEvent } from '@/redux-store/slices/calendar'
 interface PickerProps {
   label?: string
   error?: boolean
@@ -149,7 +149,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
       dispatch(updateEvent({ ...modifiedEvent, id: calendarStore.selectedEvent.id }))
     }
 
-    dispatch(filterEvents())
+   // dispatch(filterEvents())
 
     handleSidebarClose()
   }
@@ -157,7 +157,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
   const handleDeleteButtonClick = () => {
     if (calendarStore.selectedEvent) {
       dispatch(deleteEvent(calendarStore.selectedEvent.id))
-      dispatch(filterEvents())
+   //   dispatch(filterEvents())
     }
 
     // calendarApi.getEventById(calendarStore.selectedEvent.id).remove()

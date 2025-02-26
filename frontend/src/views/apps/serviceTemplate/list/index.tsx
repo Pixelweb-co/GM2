@@ -2,7 +2,7 @@
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { ServiceTemplateType } from '../type/serviceTemplate'
+import type { ServiceTemplateType } from '../type/ServiceTemplate'
 
 // Component Imports
 import ServiceTemplateListTable from './serviceTemplate'

@@ -2,19 +2,19 @@
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { TypeDeviceType } from '../type/TemplateVerificationType'
+import type { TemplateVerificationType } from '../type/TemplateVerificationType'
 
 // Component Imports
-import TypeDeviceListTable from './TemplateVerificationListTable'
+import TemplateVerificationListTable from './TemplateVerificationListTable'
 
-const typeDeviceList = ({ typeDeviceData, reload }: { typeDeviceData?: TypeDeviceType[], reload:void }) => {
+const TemplateVerificationList = ({ typeDeviceData, reload }: { typeDeviceData?: TemplateVerificationType[], reload:void }) => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <TypeDeviceListTable tableData={typeDeviceData} reload={reload}/>
+        <TemplateVerificationListTable tableData={typeDeviceData} reload={reload}/>
       </Grid>
     </Grid>
   )
 }
 
-export default typeDeviceList
+export default TemplateVerificationList

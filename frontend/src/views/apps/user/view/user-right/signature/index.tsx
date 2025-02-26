@@ -4,11 +4,6 @@ import Grid from '@mui/material/Grid'
 // Type Imports
 import type { PricingPlanType } from '@/types/pages/pricingTypes'
 
-// Component Imports
-import CurrentPlan from './CurrentPlan'
-import PaymentMethod from './PaymentMethod'
-import BillingAddress from './BillingAddress'
-
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'

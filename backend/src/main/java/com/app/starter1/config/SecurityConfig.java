@@ -124,6 +124,12 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.DELETE, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
+                    //plantilla verficacion
+
+                    http.requestMatchers(HttpMethod.GET, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.PUT, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.POST, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+                    http.requestMatchers(HttpMethod.DELETE, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
                     //libreria de medios
                     http.requestMatchers(HttpMethod.POST, "/media/**").permitAll();

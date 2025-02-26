@@ -8,10 +8,31 @@ import JsonTreeBuilder from './treeBuilder';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 
-const Equipment = ({ item, onUpdate, onDelete,onUpdateGroupsData,validate,onErrors }: { item: any, onUpdate: any, onDelete: any,onUpdateGroupsData:any,validate:boolean,onErrors:boolean }) => {
+const Equipment = ({
+  item, 
+  onUpdate, 
+  onDelete,
+  onUpdateGroupsData,
+  validate,
+  onErrors,
+  onOkform 
+} : { 
+  item: any, 
+  onUpdate: any, 
+  onDelete: any,
+  onUpdateGroupsData:any,
+  validate:boolean,
+  onErrors:any, 
+  onOkform:any
+}) => {
+
+
+
   const schema = yup.object().shape({
     nom: yup.string().required("El nombre del equipo es requerido")
   });
+
+
 
   const {
     control,
@@ -28,10 +49,26 @@ const Equipment = ({ item, onUpdate, onDelete,onUpdateGroupsData,validate,onErro
 
    // Efecto para validar cuando validate cambia a true
    useEffect(() => {
+
+    console.log("validate p",validate)
+
     if (validate) {
       trigger(); // Valida el formulario manualmente
     }
   }, [validate, trigger]);
+
+useEffect(() => {
+
+  if(errors.nom){
+    console.log("errors.nom",errors.nom)
+    onErrors(true)
+    onOkform(false)
+  }else{
+    onErrors(false) 
+    onOkform(true)
+  }
+
+}, [errors]);
 
 
   const handleUpdateField = (field: string, value: any) => {
@@ -77,7 +114,7 @@ const Equipment = ({ item, onUpdate, onDelete,onUpdateGroupsData,validate,onErro
                     }} 
                     label="Nombre"
                     error={Boolean(errors.nom)}
-                    helperText={errors.nom?.message}
+                    helperText={errors.nom?.message?.toString()}
                   />
                 )}
               />

@@ -67,16 +67,16 @@ const schema = yup.object().shape({
   cesantia: yup.string().required('Cesantías es requerido'),
   arl: yup.string().required('ARL es requerida'),
   contractType: yup.string().required('Tipo de contrato es requerido'),
-  contractStartDate: yup.date().required('Fecha de inicio es requerida'),
-  contractEndDate: yup.date().required('Fecha de fin es requerida'),
-  salary: yup.number().typeError('El salario debe ser un número').required('Salario es requerido'),
+  contractStartDate: yup.date().nullable().required('Fecha de inicio es requerida').nullable(),
+  contractEndDate: yup.date().nullable().required('Fecha de fin es requerida').nullable(),
+  salary: yup.mixed().transform((_, originalValue) => (originalValue === '' ? null : Number(originalValue))).nullable().required('Salario es requerido'),
   cargo: yup.string().required('Cargo es requerido')
 })
 
 const FormEmploye = () => {
   const [value, setValue] = useState('personal_info')
 
-  const [formData, setFormData] = useState<FormDataType>({
+  const [formData, setFormData] = useState<any>({
     firstName: '',
     lastName: '',
     birthDate: null,
@@ -114,7 +114,7 @@ const FormEmploye = () => {
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm<FormDataType>({
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues: formData
   })
@@ -286,7 +286,7 @@ const FormEmploye = () => {
                         label='Nombre'
                         {...field}
                         error={!!errors.firstName}
-                        helperText={errors.firstName?.message}
+                        helperText={errors.firstName?.message?.toString()}
                       />
                     )}
                   />
@@ -302,7 +302,7 @@ const FormEmploye = () => {
                         label='Apellido'
                         {...field}
                         error={!!errors.lastName}
-                        helperText={errors.lastName?.message}
+                        helperText={errors.lastName?.message?.toString()}
                       />
                     )}
                   />
@@ -332,7 +332,7 @@ const FormEmploye = () => {
                         label='Número de Teléfono'
                         {...field}
                         error={!!errors.phoneNumber}
-                        helperText={errors.phoneNumber?.message}
+                        helperText={errors.phoneNumber?.message?.toString() || ''}
                       />
                     )}
                   />
@@ -348,7 +348,7 @@ const FormEmploye = () => {
                         label='Email'
                         {...field}
                         error={!!errors.email}
-                        helperText={errors.email?.message}
+                        helperText={errors.email?.message?.toString() || ''}
                       />
                     )}
                   />
@@ -370,7 +370,7 @@ const FormEmploye = () => {
                         label='EPS'
                         {...field}
                         error={!!errors.eps}
-                        helperText={errors.eps?.message}
+                        helperText={errors.eps?.message?.toString() || ''}
                       >
                         {epsList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -393,7 +393,7 @@ const FormEmploye = () => {
                         label='Caja de compensación'
                         {...field}
                         error={!!errors.cajacompensacion}
-                        helperText={errors.cajacompensacion?.message}
+                        helperText={errors.cajacompensacion?.message?.toString() || ''}
                       >
                         {cajasList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -416,7 +416,7 @@ const FormEmploye = () => {
                         label='Pensión'
                         {...field}
                         error={!!errors.pension}
-                        helperText={errors.pension?.message}
+                        helperText={errors.pension?.message?.toString() || ''}
                       >
                         {pensionList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -439,7 +439,7 @@ const FormEmploye = () => {
                         label='Cesantías'
                         {...field}
                         error={!!errors.cesantia}
-                        helperText={errors.cesantia?.message}
+                        helperText={errors.cesantia?.message?.toString() || ''}
                       >
                         {cesantiaList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -462,7 +462,7 @@ const FormEmploye = () => {
                         label='ARL'
                         {...field}
                         error={!!errors.arl}
-                        helperText={errors.arl?.message}
+                        helperText={errors.arl?.message?.toString() || ''}
                       >
                         {arlList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -490,7 +490,7 @@ const FormEmploye = () => {
                         label='Tipo de Contrato'
                         {...field}
                         error={!!errors.contractType}
-                        helperText={errors.contractType?.message}
+                        helperText={errors.contractType?.message?.toString() || ''}
                       >
                         {contractTypes.map((item: { id: string; tipo_contrato: string }) => (
                           <MenuItem key={item.id} value={item.id}>
@@ -541,7 +541,7 @@ const FormEmploye = () => {
                         type='number'
                         {...field}
                         error={!!errors.salary}
-                        helperText={errors.salary?.message}
+                        helperText={errors.salary?.message?.toString() || ''}
                       />
                     )}
                   />
@@ -558,7 +558,7 @@ const FormEmploye = () => {
                         label='Cargo'
                         {...field}
                         error={!!errors.cargo}
-                        helperText={errors.cargo?.message}
+                        helperText={errors.cargo?.message?.toString()}
                       >
                         {cargoList.map((item: { id: string; nombre: string }) => (
                           <MenuItem key={item.id} value={item.id}>

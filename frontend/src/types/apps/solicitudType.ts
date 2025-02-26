@@ -4,7 +4,7 @@ export interface SolicitudType {
   hora?: string // Hora en formato string (HH:mm)
   equipo?: string // Identificador del equipo relacionado
   entidad?: string // Identificador de la entidad relacionada
-  status?: string // Estado de la solicitud (puede ser un código, e.g., 'A', 'P', etc.)
+  status?: statusd // Estado de la solicitud (puede ser un código, e.g., 'A', 'P', etc.)
   tipoServicio?: string // ID del tipo de servicio relacionado
   nombreAsig?:string
   nombreEntidad?:string
@@ -16,4 +16,9 @@ export interface SolicitudType {
   asig?:string
   fchasg?:string
   horasg?:string
+}
+
+interface statusd {
+  id?:number
+  nombre?:string
 }

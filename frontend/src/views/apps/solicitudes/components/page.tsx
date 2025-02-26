@@ -11,6 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
+
 import {
   Accordion,
   AccordionDetails,
@@ -25,8 +26,14 @@ import {
   TextField,
   Typography
 } from '@mui/material'
+
 import { Controller, useForm } from 'react-hook-form'
+
+import axios from 'axios'
+
 import axiosInstance from '@/utils/axiosInterceptor'
+
+
 
 const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; RecordData: any; closeForm: any }) => {
   // States
@@ -35,6 +42,8 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
   const [formTemplate, setFormTemplate] = useState<any[]>([])
   const [product, setProduct] = useState<any>(null)
   const [ciudad, setCiudad] = useState<any>('')
+  const [plantillaV,setPlantillaV] = useState<any | null>(null)
+  const [plantillaVData,setPlantillaVData] = useState<any[]>([])
 
   const [observacion, setObservacion] = useState<any>('')
   const [resumen, setResumen] = useState<any>('')
@@ -48,6 +57,40 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
 
   const handleExpandChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
+  }
+
+  
+  const fetchTemplateV = async (data:any) => {
+    console.log('fetchTemplateV')
+
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+      }
+
+      
+      const [plantillavRes] = await Promise.all([
+
+        axios.get(`http://localhost:8080/plantillas-verificacion/device/${data.idTipoDevice}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      console.log("res plantilla ",plantillavRes)
+      
+      setPlantillaV(plantillavRes.data)
+
+     
+
+      return true
+    } catch (error) {
+      console.error('Error al obtener datos:', error)
+    }
   }
 
   const handleClickOpen = () => setOpen(true)
@@ -65,16 +108,17 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
     const fetchData = async (item: any) => {
       const result = await axiosInstance.get(`/plantillas/producto/${item.idEquipo}`)
 
-      console.log('result:', result)
+      console.log('result pls:', result)
 
       setFormTemplate(result.data.plantillas)
       setProduct(result.data.producto)
     }
 
     if (RecordData) {
-      // console.log('RecordData:', RecordData)
+       console.log('RecordData:', RecordData)
 
       fetchData(RecordData)
+      fetchTemplateV(RecordData)
     }
   }, [RecordData])
 
@@ -115,6 +159,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
       idSolicitud: RecordData.idSolicitud,
       idTipoServicio: RecordData.idTipoServicio,
       idEquipo: RecordData.idEquipo,
+      //idTipoDevice: RecordData.idTipoDevice,
       idEntidad: RecordData.idEntidad,
       ciudad: ciudad,
 
@@ -123,7 +168,8 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
       observacion: observacion,
       plantillas: formTemplate,
       nombreTypoServicio: RecordData.nombreTipoServicio,
-      estadoEquipo: value
+      estadoEquipo: value,
+      vtemplatesData:plantillaVData
     }
 
     console.log('data', data)
@@ -142,6 +188,12 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
       alert('Error creando el reporte')
     }
   }
+
+  useEffect(()=>{
+
+    console.log("pldata ",plantillaVData)
+
+  },[plantillaVData])
 
   return (
     <>
@@ -266,13 +318,13 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
             </AccordionDetails>
           </Accordion>
 
-          <Accordion expanded={expanded === 'panel2'} onChange={handleExpandChange('panel2')}>
+          {formTemplate.length > 0 && <Accordion expanded={expanded === 'panel2'} onChange={handleExpandChange('panel2')}>
             <AccordionSummary
               sx={{
                 backgroundColor: '#7367f0',
                 color: 'white',
                 '&:hover': {
-                  backgroundColor: '#9e97f5' // Color más claro
+                  backgroundColor: '#9e97f5' // Color más claro 
                 }
               }}
               expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
@@ -281,12 +333,13 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
             </AccordionSummary>
             <Divider />
             <AccordionDetails className='!pbs-6'>
+              
               {formTemplate.length > 0 &&
                 formTemplate.map((plantillar, index) => (
                   <div key={index}>
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={12}>
-                        {plantillar.tipo == 2 && (
+                        
                           <Controller
                             name='tipoElementDt'
                             control={control}
@@ -302,35 +355,18 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
                               />
                             )}
                           />
-                        )}
+                      
 
-                        {plantillar.tipo == 3 && (
-                          <Controller
-                            name='tipoElementcx'
-                            control={control}
-                            render={({ field }) => (
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={plantillar.valor === 'SI'} // Asegura que el estado refleje correctamente el valor guardado
-                                    onChange={e => handleInputChange(plantillar.id, e.target.checked ? 'SI' : 'NO')}
-                                  />
-                                }
-                                label={plantillar.nom}
-                              />
-                            )}
-                          />
-                        )}
                       </Grid>
                     </Grid>
                   </div>
                 ))}
             </AccordionDetails>
-          </Accordion>
+          </Accordion>}
 
-          {product && product.verification && 
-            <>
-            <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
+          
+           
+          {plantillaV && <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
             <AccordionSummary
               sx={{
                 backgroundColor: '#7367f0',
@@ -344,63 +380,82 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
               <Typography>Prueba de verificación</Typography>
             </AccordionSummary>
             <Divider />
-            <AccordionDetails className='!pbs-6'>
-            <Grid container spacing={4}>
+            <AccordionDetails className='!pbs-1'>
+            <Grid container spacing={0}>
                 <Grid item xs={12} md={12} sm={12}>
-                  <TextField
-                    rows={4}
-                    fullWidth
-                    multiline
-                    label='Detalle de la prueba'
-                    variant='outlined'
-                    onChange={e => setObservacion(e.target.value)}
-                    value={observacion}
-                    id='textarea-standard-static'
-                    placeholder='Detalle'
-                  />
+                
+                  {plantillaV && <div className="">
+                 <div className="border rounded shadow-md">
+                     <div className="bg-gray-200 font-bold p-2">PRUEBA DE VERIFICACIÓN</div>
+                     <div className="p-2"> {plantillaV.templateName}</div>
+                     {plantillaV && JSON.parse(plantillaV.equimentlist).map((equipment:any,indexk:any)=>{
+                 
+                       return <div key={indexk}>
+                         <div className="border rounded shadow-md">
+                     <div className="bg-gray-200 font-bold p-2">INFORMACIÓN EQUIPO PATRON</div>
+                     <div className="p-2"> {equipment.equipment.nom}</div>
+                 
+                     <Grid container spacing={0}>
+                 
+                 {equipment.groupsData && equipment.groupsData.map((group:any,indexo:any)=>{
+                   
+                   return(
+                 
+                 <table key={indexo} className="table-auto border w-full h-24 mb-2">
+                 <thead className="bg-gray-200 font-bold p-2">
+                 <th className="w-1/6 text-center p-2">No</th> 
+                 <th className="w-1/6 text-center p-2">{group.name}</th>
+                 <th className="w-1/6 text-center p-2">Lectura</th>
+                 </thead>
+                 
+                 <tbody>
+                 {group && group.options.map((groupItem:any,index:any)=>{
+                 
+                     return (<tr key={index}>
+                 
+                         <td className="w-1/6 p-2 bg-gray-200 text-center font-bold">{index + 1}</td>
+                         <td className="w-2/6 p-2 text-center">{groupItem.name}</td>
+                         <td className="w-2/6 p-2">
+                         <CustomTextField fullWidth 
+                           onChange={(e) => {
+                            
+                            setPlantillaVData([...plantillaVData,{id_plantilla:plantillaV.id,equipment:equipment.id,id_grupo:group.id, option:groupItem.id, value:e.target.value}])
+                          
+                          }}
+                    
+                              />
+                         </td>
+                 
+                     </tr>)
+                 
+                   })}
+                 </tbody>
+                 </table>
+                 
+                 )
+                 
+                 })}
+                 
+                 </Grid>
+                 
+                 
+                     </div>
+                  
+                  </div>
+                 
+                     })}
+                     </div></div>}
                 </Grid>
                 
               </Grid>
             </AccordionDetails>
-          </Accordion>
+          </Accordion>}
          
-          <Accordion expanded={expanded === 'panel4'} onChange={handleExpandChange('panel4')}>
-            <AccordionSummary
-              sx={{
-                backgroundColor: '#7367f0',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: '#9e97f5' // Color más claro
-                }
-              }}
-              expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
-            >
-              <Typography> Información del equipo patrón</Typography>
-            </AccordionSummary>
-            <Divider />
-            <AccordionDetails className='!pbs-6'>
-            <Grid container spacing={4}>
-                <Grid item xs={12} md={12} sm={12}>
-                  <TextField
-                    rows={4}
-                    fullWidth
-                    multiline
-                    label='Detalle del equipo patrón'
-                    variant='outlined'
-                    onChange={e => setObservacion(e.target.value)}
-                    value={observacion}
-                    id='textarea-standard-static'
-                    placeholder='Detalle'
-                  />
-                </Grid>
-                
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-          </>
+
+         
 
           
-          }
+          
 
           <Accordion expanded={expanded === 'panel5'} onChange={handleExpandChange('panel5')}>
             <AccordionSummary
@@ -411,7 +466,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
                   backgroundColor: '#9e97f5' // Color más claro
                 }
               }}
-              expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} style={{ color: 'white' }} />}
+              expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
             >
               <Typography>Realización</Typography>
             </AccordionSummary>

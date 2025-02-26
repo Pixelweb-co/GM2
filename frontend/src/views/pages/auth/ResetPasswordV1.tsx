@@ -20,7 +20,7 @@ import Button from '@mui/material/Button'
 
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 import DirectionalIcon from '@components/DirectionalIcon'
 
@@ -64,8 +64,7 @@ const ResetPasswordV1 = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    trigger // Importante para activar validación en eventos específicos
+    formState: { errors } // Importante para activar validación en eventos específicos
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onBlur' // O usa 'onChange' si prefieres validar mientras escribe

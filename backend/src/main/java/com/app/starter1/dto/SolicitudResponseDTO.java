@@ -21,6 +21,7 @@ public class SolicitudResponseDTO {
     private UserEntity asig;
     private EstadoSolicitud status;
     private Long idEquipo;
+    private Long idTipoDevice;
     private Long entidad;
     private Long tipoServicio;
     private String descripcion;

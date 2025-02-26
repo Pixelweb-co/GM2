@@ -1,111 +1,117 @@
-// Third-party Imports
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import type { EventInput } from '@fullcalendar/core'
+  // Third-party Imports
+  import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
-// Type Imports
-import type { CalendarFiltersType, CalendarType } from '@/types/apps/calendarTypes'
+  import type { EventInput } from '@fullcalendar/core'
 
-// Data Imports
-import axiosInstance from '@/utils/axiosInterceptor'
+  // Type Imports
+  import type { CalendarType } from '@/types/apps/calendarTypes'
 
-// Async Thunk para cargar eventos desde la API
-export const fetchEvents = createAsyncThunk<EventInput[]>('calendar/fetchEvents', async () => {
-  try {
-    const response = await axiosInstance.get('http://localhost:8080/schedule')
+  type CalendarFiltersType = 'Equipos' | 'Solicitudes';
 
-    const events: EventInput[] = response.data.map(schedule => ({
-      id: schedule.id.toString(),
-      url: '',
-      title: schedule.device.productName, // Nombre del producto asociado
-      start: schedule.date, // Fecha del evento
-      end: new Date(new Date(schedule.date).setDate(new Date(schedule.date).getDate() + 1)).toISOString().split('T')[0], // Siguiente día
-      allDay: false,
-      extendedProps: {
-        calendar: 'Equipos'
-      }
-    }))
+  // Data Imports
+  import axiosInstance from '@/utils/axiosInterceptor'
 
-    return events
-  } catch (error) {
-    console.error('Error fetching Calendar data:', error)
-    throw error
-  }
-})
+  // Async Thunk para cargar eventos desde la API
+  export const fetchEvents = createAsyncThunk<EventInput[]>('calendar/fetchEvents', async () => {
+    try {
+      const response = await axiosInstance.get('http://localhost:8080/schedule')
 
-// Estado inicial
-const initialState: CalendarType = {
-  events: [],
-  filteredEvents: [],
-  selectedEvent: null,
-  selectedCalendars: ['Equipos', 'Solicitudes'] as CalendarFiltersType[],
-  loading: false, // Agregado para manejar el estado de carga
-  error: null as string | null
-}
+      const events: EventInput[] = response.data.map((schedule:any) => ({
+        id: schedule.id.toString(),
+        url: '',
+        title: schedule.device.productName, // Nombre del producto asociado
+        start: schedule.date, // Fecha del evento
+        end: new Date(new Date(schedule.date).setDate(new Date(schedule.date).getDate() + 1)).toISOString().split('T')[0], // Siguiente día
+        allDay: false,
+        extendedProps: {
+          calendar: 'Equipos'
+        }
+      }))
 
-// Función para filtrar eventos por etiquetas seleccionadas
-const filterEventsUsingCheckbox = (events: EventInput[], selectedCalendars: CalendarFiltersType[]) => {
-  return events.filter(event => selectedCalendars.includes(event.extendedProps?.calendar as CalendarFiltersType))
-}
-
-// Slice de Redux
-export const calendarSlice = createSlice({
-  name: 'calendar',
-  initialState,
-  reducers: {
-    addEvent: (state, action: PayloadAction<EventInput>) => {
-      state.events.push(action.payload)
-    },
-    updateEvent: (state, action: PayloadAction<EventInput>) => {
-      state.events = state.events.map(event => (event.id === action.payload.id ? action.payload : event))
-    },
-    deleteEvent: (state, action: PayloadAction<string>) => {
-      state.events = state.events.filter(event => event.id !== action.payload)
-    },
-    selectedEvent: (state, action: PayloadAction<EventInput | null>) => {
-      state.selectedEvent = action.payload
-    },
-    filterCalendarLabel: (state, action: PayloadAction<CalendarFiltersType>) => {
-      const index = state.selectedCalendars.indexOf(action.payload)
-
-      if (index !== -1) {
-        state.selectedCalendars.splice(index, 1)
-      } else {
-        state.selectedCalendars.push(action.payload)
-      }
-
-      state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
-    },
-    filterAllCalendarLabels: (state, action: PayloadAction<boolean>) => {
-      state.selectedCalendars = action.payload ? ['Equipos', 'Solicitudes'] : []
-      state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
+      return events
+    } catch (error) {
+      console.error('Error fetching Calendar data:', error)
+      throw error
     }
-  },
-  extraReducers: builder => {
-    builder
-      .addCase(fetchEvents.pending, state => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(fetchEvents.fulfilled, (state, action) => {
-        state.loading = false
-        state.events = action.payload
-        state.filteredEvents = action.payload
-      })
-      .addCase(fetchEvents.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'Error al cargar los eventos'
-      })
+  })
+
+  // Estado inicial
+  const initialState: CalendarType = {
+    events: [],
+    filteredEvents: [],
+    selectedEvent: null,
+    selectedCalendars:['Equipos', 'Solicitudes'] as CalendarFiltersType[],
+    loading: false, // Agregado para manejar el estado de carga
+    error: null as string | null
   }
-})
 
-// Exportar acciones y reducer
-export const {
-  addEvent,
-  updateEvent,
-  deleteEvent,
-  selectedEvent,
-  filterCalendarLabel,
-  filterAllCalendarLabels
-} = calendarSlice.actions
+  // Función para filtrar eventos por etiquetas seleccionadas
+  const filterEventsUsingCheckbox = (events: EventInput[], selectedCalendars: CalendarFiltersType[]) => {
+    return events.filter(event => selectedCalendars.includes(event.extendedProps?.calendar as CalendarFiltersType))
+  }
 
-export default calendarSlice.reducer
+  // Slice de Redux
+  export const calendarSlice = createSlice({
+    name: 'calendar',
+    initialState,
+    reducers: {
+      addEvent: (state, action: PayloadAction<EventInput>) => {
+        state.events.push(action.payload)
+      },
+      updateEvent: (state, action: PayloadAction<EventInput>) => {
+        state.events = state.events.map(event => (event.id === action.payload.id ? action.payload : event))
+      },
+      deleteEvent: (state, action: PayloadAction<string>) => {
+        state.events = state.events.filter(event => event.id !== action.payload)
+      },
+      selectedEvent: (state, action: PayloadAction<EventInput | null>) => {
+        state.selectedEvent = action.payload
+      },
+      filterCalendarLabel: (state, action: PayloadAction<CalendarFiltersType>) => {
+        const index = state.selectedCalendars.indexOf(action.payload)
+
+        if (index !== -1) {
+          state.selectedCalendars.splice(index, 1)
+        } else {
+          state.selectedCalendars.push(action.payload)
+        }
+
+        state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
+      },
+      filterAllCalendarLabels: (state, action: PayloadAction<boolean>) => {
+        state.selectedCalendars = action.payload ? ['Equipos', 'Solicitudes'] : []
+        state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
+      }
+    },
+    extraReducers: builder => {
+      builder
+        .addCase(fetchEvents.pending, state => {
+          state.loading = true
+          state.error = null
+        })
+        .addCase(fetchEvents.fulfilled, (state, action) => {
+          state.loading = false
+          state.events = action.payload
+          state.filteredEvents = action.payload
+        })
+        .addCase(fetchEvents.rejected, (state, action) => {
+          if (state !== undefined) {
+            state.loading = false
+            state.error = action.error.message || 'Error al cargar los eventos'
+          }
+        })
+    }
+  })
+
+  // Exportar acciones y reducer
+  export const {
+    addEvent,
+    updateEvent,
+    deleteEvent,
+    selectedEvent,
+    filterCalendarLabel,
+    filterAllCalendarLabels,
+    
+  } = calendarSlice.actions
+
+  export default calendarSlice.reducer

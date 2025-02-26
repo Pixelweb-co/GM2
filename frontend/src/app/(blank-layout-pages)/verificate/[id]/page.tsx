@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
 import { useParams } from 'next/navigation'
 
 import VerifyEmailLink from '@/views/pages/auth/VerifyEmailLink'
@@ -13,23 +12,28 @@ const VerficateEmailPage = () => {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    // Extrae el parámetro que necesitas, por ejemplo: `params.token`
-    if (params?.id) {
+    const validate = async () => {
+      if (!params?.id) return
+
       setEmailToken(String(params.id))
-      console.log('Token almacenado:', params.id) // Para verificar en consola
+      console.log('Token almacenado:', params.id)
 
-      const result = AuthManager.validateAccount({ validationToken: String(params.id) })
-
-      setLoading(false)
-      console.log('result', result)
+      try {
+        const result = await AuthManager.validateAccount({ validationToken: String(params.id) })
+        console.log('Resultado de validación:', result)
+      } catch (error) {
+        console.error('Error en validación:', error)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    validate()
   }, [params])
 
   return (
-    <div className='flex flex-col justify-center items-center min-bs-[100dvh] p-6'>
-      {loading && <p>Validadado...</p>}
-
-      {!loading && <VerifyEmailLink />}
+    <div className='flex flex-col justify-center items-center min-h-screen p-6'>
+      {loading ? <p>Validando...</p> : <VerifyEmailLink />}
     </div>
   )
 }

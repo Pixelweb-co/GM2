@@ -44,6 +44,8 @@ public class TypeDeviceController {
     public ResponseEntity<TypeDeviceDTO> updateTypeDevice(@PathVariable Long id, @RequestBody TypeDeviceDTO typeDeviceDTO) {
         TypeDevice existingTypeDevice = typeDeviceService.findEntityById(id);
         typeDeviceService.updateEntityFromDTO(existingTypeDevice, typeDeviceDTO);
+
+
         TypeDevice updatedTypeDevice = typeDeviceService.save(existingTypeDevice);
         return ResponseEntity.ok(typeDeviceService.mapToDTO(updatedTypeDevice));
     }

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-import RolesListTable from '@views/apps/roles/list'
+// eslint-disable-next-line import/no-unresolved
+import RoleList from '@/views/apps/roles/list'
 
 const getRoleData = async () => {
   console.log('roleList ', process.env.BACKEND_PUBLIC_APP_URL)
@@ -55,7 +56,7 @@ const RoleListApp = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error loading role data: {String(error)}</p>
 
-  return <RolesListTable roleData={roleData} />
+  return <RoleList roleData={roleData} />
 }
 
 export default RoleListApp

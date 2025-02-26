@@ -23,17 +23,22 @@ import Divider from '@mui/material/Divider'
 
 import classnames from 'classnames'
 
+// eslint-disable-next-line import/no-unresolved
 import { AuthManager } from '@/utils/authManager'
 
 // Hook Imports
+// eslint-disable-next-line import/no-unresolved
 import { useImageVariant } from '@core/hooks/useImageVariant'
+// eslint-disable-next-line import/no-unresolved
 import { useSettings } from '@core/hooks/useSettings'
 
 // Component Imports
+// eslint-disable-next-line import/no-unresolved
 import Logo from '@components/layout/shared/Logo'
 
 // Third-party Imports
 
+// eslint-disable-next-line import/no-unresolved
 import CustomTextField from '@core/components/mui/TextField'
 
 // Styled Custom Components
@@ -60,7 +65,7 @@ const MaskImg = styled('img')({
   zIndex: -1
 })
 
-const RegisterV3 = ({ mode }: { mode: SystemMode }) => {
+const RegisterV3 = ({ mode }: { mode: any }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false)

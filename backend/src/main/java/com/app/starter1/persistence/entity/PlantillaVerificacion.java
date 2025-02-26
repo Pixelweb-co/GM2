@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
-@Table(name = "plantillas")
+@Table(name = "verification_templates")
 @NoArgsConstructor
 public class PlantillaVerificacion {
 
@@ -22,28 +22,14 @@ public class PlantillaVerificacion {
     @Column(name = "id_plantilla", length = 40, nullable = false)
     private Long id;
 
-    @Column(name = "tipo_element")
-    private Long tipoElement;
-
-    @Column(length = 80)
-    private String marca;
-
-    @Column(length = 80)
-    private String modelo;
-
-    @Column(length = 120)
-    private String nom;
-
-    @Column(length = 80)
-    private Long tipo;
-
-    private Integer valor;
-
-    @Column(length = 12)
-    private String alias;
-
-    @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    @Column(name = "templateName")
+    private String templateName;
+    @Column(name = "equimentlist" , columnDefinition = "TEXT")
+    private String equimentlist;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "plantilla_verificacion")
+    private String plantillaVerificacion;
 
 
 }

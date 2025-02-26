@@ -1,8 +1,10 @@
 package com.app.starter1.persistence.services;
 
-import com.app.starter1.dto.PlantillaRequest;
-import com.app.starter1.persistence.entity.Plantilla;
-import com.app.starter1.persistence.repository.PlantillaRepository;
+
+import com.app.starter1.dto.PlantillaVRequest;
+import com.app.starter1.persistence.entity.PlantillaVerificacion;
+
+import com.app.starter1.persistence.repository.PlantillaVerificationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,68 +15,46 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PlantillaService {
+public class PlantillaVerificationService {
 
     @Autowired
-    private PlantillaRepository plantillaRepository;
+    private PlantillaVerificationRepository plantillaVerificationRepository;
 
     // Obtener todas las plantillas
-    public List<Plantilla> obtenerTodasLasPlantillas() {
-        return plantillaRepository.findAll();
+    public List<PlantillaVerificacion> obtenerTodasLasPlantillaVerificacions() {
+        return plantillaVerificationRepository.findAll();
     }
 
     // Obtener una plantilla por su ID
-    public Optional<Plantilla> obtenerPlantillaPorId(Long id) {
-        return plantillaRepository.findById(id);
+    public Optional<PlantillaVerificacion> obtenerPlantillaVerificacionPorId(Long id) {
+        return plantillaVerificationRepository.findById(id);
     }
 
     // Crear o actualizar una plantilla
-    public Plantilla guardarPlantilla(Plantilla plantilla) {
-        return plantillaRepository.save(plantilla);
+    public PlantillaVerificacion guardarPlantillaVerificacion(PlantillaVRequest plantilla) {
+
+        PlantillaVerificacion plantillaVerificacion = new PlantillaVerificacion();
+
+        plantillaVerificacion.setTemplateName(plantilla.getTemplateName());
+        plantillaVerificacion.setEquimentlist(plantilla.getEquimentlist());
+
+        return plantillaVerificationRepository.save(plantillaVerificacion);
+
+
+
     }
 
     // Eliminar una plantilla por su ID
-    public void eliminarPlantilla(Long id) {
-        plantillaRepository.deleteById(id);
+    public void eliminarPlantillaVerificacion(Long id) {
+        plantillaVerificationRepository.deleteById(id);
     }
 
-    // Obtener todas las plantillas con filtros
-    public List<Plantilla> obtenerPlantillasFiltradas(String marca, String modelo, Long tipoElement) {
-        return plantillaRepository.findByMarcaAndModeloAndTipoElement(marca,modelo,tipoElement);
 
-    }
     //obtener plantillas para reporte
-    public List<Plantilla> obtenerPlantillasReporte(Long idProducto) {
+    public List<PlantillaVerificacion> obtenerPlantillaVerificacionsReporte(Long idProducto) {
         System.out.println(idProducto);
-        return plantillaRepository.findPlantillasByProductoId(idProducto);
+        return plantillaVerificationRepository.findAll();
 
-    }
-
-    @Transactional
-    public List<Plantilla> guardarPlantillas(PlantillaRequest plantillaRequest) {
-        // Eliminar plantillas existentes por marca, modelo y tipoElement
-        plantillaRepository.deleteByMarcaAndModeloAndTipoElement(
-                plantillaRequest.getMarca(),
-                plantillaRequest.getModelo(),
-                plantillaRequest.getTipoElement()
-        );
-
-        // Guardar nuevas plantillas
-        List<Plantilla> plantillas = new ArrayList<>();
-        for (PlantillaRequest.Campo campo : plantillaRequest.getCampos()) {
-            Plantilla plantilla = Plantilla.builder()
-                    .marca(plantillaRequest.getMarca())
-                    .modelo(plantillaRequest.getModelo())
-                    .tipoElement(plantillaRequest.getTipoElement())
-                    .nom(campo.getNom())
-                    .tipo(campo.getTipo())
-                    .dateTime(LocalDateTime.now())
-                    .build();
-
-            plantillas.add(plantillaRepository.save(plantilla));
-        }
-
-        return plantillas;
     }
 
 }

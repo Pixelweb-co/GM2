@@ -5,7 +5,7 @@ import type { EventInput } from '@fullcalendar/core'
 // Type Imports
 import type { ThemeColor } from '@core/types'
 
-export type CalendarFiltersType = 'Equipos'
+export type CalendarFiltersType = 'Equipos' | 'Solicitudes'
 
 export type CalendarColors = {
   Equipos: ThemeColor
@@ -17,6 +17,8 @@ export type CalendarType = {
   filteredEvents: EventInput[]
   selectedEvent: null | any
   selectedCalendars: CalendarFiltersType[]
+  loading:any
+  error:any
 }
 
 export type AddEventType = Omit<EventInput, 'id'>

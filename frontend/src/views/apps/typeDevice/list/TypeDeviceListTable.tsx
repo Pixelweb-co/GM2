@@ -3,8 +3,6 @@
 // React Imports
 import { useEffect, useState, useMemo } from 'react'
 
-
-
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -39,23 +37,17 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 // Style Imports
 import tableStyles from '../../../../@core/styles/table.module.css'
 
-
 import CustomTextField from '../../../../@core/components/mui/TextField'
 
 // Type Imports
 import TablePaginationComponent from '../../../../components/TablePaginationComponent'
 
-
-
-
-
-
 import type { TypeDeviceType } from '../type/typeDeviceType'
 
 import TypeDeviceForm from '../form'
 import CheckListForm from '@/components/dialogs/form-checklist'
-
-
+import { FormControl, InputLabel, Select } from '@mui/material'
+import axiosInstance from '@/utils/axiosInterceptor'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -67,7 +59,8 @@ declare module '@tanstack/table-core' {
 }
 
 type TypeDeviceTypeWithAction = TypeDeviceType & {
-  action?: string, id: string
+  action?: string
+  id: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -115,55 +108,92 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<TypeDeviceTypeWithAction>()
 
-const TypeDeviceListTable = ({ reload,tableData }: {reload?:any, tableData?: TypeDeviceType[] }) => {
+const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: TypeDeviceType[] }) => {
   // States
 
-  const [rowSelection, setRowSelection] = useState<any>({TypeDevice: '', id: ''})
-  const [data, setData] = useState<TypeDeviceTypeWithAction[]>(tableData?.map(item => ({...item, action: '', id: item.id})) || [])
+  const [rowSelection, setRowSelection] = useState<any>({ TypeDevice: '', id: '' })
+  const [data, setData] = useState<TypeDeviceTypeWithAction[]>(
+    tableData?.map(item => ({ ...item, action: '', id: item.id })) || []
+  )
   const [globalFilter, setGlobalFilter] = useState('')
   const [loadForm, setOpenForm] = useState(false)
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
+  const [verificationTemplates, setVerificationTemplates] = useState<any[]>([])
 
+  useEffect(() => {
+    console.log('from table type service ', rowSelection)
+  }, [rowSelection])
 
-useEffect(()=>{
+  useEffect(() => {
+    const getTemplatesVerification = async () => {
+      try {
+        const response = await axiosInstance.get('/plantillas-verificacion')
 
-  console.log("from table type service ",rowSelection)
+        console.log('Datos recibidosnw:', response.data)
 
-},[rowSelection])
+        setVerificationTemplates(response.data)
 
-
-useEffect(()=>{
-
-
-  setData(tableData?.map(item => ({...item, action: '', id: item.id})) || [])
-
-  console.log("from table type device ",tableData)
-
-},[tableData])
-
-const deleteItem = async (id: string) => {
-  try {
-    const token = localStorage.getItem('AuthToken')
-
-    console.log('token ', token)
-
-    if (!token) {
-      throw new Error('No token found')
+        return response.data
+      } catch (error) {
+        console.error('Error al obtener los datos:', error)
+      }
     }
 
-    const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
+    getTemplatesVerification()
+  }, [])
 
-    console.log('res', res)
-  } catch (error) {
-    console.error('Error deleting TypeDevice:', error)
-    throw error
+
+  const setTemplate = async (deviceId:any,value:any) => {
+
+ 
+    try{
+
+      const res = await axiosInstance.put(`http://localhost:8080/type-device/${deviceId}`, { plantillaVerificacion: value });
+  
+       console.log("res.data", res.data)
+  
+       reload(true)
+  
+    } catch (error:any) {
+      console.log('Actualizar el item:', error)
+      
+  
+    }
+    
+  
+
   }
-}
+
+
+  useEffect(() => {
+    setData(tableData?.map(item => ({ ...item, action: '', id: item.id })) || [])
+
+    console.log('from table type device ', tableData)
+  }, [tableData])
+
+  const deleteItem = async (id: string) => {
+    try {
+      const token = localStorage.getItem('AuthToken')
+
+      console.log('token ', token)
+
+      if (!token) {
+        throw new Error('No token found')
+      }
+
+      const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      console.log('res', res)
+    } catch (error) {
+      console.error('Error deleting TypeDevice:', error)
+      throw error
+    }
+  }
 
   const columns = useMemo<ColumnDef<TypeDeviceTypeWithAction, any>[]>(
     () => [
@@ -202,11 +232,41 @@ const deleteItem = async (id: string) => {
         )
       }),
 
+      columnHelper.accessor('typeDevice', {
+        header: 'Plantilla de verificación',
+        cell: ({ row }) => (
+          <div className=' items-center gap-4'>
+            <div className='flex flex-col'>
+              <FormControl variant='standard' fullWidth>
+               
+                <Select 
+                defaultValue='0'
+                value={row.original.plantillaVerificacion ? row.original.plantillaVerificacion: '0'}
+                
+                onChange={(e)=>setTemplate(row.original.id,e.target.value)}
+
+                >
+                  <MenuItem value={0}>No asignada</MenuItem>
+
+                  {verificationTemplates.length > 0 && verificationTemplates.map((item: any, index: any) => {
+                    return (
+                      <MenuItem key={index + 1} value={item.id}>
+                        {item.templateName}
+                      </MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+        )
+      }),
+
       columnHelper.accessor('action', {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-                        <IconButton
+            <IconButton
               onClick={() => {
                 setRowSelection(row.original)
                 setLoadFormCheck(true)
@@ -215,21 +275,22 @@ const deleteItem = async (id: string) => {
               <i className='tabler-list text-textSecondary' />
             </IconButton>
 
-            <IconButton onClick={()=>{
+            <IconButton
+              onClick={() => {
                 setRowSelection(row.original)
                 setOpenForm(true)
-
-            }}>
-
-                <i className='tabler-edit text-textSecondary' />
-
+              }}
+            >
+              <i className='tabler-edit text-textSecondary' />
             </IconButton>
 
-            <IconButton onClick={() => {
+            <IconButton
+              onClick={() => {
                 console.log('delete', row.original.id)
                 deleteItem(row.original.id)
                 reload(true)
-            }}>
+              }}
+            >
               <i className='tabler-trash text-textSecondary' />
             </IconButton>
           </div>
@@ -293,13 +354,14 @@ const deleteItem = async (id: string) => {
               className='max-sm:is-full'
             />
 
-
-              <Button variant='contained' startIcon={<i className='tabler-plus' />} className='max-sm:is-full'
+            <Button
+              variant='contained'
+              startIcon={<i className='tabler-plus' />}
+              className='max-sm:is-full'
               onClick={() => setOpenForm(true)}
-              >
-                Agregar tipo de servicio
-              </Button>
-
+            >
+              Agregar tipo de servicio
+            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -344,9 +406,9 @@ const deleteItem = async (id: string) => {
                 {table
                   .getRowModel()
                   .rows.slice(0, table.getState().pagination.pageSize)
-                  .map(row => {
+                  .map((row, index) => {
                     return (
-                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                      <tr key={index} className={classnames({ selected: row.getIsSelected() })}>
                         {row.getVisibleCells().map(cell => (
                           <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                         ))}
@@ -357,29 +419,26 @@ const deleteItem = async (id: string) => {
             )}
           </table>
 
-
-        <CheckListForm
-        open={loadFormCheck}
-        onClose={() => setLoadFormCheck(false)}
-        setOpen={() => setLoadFormCheck(true)}
-        rowSelect={rowSelection}
-      />
+          <CheckListForm
+            open={loadFormCheck}
+            onClose={() => setLoadFormCheck(false)}
+            setOpen={() => setLoadFormCheck(true)}
+            rowSelect={rowSelection}
+          />
 
           <TypeDeviceForm
-        open={loadForm}
-        onClose={() => {
-          setOpenForm(false)
-          reload(true)
-          setRowSelection({
-            id: '',
-            TypeDevice: '',
-          })
-        }}
-        setOpen={() => setOpenForm(true)}
-        rowSelect={rowSelection}
-      />
-
-
+            open={loadForm}
+            onClose={() => {
+              setOpenForm(false)
+              reload(true)
+              setRowSelection({
+                id: '',
+                TypeDevice: ''
+              })
+            }}
+            setOpen={() => setOpenForm(true)}
+            rowSelect={rowSelection}
+          />
         </div>
         <TablePagination
           component={() => <TablePaginationComponent table={table} />}

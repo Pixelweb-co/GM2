@@ -14,6 +14,7 @@ public class SolicitudDTO {
     private String asig;
     private Long status;
     private Long idEquipo;
+    private Long idTipoDevice;
     private String entidad;
     private String tipoServicio;
     private String descr;

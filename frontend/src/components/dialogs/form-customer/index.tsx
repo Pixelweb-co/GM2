@@ -151,7 +151,7 @@ const ClienteForm = ({
       setValue('fechaInicio', rowSelect.contrato?.fechaInicio || '')
       setValue('fechaFinal', rowSelect.contrato?.fechaFinal || '')
       setValue('descripcionContrato', rowSelect.contrato?.descripcionContrato || '')
-      setValue('status', rowSelect.status || '0')
+      setValue('status', typeof rowSelect.status === 'boolean' ? rowSelect.status.toString() : rowSelect.status || '0')
       setEditData(rowSelect)
     } else {
       setValue('name', '')

@@ -6,31 +6,30 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
-@Table(name = "verification_templates")
+@Table(name = "tb_verification")
 @NoArgsConstructor
-public class PlantillaVerificacion {
+public class PlantillaVerificacionData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_plantilla", length = 40, nullable = false)
+    @Column(name = "id", length = 40, nullable = false)
     private Long id;
 
-    @Column(name = "templateName")
-    private String templateName;
-    @Column(name = "equimentlist")
-    private String equimentlist;
-    @Column(name = "status")
-    private String status;
-    @Column(name = "plantilla_verificacion")
-    private String plantillaVerificacion;
+    @Column(name = "id_plantilla")
+    private String idPlantilla;
 
+    @Column(name = "optionId")
+    private String optionid;
+    @Column(name = "id_grupo")
+    private String id_grupo;
+    @Column(name = "equipment")
+    private String equipment;
+    @Column(name = "value")
+    private String value;
 
 }
-

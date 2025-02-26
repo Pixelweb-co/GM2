@@ -15,4 +15,5 @@ export interface UsersType {
   enabled?: boolean
   roles?: RolesType[]
   customer?: CustomersType
+  avatar:string
 }

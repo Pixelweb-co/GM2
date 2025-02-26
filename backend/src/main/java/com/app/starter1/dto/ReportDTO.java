@@ -21,5 +21,6 @@ public class ReportDTO {
     private String observacion; // Será mapeado a observaciones
     private Integer estadoEquipo; // Será mapeado a estadoEquipo
     private List<PlantillaDTO> plantillas;
+    private List<PlantillaVerificationDTO> vtemplatesData;
 }
 

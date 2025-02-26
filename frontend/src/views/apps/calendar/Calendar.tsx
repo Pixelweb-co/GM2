@@ -19,7 +19,7 @@ import type { CalendarOptions } from '@fullcalendar/core'
 import type { AddEventType, CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 
 // Slice Imports
-import { filterEvents, selectedEvent, updateEvent } from '@/redux-store/slices/calendar'
+import { selectedEvent, updateEvent } from '@/redux-store/slices/calendar'
 
 type CalenderProps = {
   calendarStore: CalendarType
@@ -169,7 +169,7 @@ const Calendar = (props: CalenderProps) => {
     */
     eventDrop({ event: droppedEvent }: any) {
       dispatch(updateEvent(droppedEvent))
-      dispatch(filterEvents())
+     // dispatch(filterEvents())
     },
 
     /*
@@ -178,7 +178,7 @@ const Calendar = (props: CalenderProps) => {
     */
     eventResize({ event: resizedEvent }: any) {
       dispatch(updateEvent(resizedEvent))
-      dispatch(filterEvents())
+     // dispatch(filterEvents())
     },
 
     // @ts-ignore

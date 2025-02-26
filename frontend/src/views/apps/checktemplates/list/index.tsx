@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid'
 import ChecktemplatesListTable from './ChecktemplatesListTable'
 import type { CheckTemplateType } from '@/types/apps/checkTemplateType'
 
-const ChecktemplateList = ({ reload, checkTemplateData }: { reload: any; checkTemplateData: ChecktemplateType[] }) => {
+const ChecktemplateList = ({ reload, checkTemplateData }: { reload: any; checkTemplateData: any }) => {
   console.log('checkTemplateData', checkTemplateData)
 
   return (

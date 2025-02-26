@@ -33,6 +33,22 @@ import type { SolicitudType } from '@/types/apps/solicitudType'
 import CustomTextField from '@/@core/components/mui/TextField'
 import type { UsersType } from '@/types/apps/userType'
 
+
+interface Solicitud {
+  idSolicitud?: number;
+  entidad?: string;
+  fecha?: string;
+  tipoServicio?: string;
+  descripcion?: string;
+  asig?: Asig;
+  fchasg?: string;
+  horasg?: string;
+}
+
+interface Asig{
+  id?:string
+}
+
 const schema = yup.object().shape({
   entidad: yup.string().notOneOf(['0'], 'El cliente es obligatorio'),
   fecha: yup.string().required('La fecha es obligatoria'),
@@ -61,7 +77,7 @@ const SolicitudForm = ({
   const [typeServiceList, setTypeServiceList] = useState<any[]>([])
   const [userList, setUsersList] = useState<UsersType[]>([])
   const [editData, setEditData] = useState<any>(null)
-  const [checked, setChecked] = useState([]);
+  const [checked, setChecked] = useState<any[]>([]);
 
   const fetchOptions = async () => {
     try {
@@ -215,21 +231,26 @@ const SolicitudForm = ({
     }
   }
 
+
+  
+  function setSolicitudValues(rowSelect: SolicitudType) {
+    setId(rowSelect.idSolicitud);
+    setValue('entidad', rowSelect.entidad || '0');
+    setValue('fecha', rowSelect.fecha || '');
+    setValue('tipoServicio', rowSelect.tipoServicio || '0');
+    setValue('descr', rowSelect.descripcion || '');
+    setValue('asig', rowSelect.asig || '0');
+    setValue('fchasg', rowSelect.fchasg || '');
+    setValue('horasg', rowSelect.horasg || '');
+    fetchProducts(rowSelect.entidad);
+  }
+
   useEffect(() => {
     console.log('rsl ', rowSelect)
 
-    if (rowSelect.idSolicitud) {
+    if (rowSelect && rowSelect.idSolicitud) {
       console.log('rowSelect', rowSelect)
-      setId(rowSelect.idSolicitud)
-      setValue('entidad', rowSelect.entidad || '0')
-      setValue('fecha', rowSelect.fecha || '')
-
-      setValue('tipoServicio', rowSelect.tipoServicio || '0')
-      setValue('descr', rowSelect.descripcion || '')
-      setValue('asig', rowSelect?.asig.id || '0')
-      setValue('fchasg', rowSelect.fchasg || '')
-      setValue('horasg', rowSelect.horasg || '')
-      fetchProducts(rowSelect.entidad)
+      setSolicitudValues(rowSelect);
       setEditData(rowSelect)
     } else {
       setValue('entidad', '0')
@@ -373,7 +394,7 @@ const SolicitudForm = ({
                     </MenuItem>
                     {userList.filter((user)=>user.roles?.find((rol)=>['BIOMEDICAL','SUPERADMIN'].find(roln=>roln === rol.roleEnum )))?.map(item => (
                       <MenuItem key={item.id} value={item.id}>
-                        {item.nombres} {item.apellidos} {`(${item?.roles[0].roleEnum})`}
+                        {item.nombres} {item.apellidos} {`(${item.roles && item.roles[0] ? item.roles[0].roleEnum : 'N/A'})`}
                       </MenuItem>
                     ))}
                   </CustomTextField>
@@ -418,9 +439,11 @@ const SolicitudForm = ({
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {productsList.map(value => {
                   const labelId = `checkbox-list-label-${value.id}`
-                  const handleToggle = (value: any) => () => {setChecked((prevChecked) => (prevChecked.includes(value) ? prevChecked.filter((item) => item !== value) : [...prevChecked, value]));};
-
-
+                  const handleToggle = (value: any) => () => {
+                    setChecked((prevChecked: any[]) =>
+                      prevChecked.includes(value) ? prevChecked.filter((item) => item !== value) : [...prevChecked, value]
+                    );
+                  };
 
                 if(rowSelect.idSolicitud && value.id === editData.idEquipo){
 

@@ -110,7 +110,7 @@ export const AuthManager = {
       return false
     }
   },
-  async resetPassword(data) {
+  async resetPassword(data:any) {
     try {
       const response = await axios.post('http://localhost:8080/auth/reset-password', {
         newPassword: data.newPassword,

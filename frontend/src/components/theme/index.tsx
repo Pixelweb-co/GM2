@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { deepmerge } from '@mui/utils'
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
-  experimental_extendTheme as extendTheme,
+  extendTheme ,
   lighten,
   darken
 } from '@mui/material/styles'

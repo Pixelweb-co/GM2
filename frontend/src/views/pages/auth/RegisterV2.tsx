@@ -21,6 +21,12 @@ import Button from '@mui/material/Button'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Divider from '@mui/material/Divider'
 
+
+import CustomTextField from '@core/components/mui/TextField'
+import { Alert } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import DangerousIcon from '@mui/icons-material/Dangerous'
+
 import classnames from 'classnames'
 
 import { AuthManager } from '@/utils/authManager'
@@ -32,12 +38,7 @@ import { useSettings } from '@core/hooks/useSettings'
 // Component Imports
 import Logo from '@components/layout/shared/Logo'
 
-// Third-party Imports
 
-import CustomTextField from '@core/components/mui/TextField'
-import { Alert } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
-import DangerousIcon from '@mui/icons-material/Dangerous'
 import { set } from 'date-fns'
 
 // Styled Custom Components
@@ -64,7 +65,7 @@ const MaskImg = styled('img')({
   zIndex: -1
 })
 
-const RegisterV2 = ({ mode }: { mode: SystemMode }) => {
+const RegisterV2 = ({ mode }: { mode: any }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false)

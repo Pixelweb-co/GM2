@@ -65,8 +65,11 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
   const [equimentlist, setEquipmentList] = useState<any>([{id:uuidv4(),equipment:{nom:''},groupsData:[{id:'1',name:'Grupo 1',options:[{id:'1',name:'Item 1'}]}]}])
   const [validate,setValidate] = useState<any>(false)
   const [formTemplate, setFormTemplate] = useState<any[]>()
- const [errorsEquipments, setErrorsEquipments] = useState<any[]>([])
-  const [openCh, setOpenCh] = useState<boolean>(true)
+ const [errorsEquipments, setErrorsEquipments] = useState<any>(0)
+const [dataSend, setDataSend] = useState<any | null>(null)
+ const [openCh, setOpenCh] = useState<boolean>(true)
+ const [validForms, setValidForms] = useState<any>(0)
+
 
   const handleClick = () => {
     setOpenCh(!openCh)
@@ -102,6 +105,41 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
     fetchOptions()
   }, [])
 
+
+  useEffect(() => {
+
+    console.log('validForms:', validForms)
+
+    if(validForms > 0) {
+      
+      //enviar el formulario
+
+      console.log('enviar el formulario',dataSend)
+
+      onSubmit2(dataSend)
+
+        setValidForms(0)
+    }
+
+
+  }, [validForms])
+
+  useEffect(() => { 
+
+
+    
+    console.log('errorsEquipments:', errorsEquipments)
+
+    if(errorsEquipments === 0) {
+      
+      //enviar el formulario
+
+      console.log('enviar el formulario',dataSend)
+
+    }
+
+  }, [errorsEquipments])
+
   const {
     control,
     handleSubmit,
@@ -122,8 +160,21 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
 
   const onSubmit = async (data: any) => {
 
+    setErrorsEquipments(0)
     setValidate(true)
+    setDataSend(data)
+    console.log('data:', data)
 
+    setTimeout(() => {
+      setValidate(false)
+    }
+    , 1000)
+
+
+  }
+
+  const onSubmit2 = async (data: any) => {
+ 
     console.log('data:', data)
 
 
@@ -131,7 +182,7 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = 'post' // Actualización o Creación
-      const apiUrl = 'http://localhost:8080/plantillas' // Creación
+      const apiUrl = 'http://localhost:8080/plantillas-verificacion' // Creación
 
       const response = await axiosInstance({
         method: method, // Usa 'put' para actualización o 'post' para creación
@@ -228,7 +279,7 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
 
   return (
     <Dialog open={!!open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>Plantila de verificación</DialogTitle>
+      <DialogTitle>Plantila de verificación {errorsEquipments }</DialogTitle>
 
       <DialogContent>
         
@@ -279,7 +330,8 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
                 onUpdate={handleUpdateEquipment}
                 onUpdateGroupsData={handleUpdateEquipmentGroupData}
                 validate={validate}
-                onErrors={errorsEquipments} 
+                onErrors={(haveErrors:boolean)=> haveErrors ? setErrorsEquipments(errorsEquipments + 1) : setErrorsEquipments(errorsEquipments)} 
+                onOkform={(okform:boolean)=> okform ? setValidForms(validForms + 1) : setValidForms(validForms)}
                 />
 
             

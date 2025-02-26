@@ -1,7 +1,5 @@
 'use client'
 
-// Next Imports
-import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Card from '@mui/material/Card'

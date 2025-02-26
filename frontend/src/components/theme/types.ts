@@ -149,12 +149,7 @@ declare module '@mui/material/styles' {
 
   // Palette
   interface Palette {
-    background: {
-      default: string
-      paper: string
-      defaultChannel: string
-      paperChannel: string
-    }
+    background: TypeBackground
     customColors: {
       bodyBg: string
       chatBg: string
@@ -166,12 +161,7 @@ declare module '@mui/material/styles' {
     }
   }
   interface PaletteOptions {
-    background?: {
-      default?: string
-      paper?: string
-      defaultChannel?: string
-      paperChannel?: string
-    }
+    background?: Partial<TypeBackground> | undefined
     customColors?: {
       bodyBg?: string
       chatBg?: string

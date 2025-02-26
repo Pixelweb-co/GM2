@@ -10,12 +10,14 @@ import lombok.Setter;
 public class TypeDeviceDTO {
     private Long id;
     private String typeDevice;
+    private String plantillaVerificacion;
 
 
     // Constructor con todos los campos
-    public TypeDeviceDTO(Long id, String typeDevice) {
+    public TypeDeviceDTO(Long id, String typeDevice,String plantillaVerificacion) {
         this.id = id;
         this.typeDevice = typeDevice;
+        this.plantillaVerificacion = plantillaVerificacion;
 
     }
 

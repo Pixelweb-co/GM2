@@ -203,18 +203,8 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           </div>
         )
       }),
-      columnHelper.accessor('hora', {
-        header: 'Hora',
-
-        cell: ({ row }) => (
-          <Typography className='font-medium' color='text.primary'>
-            {row.original.hora}
-          </Typography>
-        )
-      }),
       columnHelper.accessor('nombreEquipo', {
         header: 'Equipo',
-
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
             {row.original.nombreEquipo}
@@ -245,7 +235,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
           <div className='flex items-center gap-3'>
             <Chip
               variant='tonal'
-              label={row.original.nombreEstadoSolicitud+' - '+row.original.status.id}
+              label={row.original.nombreEstadoSolicitud}
               size='small'
               color={row.original.status?.id === 1 ? 'success' : row.original.status?.id === 2 ? 'default':'error'} // Cambiar color dinámicamente
               className='capitalize'

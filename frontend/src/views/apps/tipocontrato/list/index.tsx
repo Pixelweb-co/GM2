@@ -14,6 +14,7 @@ import { createColumnHelper, useReactTable, getCoreRowModel, filterFns } from '@
 import axios from 'axios'
 
 import type { TipoContrato } from '@/types/apps/tipoContrato'
+// eslint-disable-next-line import/no-unresolved
 import tableStyles from '@core/styles/table.module.css'
 import FormTipoContrato from '../form/page'
 
@@ -149,7 +150,13 @@ const TipoContratos = () => {
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th key={header.id}>{header.isPlaceholder ? null : header.column.columnDef.header}</th>
+                  <th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : typeof header.column.columnDef.header === 'function'
+                      ? header.column.columnDef.header(header.getContext())
+                      : header.column.columnDef.header}
+                  </th>
                 ))}
               </tr>
             ))}
@@ -159,7 +166,7 @@ const TipoContratos = () => {
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id}>
-                    {cell.column.id === 'acciones' ? cell.column.columnDef.cell?.(cell.getContext()) : cell.getValue()}
+                    {cell.column.id === 'acciones' && typeof cell.column.columnDef.cell === 'function' ? cell.column.columnDef.cell(cell.getContext()) : cell.getValue()}
                   </td>
                 ))}
               </tr>

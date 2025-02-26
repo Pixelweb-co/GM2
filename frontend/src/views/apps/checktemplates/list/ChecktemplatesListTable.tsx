@@ -37,9 +37,9 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import type { ChecktemplateType } from '@/types/apps/checktemplateType'
+import type { CheckTemplateType } from '@/types/apps/checkTemplateType'
 
-import ChecktemplateForm from '@/components/dialogs/form-checktemplate'
+import ChecktemplateForm from '@/components/dialogs/form-checklist/index'
 
 // Component Imports
 import TableFilters from './TableFilters'
@@ -60,7 +60,7 @@ declare module '@tanstack/table-core' {
   }
 }
 
-type ChecktemplateTypeWithAction = ChecktemplateType & {
+type ChecktemplateTypeWithAction = CheckTemplateType & {
   action?: string
 }
 
@@ -229,7 +229,7 @@ const ChecktemplatesListTable = ({ reload, tableData }: any) => {
 
             <IconButton
               onClick={() =>
-                setData(data?.filter((checktemplate: ChecktemplateType) => checktemplate.id !== row.original.id))
+                setData(data?.filter((checktemplate: CheckTemplateType) => checktemplate.id !== row.original.id))
               }
             >
               <i className='tabler-trash text-textSecondary' />
@@ -249,7 +249,7 @@ const ChecktemplatesListTable = ({ reload, tableData }: any) => {
   }, [tableData])
 
   const table = useReactTable({
-    data: filteredData as ChecktemplateType[],
+    data: filteredData as CheckTemplateType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter

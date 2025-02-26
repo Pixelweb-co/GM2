@@ -9,6 +9,7 @@ import type { Theme } from '@mui/material/styles'
 
 // Third-party Imports
 import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/redux-store'
 
 // Type Imports
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
@@ -31,12 +32,11 @@ const AppCalendar = () => {
   const [calendarApi, setCalendarApi] = useState<null | any>(null)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(false)
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
-
   // Hooks
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const calendarStore = useSelector((state: { calendarReducer: CalendarType }) => state.calendarReducer)
-
+ 
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
 
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -45,7 +45,7 @@ const AppCalendar = () => {
 
 
   useEffect(() => {
-    dispatch(fetchEvents())
+    dispatch(fetchEvents() as any)
   }, [dispatch])
 
 

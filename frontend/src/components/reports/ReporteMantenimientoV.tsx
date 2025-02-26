@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import Image from 'next/image'
 
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Grid } from '@mui/material';
 import axios from 'axios';
+
 import jsPDF from 'jspdf';
+
 
 import html2canvas from 'html2canvas';
 
@@ -23,6 +25,8 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
   const [firma_solicitud,setFirmaSolicitud]=useState(null)
   const [pdfG,setPdfG]=useState(false)
   const [tcheckeo, setTcheckeo] = useState([])
+  const [plantillaV,setPlantillaV] = useState<any | null>(null)
+  const [plantillaVdata, setPlantillaVdata] = useState([])
 
 
   const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
@@ -106,6 +110,21 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
+      
+      const [plantillavRes] = await Promise.all([
+
+        axios.get(`http://localhost:8080/plantillas-verificacion/device/${data.equipo.productType}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      console.log("res plantilla ",plantillavRes)
+      
+      setPlantillaV(plantillavRes.data)
+
       const [firmaRes] = await Promise.all([
 
         axios.get(`http://localhost:8080/firma-user/sign/${data.asig.id}`, {
@@ -169,6 +188,57 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
   }, [data])
 
 
+  useEffect(()=>{
+    console.log("plantilla v",plantillaV)
+
+    const getCheckeoData = async (plantillaVid:any ) =>{
+     
+      const token = localStorage.getItem('AuthToken')
+
+      if (!token) {
+        throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
+      }
+
+      try{
+     
+      const [plantillaVdataR] = await Promise.all([
+
+        axios.get(`http://localhost:8080/plantillas-verificacion/data/${plantillaVid}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ])
+
+      console.log("plsd",plantillaVdataR.data)
+      setPlantillaVdata(plantillaVdataR.data)
+    
+    
+    } catch (error) {
+      console.error('Error al obtener datos:', error)
+    }
+   
+    }
+
+    if(plantillaV){
+      getCheckeoData(plantillaV.id)
+    }
+
+  },[plantillaV])
+
+  const getDataVtemplate = (id_group:any,equipment:any,option:any) =>{
+
+  console.log("params ",id_group,equipment,option)
+  console.log("load item op ",plantillaVdata)
+
+  const found:any = plantillaVdata.find((r: any) => r.optionid === ''+option);
+  
+  console.log("name df",found);
+
+  return found && Object.keys(found).length> 0 ? found?.value : '0' 
+
+  }
 
   return (
     <><div className="text-right p-4">
@@ -311,7 +381,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
             {data.tipoServicio === 1 && <div className="w-4/5 p-2 mx-auto">
                 <div className="border rounded shadow-md">
-
+                <div className="bg-gray-200 font-bold p-2">LISTA DE CHECKEO</div>
                     <div >
 
                     <table className="table-auto border w-full h-24">
@@ -321,7 +391,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                     </thead>
 
                     <tbody>
-                    {tcheckeo && tcheckeo.map((item,index)=>{
+                    {tcheckeo && tcheckeo.map((item:any,index)=>{
 
                         return (<tr key={index}>
 
@@ -338,6 +408,60 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                 </div>
             </div>}
 
+            {plantillaV && <div className="w-4/5 p-1 mx-auto">
+<div className="border rounded shadow-md">
+    <div className="bg-gray-200 font-bold p-2">PRUEBA DE VERIFICACIÓN</div>
+    <div className="p-2"> {plantillaV.templateName}</div>
+    {plantillaV && JSON.parse(plantillaV.equimentlist).map((itemp:any,indexk:any)=>{
+
+      return <div key={indexk}>
+        <div className="border rounded shadow-md">
+    <div className="bg-gray-200 font-bold p-2">INFORMACIÓN EQUIPO PATRON</div>
+    <div className="p-2"> {itemp.equipment.nom}</div>
+
+    <Grid container spacing={0}>
+
+{itemp.groupsData && itemp.groupsData.map((group:any,indexo:any)=>{
+  
+  return(
+
+<Grid key={indexo} item xs={itemp.groupsData.length > 1 ? 6 : 12} md={itemp.groupsData.length > 1 ? 6 : 12} sm={itemp.groupsData.length > 1 ? 6 : 12}>
+<table  className="table-auto border w-full h-24">
+<thead className="bg-gray-200 font-bold p-2">
+<th className="w-1/6 text-center p-2">No</th> 
+<th className="w-1/6 text-center p-2">{group.name}</th>
+<th className="w-1/6 text-center p-2">Lectura</th>
+</thead>
+
+<tbody>
+{group && group.options.map((itemO:any,index:any)=>{
+
+    return (<tr key={index}>
+
+        <td className="w-1/6 p-2 bg-gray-200 text-center font-bold">{index + 1}</td>
+        <td className="w-2/6 p-2 text-center">{itemO.name}</td>
+        <td className="w-2/6 p-2 text-center">
+          {getDataVtemplate(group.id,itemp.id,itemO.id)}
+        </td>
+
+    </tr>)
+
+  })}
+</tbody>
+</table>
+</Grid>
+)
+
+})}
+
+</Grid>
+
+
+    </div>
+      </div>
+
+    })}
+    </div></div>}
 
 
 
@@ -369,7 +493,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                             <th>Ingeniero</th>
                             <td>{data.asig.nombres} {data.asig.apellidos}</td>
                             <th>Recibe</th>
-                            <td>&nbsp;</td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>

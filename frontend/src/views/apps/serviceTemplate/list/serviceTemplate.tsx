@@ -43,7 +43,7 @@ import TablePaginationComponent from '../../../../components/TablePaginationComp
 import tableStyles from '../../../../@core/styles/table.module.css'
 
 
-import type { ServiceTemplateType } from '../type/serviceTemplate'
+import type { ServiceTemplateType } from '../type/ServiceTemplate'
 
 import ServiceTemplateForm from '../form'
 

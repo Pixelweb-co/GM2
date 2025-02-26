@@ -41,6 +41,7 @@ public class SolicitudService {
                         .fecha(solicitud.getFecha())
                         .hora(solicitud.getHora())
                         .descripcion(solicitud.getDescription())
+                        .idTipoDevice(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductType() : null)
                         .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
                         .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
                         .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)

@@ -38,16 +38,18 @@ import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
+// eslint-disable-next-line import/no-unresolved
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import type { UsersType } from '@/types/apps/userType'
 
 // Component Imports
 import TableFilters from './TableFilters'
-import AddUserDrawer from './AddUserDrawer'
 
+// eslint-disable-next-line import/no-unresolved
 import CustomTextField from '@core/components/mui/TextField'
 
 // Style Imports
+// eslint-disable-next-line import/no-unresolved
 import tableStyles from '@core/styles/table.module.css'
 
 declare module '@tanstack/table-core' {
@@ -216,7 +218,7 @@ const UsersListTable = ({ tableData }: { tableData?: UsersType[] }) => {
     [data, filteredData]
   )
 
-  const table = useReactTable({
+  const table = useReactTable<UsersTypeWithAction>({
     data: filteredData as UsersType[],
     columns,
     filterFns: {
@@ -348,7 +350,7 @@ const UsersListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           </table>
         </div>
         <TablePagination
-          component={() => <TablePaginationComponent table={table} />}
+          component={() => <TablePaginationComponent table={table as any} />}
           count={table.getFilteredRowModel().rows.length}
           rowsPerPage={table.getState().pagination.pageSize}
           page={table.getState().pagination.pageIndex}
@@ -357,12 +359,7 @@ const UsersListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           }}
         />
       </Card>
-      <AddUserDrawer
-        open={addUserOpen}
-        handleClose={() => setAddUserOpen(!addUserOpen)}
-        userData={data}
-        setData={setData}
-      />
+
     </>
   )
 }

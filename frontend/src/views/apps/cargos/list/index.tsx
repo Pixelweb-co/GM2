@@ -29,6 +29,11 @@ const Cargos = () => {
   const [selectedCargo, setSelectedCargo] = useState<Cargo | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false) // Estado para controlar si el formulario está abierto
 
+
+  const handleDelete = (id:any) =>{
+    return true
+  }
+
   const columns = useMemo(
     () => [
       columnHelper.accessor('id', { header: 'ID', cell: info => info.getValue() }),
@@ -128,8 +133,8 @@ const Cargos = () => {
       {/* Formulario de creación/edición, solo se muestra cuando el formulario está abierto */}
       {isFormOpen && (
         <div className='p-4'>
-          <FormCargo entity={'cargos'} onSubmit={handleFormSubmit} cargo={selectedCargo} />
-          <Button variant='outlined' color='secondary' onClick={handleCancel}>
+          <FormCargo entity={'cargos'} onSubmit={handleFormSubmit} cargo={selectedCargo} onCancel={()=>(true)}/>
+          <Button variant='outlined' color='secondary' onClick={()=>(true)}>
             Cancelar
           </Button>
         </div>
@@ -142,7 +147,13 @@ const Cargos = () => {
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th key={header.id}>{header.isPlaceholder ? null : header.column.columnDef.header}</th>
+                  <th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : typeof header.column.columnDef.header === 'function'
+                      ? header.column.columnDef.header(header.getContext())
+                      : header.column.columnDef.header}
+                  </th>
                 ))}
               </tr>
             ))}
@@ -152,7 +163,7 @@ const Cargos = () => {
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id}>
-                    {cell.column.id === 'acciones' ? cell.column.columnDef.cell?.(cell.getContext()) : cell.getValue()}
+                    {cell.column.id === 'acciones' ? typeof cell.column.columnDef.cell === 'function' ? cell.column.columnDef.cell(cell.getContext()) : null : cell.getValue()}
                   </td>
                 ))}
               </tr>

@@ -56,8 +56,8 @@ public class TypeDeviceService {
     public TypeDeviceDTO mapToDTO(TypeDevice typeDevice) {
         return new TypeDeviceDTO(
                 typeDevice.getId(),
-                typeDevice.getTypeDevice()
-
+                typeDevice.getTypeDevice(),
+                typeDevice.getPlantillaVerificacion()
         );
     }
 
@@ -68,14 +68,21 @@ public class TypeDeviceService {
         return TypeDevice.builder()
                 .id(typeDeviceDTO.getId())
                 .typeDevice(typeDeviceDTO.getTypeDevice())
+                .plantillaVerificacion(typeDeviceDTO.getPlantillaVerificacion())
 
                 .build();
     }
 
     // Método para actualizar entidad desde DTO
     public void updateEntityFromDTO(TypeDevice existingTypeDevice, TypeDeviceDTO typeDeviceDTO) {
-        existingTypeDevice.setTypeDevice(typeDeviceDTO.getTypeDevice());
 
+        if (typeDeviceDTO.getTypeDevice() != null && !typeDeviceDTO.getTypeDevice().trim().isEmpty()) {
+            existingTypeDevice.setTypeDevice(typeDeviceDTO.getTypeDevice());
+        }
+
+        if (typeDeviceDTO.getPlantillaVerificacion() != null && !typeDeviceDTO.getPlantillaVerificacion().trim().isEmpty()) {
+            existingTypeDevice.setPlantillaVerificacion(typeDeviceDTO.getPlantillaVerificacion());
+        }
 
     }
 }

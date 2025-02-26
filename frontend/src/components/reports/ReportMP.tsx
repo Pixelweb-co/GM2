@@ -317,7 +317,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
                     </thead>
 
                     <tbody>
-                    {tcheckeo && tcheckeo.map((item,index)=>{
+                    {tcheckeo && tcheckeo.map((item:any,index)=>{
 
                         return (<tr key={index}>
 

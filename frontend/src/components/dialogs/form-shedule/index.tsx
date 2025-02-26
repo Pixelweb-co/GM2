@@ -188,7 +188,7 @@ const SheduleForm = ({ open, onClose, rowSelect }: { open: boolean; onClose: () 
                     type='date'
                     label='Fecha final'
                     error={Boolean(errors.fechafin)}
-                    helperText={errors.fechafin?.message}
+                    helperText={errors.fechafin?.message?.toString()}
                   />
                 )}
               />

@@ -146,16 +146,16 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           'Content-Type': 'application/json'
         }
       });
-  
+
        console.log("res.data", res.data)
        setErrorUpdateItem("Actualizado correctamente!")
-  
+
        reload(true)
-  
+
     } catch (error:any) {
       console.log('Actualizar el producto:', error)
       setErrorUpdateItem(error.response.data)
-  
+
     }
 
 
@@ -260,17 +260,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           </Typography>
         )
       }),
-      columnHelper.accessor('location', {
-        header: 'Verificación',
-        cell: ({ row }) => (
-          <div className='flex items-center'>
-              <Switch color='primary'
-               checked={row.original.verification ? true:false} 
-               onChange={e => handleInputChange(row.original.id, e.target.checked)}
-               />
-          </div>
-        )
-      }),
+
       columnHelper.accessor('action', {
         header: 'Action',
         cell: ({ row }) => (
@@ -601,7 +591,6 @@ const ProductsListTable = ({ reload, tableData }: any) => {
  {programacionModal && <ProgramacionMantenimiento
         open={programacionModal}
         onClose={() => setProgramacionModal(false)}
-        setOpen={() => setProgramacionModal(true)}
         rowSelect={rowSelection}
       />}
 

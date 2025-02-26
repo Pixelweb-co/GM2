@@ -253,7 +253,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         open={open}
         setOpen={setOpen}
         name={name}
-        onconfirmation={(dv:string) => {
+        onConfirmation={(dv:string) => {
           console.log('Documento eliminado desde c',dv)
           handleDelete(dv)
           setOpen(false)

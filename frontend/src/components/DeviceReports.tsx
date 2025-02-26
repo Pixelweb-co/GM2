@@ -58,7 +58,6 @@ function DeviceReports({product_id}:{product_id:any}) {
 
   useEffect(() => {
 
-
     fetchOptions()
 
   }, []);

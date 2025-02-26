@@ -2,14 +2,14 @@ package com.app.starter1.dto;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class PlantillaDTO {
+public class PlantillaVerificationDTO {
 
-        private String nom;
-        private String valor;
-        private Long id_orden;
+        private String id_plantilla;
+        private String equipment;
+        private String id_grupo;
+        private String option;
+        private String value;
 
 }
 

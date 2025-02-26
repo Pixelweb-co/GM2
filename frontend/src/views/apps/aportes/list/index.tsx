@@ -9,7 +9,7 @@ import Tab from '@mui/material/Tab'
 import TablePagination from '@mui/material/TablePagination'
 import { Button, TextField, Grid } from '@mui/material'
 import type { Row } from '@tanstack/react-table'
-import { createColumnHelper, useReactTable, getCoreRowModel, filterFns } from '@tanstack/react-table'
+import { createColumnHelper, useReactTable, getCoreRowModel, filterFns, flexRender } from '@tanstack/react-table'
 
 import axios from 'axios'
 
@@ -29,6 +29,9 @@ const Aportes = () => {
   const [pageIndex, setPageIndex] = useState(0)
   const [selectedTercero, setSelectedTercero] = useState<Tercero | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false) // Estado para controlar si el formulario está abierto
+
+const handleDelete = (rowId:any)=>(true)
+
 
   const columns = useMemo(
     () => [
@@ -147,7 +150,7 @@ const Aportes = () => {
       {/* Formulario de creación/edición, solo se muestra cuando el formulario está abierto */}
       {isFormOpen && (
         <div className='p-4'>
-          <FormTercero entity={activeTab} onSubmit={handleFormSubmit} tercero={selectedTercero} />
+          <FormTercero entity={activeTab} onSubmit={handleFormSubmit} tercero={selectedTercero} onCancel={()=>console.log("cancel")} />
           <Button variant='outlined' color='secondary' onClick={handleCancel}>
             Cancelar
           </Button>
@@ -161,7 +164,7 @@ const Aportes = () => {
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th key={header.id}>{header.isPlaceholder ? null : header.column.columnDef.header}</th>
+                  <th key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</th>
                 ))}
               </tr>
             ))}
@@ -171,7 +174,7 @@ const Aportes = () => {
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id}>
-                    {cell.column.id === 'acciones' ? cell.column.columnDef.cell?.(cell.getContext()) : cell.getValue()}
+                    {cell.column.id === 'acciones' ? flexRender(cell.column.columnDef.cell, cell.getContext()) : flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>

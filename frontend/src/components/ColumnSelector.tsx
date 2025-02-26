@@ -1,14 +1,14 @@
 import React from 'react';
 import { MenuItem, Select, Checkbox, ListItemText } from '@mui/material';
 
-const ColumnSelector = ({ table }) => {
+const ColumnSelector = ({ table }:{table:any}) => {
   const allColumns = table.getAllColumns();
-  const visibleColumns = allColumns.filter((col) => col.getIsVisible());
+  const visibleColumns = allColumns.filter((col:any) => col.getIsVisible());
 
-  const handleColumnChange = (event) => {
+  const handleColumnChange = (event:any) => {
     const selectedColumns = event.target.value;
 
-    allColumns.forEach((column) => {
+    allColumns.forEach((column:any) => {
       column.toggleVisibility(selectedColumns.includes(column.id));
     });
   };
@@ -16,7 +16,7 @@ const ColumnSelector = ({ table }) => {
   return (
     <Select
       multiple
-      value={visibleColumns.map((col) => col.id)}
+      value={visibleColumns.map((col:any) => col.id)}
       onChange={handleColumnChange}
       renderValue={(selected) => (selected.length === 0 ? 'Ninguna columna' : selected.join(', '))}
       className="max-sm:is-full sm:is-[140px]"
@@ -30,7 +30,7 @@ const ColumnSelector = ({ table }) => {
         />
         <ListItemText primary="Todas las columnas" />
       </MenuItem>
-      {allColumns.map((column) => (
+      {allColumns.map((column:any) => (
         <MenuItem key={column.id} value={column.id}>
           <Checkbox checked={column.getIsVisible()} />
           <ListItemText primary={column.id} />
