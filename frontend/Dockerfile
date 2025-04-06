@@ -17,8 +17,7 @@ RUN npm install
 
 RUN npm run build
 
-RUN chmod -R 777 /app
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm start"]
+CMD ["npm run", "start"]

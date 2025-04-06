@@ -9,7 +9,7 @@ export const AuthManager = {
 
   async authorize(data: { username: string; password: string }) {
     try {
-      const response = await axios.post(this.NEXT_PUBLIC_API_URL, data, {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, data, {
         headers: {
           'Content-Type': 'application/json'
         }

@@ -1,3 +1,4 @@
+import dotenv  from 'dotenv';
 // Third-party Imports
 import CredentialProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
@@ -5,6 +6,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
 import type { NextAuthOptions } from 'next-auth'
 import type { Adapter } from 'next-auth/adapters'
+
 
 const prisma = new PrismaClient()
 
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // ** Login API Call to match the user credentials and receive user data in response along with his role
-          const res = await fetch(`${process.envBLIC_API_URL}/login`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
