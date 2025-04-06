@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import axios from 'axios'
+import dotenv from "dotenv";
 import { MenuItem } from '@mui/material'
 
 import CustomTextField from '@core/components/mui/TextField'
@@ -78,7 +79,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
             throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
           }
 
-          const response = await axios.get(`http://localhost:8080/users/${id}`, {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`

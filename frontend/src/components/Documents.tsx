@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 
 import axios from 'axios';
+import dotenv from "dotenv";
 
 import ConfirmationDialog from './dialogs/ConfirmationDialog';
 
@@ -54,7 +55,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         }
 
         const [documentsRes] = await Promise.all([
-          axios.get(`http://localhost:8080/document/list/${product_id}`, {
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/document/list/${product_id}`, {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`
@@ -150,7 +151,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
       }
 
       // Llamada a la API para eliminar el documento
-      const apiUrl = `http://localhost:8080/document/${name}`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/document/${name}`;
 
       await axios.delete(apiUrl, {
         headers: {
@@ -235,7 +236,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
           variant='tonal'
           onClick={() => {
 
-            window.open(`http://localhost:8080/document/${document.name}`, '_blank');
+            window.open(`${process.env.NEXT_PUBLIC_API_URL}/document/${document.name}`, '_blank');
           }}
           onDelete={()=>handleDeleteConfirm(document.name)}
           deleteIcon={<i className='tabler-trash-x' />}

@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 // Third-party Imports
 import classnames from 'classnames'
 import axios from 'axios'
+import dotenv from "dotenv";
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
@@ -145,22 +146,22 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
 
   const setTemplate = async (deviceId:any,value:any) => {
 
- 
+
     try{
 
-      const res = await axiosInstance.put(`http://localhost:8080/type-device/${deviceId}`, { plantillaVerificacion: value });
-  
+      const res = await axiosInstance.put(`${process.env.NEXT_PUBLIC_API_URL}/type-device/${deviceId}`, { plantillaVerificacion: value });
+
        console.log("res.data", res.data)
-  
+
        reload(true)
-  
+
     } catch (error:any) {
       console.log('Actualizar el item:', error)
-      
-  
+
+
     }
-    
-  
+
+
 
   }
 
@@ -181,7 +182,7 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
         throw new Error('No token found')
       }
 
-      const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/type-service/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
@@ -238,11 +239,11 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
           <div className=' items-center gap-4'>
             <div className='flex flex-col'>
               <FormControl variant='standard' fullWidth>
-               
-                <Select 
+
+                <Select
                 defaultValue='0'
                 value={row.original.plantillaVerificacion ? row.original.plantillaVerificacion: '0'}
-                
+
                 onChange={(e)=>setTemplate(row.original.id,e.target.value)}
 
                 >

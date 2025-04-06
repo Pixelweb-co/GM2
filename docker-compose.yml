@@ -1,5 +1,25 @@
+version: '3.8'
 
 services:
+  gm2:
+    container_name: gm2_app
+    env_file:
+      - .env.local
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://backend-spring:8080  # URL de la API
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - mired
+
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     ports:
@@ -40,11 +60,12 @@ services:
       SPRING_PROFILES_ACTIVE: default
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: root
+      DB_DATABASE: gm2
       DB_USERNAME: admin
       DB_PASSWORD: eqbm2025#
     networks:
       - kafka-net
+      - mired
 
   notification-service:
     build:
@@ -64,7 +85,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      KAFKA_BROKER_CONNECT: kafka:9092
+      KAFKA_BROKER_CONNECT: kafka:92
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
       - kafka
@@ -86,22 +107,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - kafka-net
-
-  db2:
-    image: mysql:8.0
-    container_name: mysqlold
-    ports:
-      - "3310:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gm2old
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: eqbm2025#
-    volumes:
-      - db_data2:/var/lib/mysql
-    networks:
-    
-      - kafka-net
+      - mired
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -116,6 +122,7 @@ services:
       PMA_PASSWORD: eqbm2025#
     networks:
       - kafka-net
+      - mired
 
 volumes:
   db_data:

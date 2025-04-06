@@ -66,7 +66,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
         // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
         const method = 'post' // Actualización o Creación
-        const apiUrl = `http://localhost:8080/firma-solicitud`
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/firma-solicitud`
 
         const response = await axios({
           method: method, // Usa 'put' para actualización o 'post' para creación

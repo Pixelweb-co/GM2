@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Grid } from '@mui/material';
 import axios from 'axios';
-
+import dotenv from "dotenv";
 import jsPDF from 'jspdf';
 
 
@@ -110,10 +110,10 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
-      
+
       const [plantillavRes] = await Promise.all([
 
-        axios.get(`http://localhost:8080/plantillas-verificacion/device/${data.equipo.productType}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/plantillas-verificacion/device/${data.equipo.productType}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -122,12 +122,12 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
       ])
 
       console.log("res plantilla ",plantillavRes)
-      
+
       setPlantillaV(plantillavRes.data)
 
       const [firmaRes] = await Promise.all([
 
-        axios.get(`http://localhost:8080/firma-user/sign/${data.asig.id}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/firma-user/sign/${data.asig.id}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -141,7 +141,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
       const [firmaSolicitudRes] = await Promise.all([
 
 
-        axios.get(`http://localhost:8080/firma-solicitud/sign/${data.idSolicitud}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/firma-solicitud/sign/${data.idSolicitud}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -157,7 +157,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
       const [CheckeoT] = await Promise.all([
 
 
-        axios.get(`http://localhost:8080/checkeo/${data.idSolicitud}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/checkeo/${data.idSolicitud}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -192,7 +192,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
     console.log("plantilla v",plantillaV)
 
     const getCheckeoData = async (plantillaVid:any ) =>{
-     
+
       const token = localStorage.getItem('AuthToken')
 
       if (!token) {
@@ -200,10 +200,10 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
       }
 
       try{
-     
+
       const [plantillaVdataR] = await Promise.all([
 
-        axios.get(`http://localhost:8080/plantillas-verificacion/data/${plantillaVid}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/plantillas-verificacion/data/${plantillaVid}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -213,12 +213,12 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
       console.log("plsd",plantillaVdataR.data)
       setPlantillaVdata(plantillaVdataR.data)
-    
-    
+
+
     } catch (error) {
       console.error('Error al obtener datos:', error)
     }
-   
+
     }
 
     if(plantillaV){
@@ -233,10 +233,10 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
   console.log("load item op ",plantillaVdata)
 
   const found:any = plantillaVdata.find((r: any) => r.optionid === ''+option);
-  
+
   console.log("name df",found);
 
-  return found && Object.keys(found).length> 0 ? found?.value : '0' 
+  return found && Object.keys(found).length> 0 ? found?.value : '0'
 
   }
 
@@ -422,13 +422,13 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
     <Grid container spacing={0}>
 
 {itemp.groupsData && itemp.groupsData.map((group:any,indexo:any)=>{
-  
+
   return(
 
 <Grid key={indexo} item xs={itemp.groupsData.length > 1 ? 6 : 12} md={itemp.groupsData.length > 1 ? 6 : 12} sm={itemp.groupsData.length > 1 ? 6 : 12}>
 <table  className="table-auto border w-full h-24">
 <thead className="bg-gray-200 font-bold p-2">
-<th className="w-1/6 text-center p-2">No</th> 
+<th className="w-1/6 text-center p-2">No</th>
 <th className="w-1/6 text-center p-2">{group.name}</th>
 <th className="w-1/6 text-center p-2">Lectura</th>
 </thead>
@@ -471,14 +471,14 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                         <tr>
                             <th className="w-1/6">Firma</th>
                             <td className="w-2/6">
-                               {sign && <Image src={`http://localhost:8080/firma-user/${sign}`} alt="Firma 1" width={180} height={64} />}
+                               {sign && <Image src={`${process.env.NEXT_PUBLIC_API_URL}/firma-user/${sign}`} alt="Firma 1" width={180} height={64} />}
                             </td>
                             <th className="w-1/6">Firma</th>
                             <td>
 
                                 {firma_solicitud &&
 
-                                <Image src={`http://localhost:8080/firma-solicitud/${firma_solicitud}`} alt="Firma 2" width={180} height={64} />
+                                <Image src={`${process.env.NEXT_PUBLIC_API_URL}/firma-solicitud/${firma_solicitud}`} alt="Firma 2" width={180} height={64} />
 
 
                                 }

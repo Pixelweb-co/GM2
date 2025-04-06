@@ -30,6 +30,7 @@ import {
 import { Controller, useForm } from 'react-hook-form'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import axiosInstance from '@/utils/axiosInterceptor'
 
@@ -59,7 +60,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
     setExpanded(isExpanded ? panel : false)
   }
 
-  
+
   const fetchTemplateV = async (data:any) => {
     console.log('fetchTemplateV')
 
@@ -70,10 +71,10 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
-      
+
       const [plantillavRes] = await Promise.all([
 
-        axios.get(`http://localhost:8080/plantillas-verificacion/device/${data.idTipoDevice}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/plantillas-verificacion/device/${data.idTipoDevice}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -82,10 +83,10 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
       ])
 
       console.log("res plantilla ",plantillavRes)
-      
+
       setPlantillaV(plantillavRes.data)
 
-     
+
 
       return true
     } catch (error) {
@@ -324,7 +325,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
                 backgroundColor: '#7367f0',
                 color: 'white',
                 '&:hover': {
-                  backgroundColor: '#9e97f5' // Color más claro 
+                  backgroundColor: '#9e97f5' // Color más claro
                 }
               }}
               expandIcon={<i className='tabler-chevron-right' style={{ color: 'white' }} />}
@@ -333,13 +334,13 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
             </AccordionSummary>
             <Divider />
             <AccordionDetails className='!pbs-6'>
-              
+
               {formTemplate.length > 0 &&
                 formTemplate.map((plantillar, index) => (
                   <div key={index}>
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={12}>
-                        
+
                           <Controller
                             name='tipoElementDt'
                             control={control}
@@ -355,7 +356,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
                               />
                             )}
                           />
-                      
+
 
                       </Grid>
                     </Grid>
@@ -364,8 +365,8 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
             </AccordionDetails>
           </Accordion>}
 
-          
-           
+
+
           {plantillaV && <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
             <AccordionSummary
               sx={{
@@ -383,79 +384,79 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
             <AccordionDetails className='!pbs-1'>
             <Grid container spacing={0}>
                 <Grid item xs={12} md={12} sm={12}>
-                
+
                   {plantillaV && <div className="">
                  <div className="border rounded shadow-md">
                      <div className="bg-gray-200 font-bold p-2">PRUEBA DE VERIFICACIÓN</div>
                      <div className="p-2"> {plantillaV.templateName}</div>
                      {plantillaV && JSON.parse(plantillaV.equimentlist).map((equipment:any,indexk:any)=>{
-                 
+
                        return <div key={indexk}>
                          <div className="border rounded shadow-md">
                      <div className="bg-gray-200 font-bold p-2">INFORMACIÓN EQUIPO PATRON</div>
                      <div className="p-2"> {equipment.equipment.nom}</div>
-                 
+
                      <Grid container spacing={0}>
-                 
+
                  {equipment.groupsData && equipment.groupsData.map((group:any,indexo:any)=>{
-                   
+
                    return(
-                 
+
                  <table key={indexo} className="table-auto border w-full h-24 mb-2">
                  <thead className="bg-gray-200 font-bold p-2">
-                 <th className="w-1/6 text-center p-2">No</th> 
+                 <th className="w-1/6 text-center p-2">No</th>
                  <th className="w-1/6 text-center p-2">{group.name}</th>
                  <th className="w-1/6 text-center p-2">Lectura</th>
                  </thead>
-                 
+
                  <tbody>
                  {group && group.options.map((groupItem:any,index:any)=>{
-                 
+
                      return (<tr key={index}>
-                 
+
                          <td className="w-1/6 p-2 bg-gray-200 text-center font-bold">{index + 1}</td>
                          <td className="w-2/6 p-2 text-center">{groupItem.name}</td>
                          <td className="w-2/6 p-2">
-                         <CustomTextField fullWidth 
+                         <CustomTextField fullWidth
                            onChange={(e) => {
-                            
+
                             setPlantillaVData([...plantillaVData,{id_plantilla:plantillaV.id,equipment:equipment.id,id_grupo:group.id, option:groupItem.id, value:e.target.value}])
-                          
+
                           }}
-                    
+
                               />
                          </td>
-                 
+
                      </tr>)
-                 
+
                    })}
                  </tbody>
                  </table>
-                 
+
                  )
-                 
+
                  })}
-                 
+
                  </Grid>
-                 
-                 
+
+
                      </div>
-                  
+
                   </div>
-                 
+
                      })}
                      </div></div>}
                 </Grid>
-                
+
               </Grid>
             </AccordionDetails>
           </Accordion>}
-         
 
-         
 
-          
-          
+
+
+
+
 
           <Accordion expanded={expanded === 'panel5'} onChange={handleExpandChange('panel5')}>
             <AccordionSummary

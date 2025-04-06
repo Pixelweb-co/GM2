@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeDeviceListTable'
 

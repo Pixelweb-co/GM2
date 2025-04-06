@@ -2,12 +2,15 @@
 // Component Imports
 import { useEffect, useState } from 'react'
 
+
+
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import UserList from '@views/apps/user/list'
 
 const getUserData = async () => {
-  console.log('userList ', process.env.BACKEND_PUBLIC_APP_URL)
+  console.log('userList ', process.env.NEXT_PUBLIC_API_URL)
 
   try {
     // Recupera el token desde localStorage
@@ -16,7 +19,7 @@ const getUserData = async () => {
     console.log('token ', token)
 
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/users`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado

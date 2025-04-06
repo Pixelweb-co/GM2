@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import type { SyntheticEvent } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 // MUI Imports
 import Card from '@mui/material/Card'

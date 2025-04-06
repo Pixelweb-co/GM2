@@ -1,11 +1,17 @@
 import axios from 'axios'
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+
 export const AuthManager = {
+  get API_URL() {
+    return `${API_BASE_URL}/auth/login`
+  },
+
   async authorize(data: { username: string; password: string }) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/login', data, {
+      const response = await axios.post(this.NEXT_PUBLIC_API_URL, data, {
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+          'Content-Type': 'application/json'
         }
       })
 
@@ -13,74 +19,76 @@ export const AuthManager = {
       localStorage.setItem('AuthToken', response.data.jwt)
       localStorage.setItem('UserLogin', JSON.stringify(response.data.userEntity))
 
-      return response.data // Devuelve la respuesta con los datos de autenticación
+      return response.data
     } catch (error) {
-      console.error('Error durante la autenticación:', error) // Manejo de errores
-
+      console.error('Error durante la autenticación:', error)
       throw error
     }
   },
 
   async register(data: { username: string; password: string; email: string; roleRequest: any }) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/register', data, {
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, data, {
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+          'Content-Type': 'application/json'
         }
       })
 
       localStorage.setItem('AuthToken', response.data.jwt)
       localStorage.setItem('UserLogin', JSON.stringify(response.data.userEntity))
 
-      return response.data // Devuelve la respuesta con los datos de registro
+      return response.data
     } catch (error) {
-      console.error('Error durante el registro:', error) // Manejo de errores
+      console.error('Error durante el registro:', error)
       throw error
     }
   },
 
   async validateUsername(data: { username: string }) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/validate-username', data, {
+      const response = await axios.post(`${API_BASE_URL}/auth/validate-username`, data, {
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+          'Content-Type': 'application/json'
         }
       })
 
-      return response.data // Devuelve la respuesta con los datos de validación
+      return response.data
     } catch (error) {
-      console.error('Error durante la validación del username:', error) // Manejo de errores
+      console.error('Error durante la validación del username:', error)
       throw error
     }
   },
+
   async validateAccount(data: { validationToken: string }) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/validate-account', data, {
+      const response = await axios.post(`${API_BASE_URL}/auth/validate-account`, data, {
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+          'Content-Type': 'application/json'
         }
       })
 
-      return true // Devuelve la respuesta con los datos de validación
+      return true
     } catch (error) {
-      console.error('Error durante la validación de la cuenta:', error) // Manejo de errores
+      console.error('Error durante la validación de la cuenta:', error)
       throw error
     }
   },
+
   async validateEmail(data: { email: string }) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/validate-email', data, {
+      const response = await axios.post(`${API_BASE_URL}/auth/validate-email`, data, {
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+          'Content-Type': 'application/json'
         }
       })
 
-      return response.data // Devuelve la respuesta con los datos de validación
+      return response.data
     } catch (error) {
-      console.error('Error durante la validación del email:', error) // Manejo de errores
+      console.error('Error durante la validación del email:', error)
       throw error
     }
   },
+
   async logout() {
     try {
       localStorage.removeItem('AuthToken')
@@ -93,36 +101,33 @@ export const AuthManager = {
   async validateToken() {
     try {
       const response = await axios.post(
-        'http://localhost:8080/auth/validate-token',
+        `${API_BASE_URL}/auth/validate-token`,
         { token: localStorage.getItem('AuthToken') },
         {
           headers: {
-            'Content-Type': 'application/json' // Asegúrate de que el contenido sea JSON
+            'Content-Type': 'application/json'
           }
         }
       )
 
-      return response.data // Devuelve la respuesta con los datos de validación
+      return response.data
     } catch (error) {
-      console.error('Error durante la validación del token:', error) // Manejo de errores
+      console.error('Error durante la validación del token:', error)
       throw error
-
-      return false
     }
   },
-  async resetPassword(data:any) {
+
+  async resetPassword(data: any) {
     try {
-      const response = await axios.post('http://localhost:8080/auth/reset-password', {
+      const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, {
         newPassword: data.newPassword,
         token: data.token
       })
 
-      return response.data // Devuelve la respuesta con los datos de validación
+      return response.data
     } catch (error) {
-      console.error('Error durante la validación del token:', error) // Manejo de errores
+      console.error('Error durante el reseteo de la contraseña:', error)
       throw error
-
-      return false
     }
   }
 }

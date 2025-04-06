@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   basePath: process.env.BASEPATH,
+
   output: 'standalone',
   redirects: async () => {
     return [
@@ -12,17 +13,7 @@ const nextConfig = {
       }
     ]
   },
-  images: {
-    domains:['localhost'],
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8080', // Puerto del servidor donde se están sirviendo las imágenes
-        pathname: '/media/**', // Ruta de las imágenes
-      },
-    ],
-  },
+  images: { domains: ['localhost'], unoptimized: true },
 }
 
 export default nextConfig

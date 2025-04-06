@@ -19,6 +19,7 @@ import MenuItem from '@mui/material/MenuItem'
 // Third-party Imports
 import classnames from 'classnames'
 import axios from 'axios'
+import dotenv from "dotenv";
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
@@ -139,7 +140,7 @@ const deleteItem = async (id: string) => {
       throw new Error('No token found')
     }
 
-    const res = await axios.delete(`http://localhost:8080/type-service/${id}`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/type-service/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`

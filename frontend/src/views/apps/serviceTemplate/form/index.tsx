@@ -21,6 +21,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import type { TypeServiceType } from '@/views/apps/typeService/type/typeServiceType'
 
@@ -71,7 +72,7 @@ const TypeServiceForm = ({
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
-      const apiUrl = id ? `http://localhost:8080/type-service/${id}` : 'http://localhost:8080/type-service' // Creación
+      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/type-service/${id}` : 'http://localhost:8080/type-service' // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación

@@ -151,7 +151,7 @@ const SolicitudListTable = ({ reload, tableData }: any) => {
     try {
       const token = localStorage.getItem('AuthToken')
 
-      const res = await axiosInstance.delete(`http://localhost:8080/solicitudes/${id}`, {
+      const res = await axiosInstance.delete(`${process.env.NEXT_PUBLIC_API_URL}/solicitudes/${id}`, {
         headers: {
           'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
           Authorization: `Bearer ${token}` // Añade el token en el encabezado

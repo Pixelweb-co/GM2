@@ -1,6 +1,8 @@
 import React, {useState, useEffect } from 'react';
 
 import axios from 'axios';
+import dotenv from "dotenv";
+
 import { Box, Button, Card, CardContent, CardHeader, Tooltip } from '@mui/material';
 import { userMethods } from '@/utils/userMethods';
 import ReportViewver from './ReportViewver';
@@ -22,7 +24,7 @@ function DeviceReports({product_id}:{product_id:any}) {
   const eliminarReporte = async (id:any) => {
     console.log('Eliminar reporte:', id);
 
-      await axiosInstance.delete(`http://localhost:8080/reportes/${id}`)
+      await axiosInstance.delete(`${process.env.NEXT_PUBLIC_API_URL}/reportes/${id}`)
 
       fetchOptions()
 
@@ -40,7 +42,7 @@ function DeviceReports({product_id}:{product_id:any}) {
       }
 
       const [reportsRes] = await Promise.all([
-        axios.get(`http://localhost:8080/solicitudes/finalizadas/${product_id}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/solicitudes/finalizadas/${product_id}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`

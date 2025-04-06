@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeDeviceListTable'
 
+// eslint-disable-next-line import/no-unresolved
 import axiosInstance from '@/utils/axiosInterceptor'
 
 const getTypeDeviceData = async () => {
@@ -25,7 +27,7 @@ const getTypeDeviceData = async () => {
 }
 
 const getTypeDeviceData2 = async () => {
-  console.log('TypeDeviceList ', process.env.BACKEND_PUBLIC_APP_URL)
+  console.log('TypeDeviceList ', process.env.NEXT_PUBLIC_API_URL)
 
   try {
     // Recupera el token desde localStorage
@@ -34,7 +36,7 @@ const getTypeDeviceData2 = async () => {
     console.log('token ', token)
 
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/type-device`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/type-device`, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado

@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import SolicitudList from '../../../../views/apps/solicitudes/list'
 import { userMethods } from '../../../../utils/userMethods'
 
 const getSolicitudData = async () => {
-  console.log('solicitudList ', process.env.BACKEND_PUBLIC_APP_URL)
+  console.log('solicitudList ', process.env.NEXT_PUBLIC_API_URL)
 
   try {
     // Recupera el token desde localStorage
@@ -23,7 +24,7 @@ const getSolicitudData = async () => {
     const id_user = userMethods.getUserLogin().id;
 
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/solicitudes/worklist/${id_user}`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/solicitudes/worklist/${id_user}`, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado

@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import ChecktemplateList from '@views/apps/checktemplates/list'
 
 const getChecktemplateData = async () => {
-  console.log('checktemplateList ', process.env.BACKEND_PUBLIC_APP_URL)
+  console.log('checktemplateList ', process.env.NEXT_PUBLIC_API_URL)
 
   try {
     // Recupera el token desde localStorage
@@ -20,7 +21,7 @@ const getChecktemplateData = async () => {
     }
 
     // Realiza la petición con el token en el encabezado Authorization
-    const res = await axios.get(`http://localhost:8080/plantillas`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/plantillas`, {
       headers: {
         'Content-Type': 'application/json', // Asegúrate de que el contenido sea JSON
         Authorization: `Bearer ${token}` // Añade el token en el encabezado

@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 // Third-party Imports
 import classnames from 'classnames'
 import axios from 'axios'
+import dotenv from "dotenv";
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
@@ -144,7 +145,7 @@ const TemplateVerificationListTable = ({
         throw new Error('No token found')
       }
 
-      const res = await axios.delete(`http://localhost:8080/plantillas-verificacion/${id}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/plantillas-verificacion/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
@@ -199,7 +200,7 @@ const TemplateVerificationListTable = ({
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
-           
+
 
             <IconButton
               onClick={() => {

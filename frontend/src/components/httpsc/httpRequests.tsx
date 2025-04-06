@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import React, { createContext, useContext, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 // Tipo para el endpoint
 type Endpoint = {

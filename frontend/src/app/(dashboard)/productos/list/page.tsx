@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import ProductList from '@views/apps/products/list'
 
@@ -35,13 +36,13 @@ const ProductListApp = () => {
       const user = userMethods.getUserLogin()
 
 
-      let product_url = `http://localhost:8080/products`
+      let product_url = `${process.env.NEXT_PUBLIC_API_URL}/products`
 
       if (user.roles[0].roleEnum === 'ADMIN' || user.roles[0].roleEnum === 'USER') {
 
         const id_customer = user.customer.id
 
-        product_url = `http://localhost:8080/products/customer/${id_customer}`
+        product_url = `${process.env.NEXT_PUBLIC_API_URL}/products/customer/${id_customer}`
 
       }
 

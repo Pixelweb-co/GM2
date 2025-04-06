@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Button, TextField, Grid, Card, MenuItem, Select, InputLabel, FormControl, FormHelperText } from '@mui/material'
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import type { TipoContrato } from '@/types/apps/tipoContrato'
 
@@ -38,9 +39,9 @@ const FormTipoContrato = ({ entity, onSubmit, onCancel, tipocontrato }: FormTipo
   const onSubmitHandler = async (data: TipoContrato) => {
     try {
       if (data.id) {
-        await axios.put(`http://localhost:8080/api/${entity}/${data.id}`, data)
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/${entity}/${data.id}`, data)
       } else {
-        await axios.post(`http://localhost:8080/api/${entity}`, data)
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/${entity}`, data)
       }
 
       onSubmit() // Refresh data after submitting the form

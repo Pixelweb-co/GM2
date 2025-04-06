@@ -10,7 +10,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-    "build:icons": "tsx src/assets/iconify-icons/bundle-icons-css.ts",
+    "build:icons": "npx tsx src/assets/iconify-icons/bundle-icons-css.ts",
     "postinstall": "npm run build:icons"
   },
   "dependencies": {
@@ -87,7 +87,7 @@
   },
   "devDependencies": {
     "@iconify/json": "2.2.230",
-    "@iconify/tools": "4.0.4",
+    "@iconify/tools": "^4.0.4",
     "@iconify/types": "2.0.0",
     "@iconify/utils": "2.1.25",
     "@types/mapbox-gl": "^3.1.0",
@@ -117,7 +117,7 @@
     "stylis-plugin-rtl": "2.1.1",
     "tailwindcss": "3.4.6",
     "tailwindcss-logical": "3.0.1",
-    "tsx": "4.16.2",
+    "tsx": "^4.16.2",
     "typescript": "5.5.4"
   },
   "resolutions": {

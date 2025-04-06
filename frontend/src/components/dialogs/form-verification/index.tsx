@@ -33,6 +33,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import axios from 'axios'
+import dotenv from "dotenv";
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 import { v4 as uuidv4 } from 'uuid';
@@ -55,7 +56,7 @@ const VerificationForm = ({ open, onClose, rowSelect }: any) => {
 
   const [editData, setEditData] = useState<any>({
     templateName: '',
-   
+
   })
 
   const [typeDeviceList, setTypeDeviceList] = useState<any[]>([])
@@ -111,7 +112,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
     console.log('validForms:', validForms)
 
     if(validForms > 0) {
-      
+
       //enviar el formulario
 
       console.log('enviar el formulario',dataSend)
@@ -124,14 +125,14 @@ const [dataSend, setDataSend] = useState<any | null>(null)
 
   }, [validForms])
 
-  useEffect(() => { 
+  useEffect(() => {
 
 
-    
+
     console.log('errorsEquipments:', errorsEquipments)
 
     if(errorsEquipments === 0) {
-      
+
       //enviar el formulario
 
       console.log('enviar el formulario',dataSend)
@@ -174,7 +175,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
   }
 
   const onSubmit2 = async (data: any) => {
- 
+
     console.log('data:', data)
 
 
@@ -206,7 +207,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
       // Aquí puedes redirigir o mostrar un mensaje de éxito
 
       setValue('templateName', '')
-      
+
 
       reset()
       setId(0)
@@ -224,10 +225,10 @@ const [dataSend, setDataSend] = useState<any | null>(null)
   const handleTabChange = (event: SyntheticEvent, newValue: string) => setValueT(newValue)
 
   const handleReset = () => {
-   
+
     setValue('templateName', '')
     setEquipmentList([])
-    
+
   }
 
   useEffect(() => {
@@ -253,7 +254,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
   }
 
   const handleUpdateEquipment = (id: string, field: string, value: any) => {
-   
+
     console.log('Update:', id, field, value)
 
     setEquipmentList((prevList:any) =>
@@ -282,8 +283,8 @@ const [dataSend, setDataSend] = useState<any | null>(null)
       <DialogTitle>Plantila de verificación {errorsEquipments }</DialogTitle>
 
       <DialogContent>
-        
-        
+
+
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <Controller
@@ -304,14 +305,14 @@ const [dataSend, setDataSend] = useState<any | null>(null)
               )}
             />
 
-           
+
           </Grid>
 
           <Grid item xs={12} sm={8}>
 
               <div className='mb-4 text-right'>
           <Button startIcon={<Add />} variant="outlined" size="small" color='success' className='mb-6' onClick={() => setEquipmentList(
-            [...equimentlist, 
+            [...equimentlist,
             {
               id:uuidv4(),
               equipment:{nom:''},
@@ -319,28 +320,28 @@ const [dataSend, setDataSend] = useState<any | null>(null)
             }])}>Agregar equipo</Button>
 
             </div>
-      
+
           {equimentlist && equimentlist.slice().reverse().map((item: any, index: number) => (
-            
+
             <div key={index}>
-             
-              <Equipment 
-                item={item} 
+
+              <Equipment
+                item={item}
                 onDelete={(id:any)=>onDeleteEquiment(id)}
                 onUpdate={handleUpdateEquipment}
                 onUpdateGroupsData={handleUpdateEquipmentGroupData}
                 validate={validate}
-                onErrors={(haveErrors:boolean)=> haveErrors ? setErrorsEquipments(errorsEquipments + 1) : setErrorsEquipments(errorsEquipments)} 
+                onErrors={(haveErrors:boolean)=> haveErrors ? setErrorsEquipments(errorsEquipments + 1) : setErrorsEquipments(errorsEquipments)}
                 onOkform={(okform:boolean)=> okform ? setValidForms(validForms + 1) : setValidForms(validForms)}
                 />
 
-            
+
             </div>
                   ))}
           </Grid>
         </Grid>
 
-       
+
 
       </DialogContent>
       <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>

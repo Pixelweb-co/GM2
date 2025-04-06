@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 // MUI Imports
 import CardContent from '@mui/material/CardContent'

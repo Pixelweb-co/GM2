@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import dotenv from "dotenv";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import SignatureDialog from '@components/dialogs/SignatureDialog'
@@ -103,7 +104,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
 
       const [firmaRes] = await Promise.all([
 
-        axios.get(`http://localhost:8080/firma-user/sign/${data.asig.id}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/firma-user/sign/${data.asig.id}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -117,7 +118,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
       const [firmaSolicitudRes] = await Promise.all([
 
 
-        axios.get(`http://localhost:8080/firma-solicitud/sign/${data.idSolicitud}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/firma-solicitud/sign/${data.idSolicitud}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -133,7 +134,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
       const [CheckeoT] = await Promise.all([
 
 
-        axios.get(`http://localhost:8080/checkeo/${data.idSolicitud}`, {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/checkeo/${data.idSolicitud}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -343,14 +344,14 @@ const MaintenanceReport = ({data}:{data:any}) => {
                         <tr>
                             <th className="w-1/6">Firma</th>
                             <td className="w-2/6">
-                               {sign && <Image src={`http://localhost:8080/firma-user/${sign}`} alt="Firma 1" width={180} height={64} />}
+                               {sign && <Image src={`${process.env.NEXT_PUBLIC_API_URL}/firma-user/${sign}`} alt="Firma 1" width={180} height={64} />}
                             </td>
                             <th className="w-1/6">Firma</th>
                             <td>
 
                                 {firma_solicitud &&
 
-                                <Image src={`http://localhost:8080/firma-solicitud/${firma_solicitud}`} alt="Firma 2" width={180} height={64} />
+                                <Image src={`${process.env.NEXT_PUBLIC_API_URL}/firma-solicitud/${firma_solicitud}`} alt="Firma 2" width={180} height={64} />
 
 
                                 }

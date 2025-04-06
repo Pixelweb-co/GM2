@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
+import dotenv from 'dotenv'
 
 // Third-party Imports
 
@@ -141,7 +142,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
     try{
 
-      const res = await axiosInstance.put(`http://localhost:8080/products/verification/${id}`, JSON.stringify({ verification: value }), {
+      const res = await axiosInstance.put(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_API_URL}/products/verification/${id}`, JSON.stringify({ verification: value }), {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -165,7 +166,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
     try{
 
-    const res = await axiosInstance.delete(`http://localhost:8080/products/${id}`)
+    const res = await axiosInstance.delete(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
 
      console.log("res.data", res.data)
      errorDeleteItem("Eliminado correctamente!")

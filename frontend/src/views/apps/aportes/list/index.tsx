@@ -12,6 +12,7 @@ import type { Row } from '@tanstack/react-table'
 import { createColumnHelper, useReactTable, getCoreRowModel, filterFns, flexRender } from '@tanstack/react-table'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import type { Tercero } from '@/types/apps/tercero'
 import tableStyles from '@core/styles/table.module.css'
@@ -82,7 +83,7 @@ const handleDelete = (rowId:any)=>(true)
   // Función para obtener los datos desde la API
   const fetchData = async (entity: TabData) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/${entity}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/${entity}`)
 
       setData(response.data)
       setFilteredData(response.data)

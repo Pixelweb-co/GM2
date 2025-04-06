@@ -12,6 +12,7 @@ import type { Row } from '@tanstack/react-table'
 import { createColumnHelper, useReactTable, getCoreRowModel, filterFns } from '@tanstack/react-table'
 
 import axios from 'axios'
+import dotenv from "dotenv";
 
 import type { Cargo } from '@/types/apps/cargo'
 import tableStyles from '@core/styles/table.module.css'
@@ -80,7 +81,7 @@ const Cargos = () => {
   // Función para obtener los datos desde la API
   const fetchData = async (entity: TabData) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/${entity}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/${entity}`)
 
       setData(response.data)
       setFilteredData(response.data)
