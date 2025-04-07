@@ -48,6 +48,8 @@ services:
     depends_on:
       - kafka
       - db
+    links:
+      - db
     restart: always
     ports:
       - "8080:8080"
