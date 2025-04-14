@@ -23,10 +23,17 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << 'EOF'
             cd /media/backup/server/GM2/ || exit 1
 
-            # Cambia a repositorio por SSH (solo la primera vez, ignora si ya está bien)
+            # Asegurar que el origen esté bien configurado (por si acaso)
             git remote set-url origin git@github.com:Pixelweb-co/GM2.git
 
             git pull origin main || exit 1
 
+            # Instalar dependencias con npm (no Yarn)
+            npm install || exit 1
+
+            # Construir la app si aplica
+            npm run build || exit 1
+
+            # Levantar contenedor
             sudo docker-compose up -d --build || exit 1
           EOF
