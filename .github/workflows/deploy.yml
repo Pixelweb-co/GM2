@@ -21,7 +21,7 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << 'EOF'
-          cd /ruta/del/proyecto &&
+          cd /media/backup/server/GM2/ &&
           git pull origin main &&
           sudo docker-compose up -d --build
           EOF
