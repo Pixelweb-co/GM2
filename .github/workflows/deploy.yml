@@ -22,7 +22,6 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          # Asegúrate de que los permisos estén correctos
           chmod 644 ~/.ssh/known_hosts
 
       - name: Deploy to Server
@@ -31,7 +30,7 @@ jobs:
             cd /media/backup/server/GM2/ || exit 1
 
             # Cambia a repositorio por SSH (solo la primera vez, ignora si ya está bien)
-            # git remote set-url origin git@github.com:Pixelweb-co/GM2.git
+            git remote set-url origin git@github.com:Pixelweb-co/GM2.git
 
             git pull origin main || exit 1
 
