@@ -24,12 +24,13 @@ services:
         ports: 
             - "80:80"
         volumes:
-            - ../backup/server/webApplications:/var/www/html
+            - /media/backup/server/webApplications:/var/www/html
             - ./apache2:/etc/apache2
         links:
             - db:db
         networks:
             - default
+            - mired
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -144,7 +145,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - portainer_data:/data
         networks:
-            - default
+            - mired
 
 volumes:
   db_data:
@@ -157,4 +158,3 @@ networks:
     driver: bridge
   mired:
     driver: bridge
-
