@@ -32,4 +32,5 @@ jobs:
             chmod 644 ~/.ssh/known_hosts
             cd /media/backup/server/GM2/ || exit 1
             git pull
+            docker-compose up -d --build
           EOF
