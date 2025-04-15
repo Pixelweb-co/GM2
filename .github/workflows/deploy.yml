@@ -27,7 +27,9 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << 'EOF'
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            chmod 644 ~/.ssh/known_hosts
             cd /media/backup/server/GM2/ || exit 1
-            ls
             git pull
           EOF
