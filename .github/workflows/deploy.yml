@@ -26,18 +26,20 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << EOF
-            mkdir -p ~/.ssh
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
-            chmod 644 ~/.ssh/known_hosts
-            cd /media/backup/server/GM2/ || exit 1
-            git pull
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f \$(docker ps -aq)
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images -q)
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker network rm \$(docker network ls | grep -v "bridge\\|host\\|none" | awk '{print \$1}')
-            
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
-          EOF
+            ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << EOF
+              mkdir -p ~/.ssh
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
+              chmod 644 ~/.ssh/known_hosts
+              cd /media/backup/server/GM2/ || exit 1
+              git pull
+        
+              echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f notifications-service gm2_app backend-spring || true
+              echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images --filter=reference='*notifications*' -q) || true
+              echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images --filter=reference='*gm2*' -q) || true
+              echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images --filter=reference='*backend*' -q) || true
+        
+              echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
+            EOF
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
