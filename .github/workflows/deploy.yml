@@ -35,7 +35,7 @@ jobs:
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f \$(docker ps -aq)
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images -q)
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker network rm \$(docker network ls | grep -v "bridge\\|host\\|none" | awk '{print \$1}')
-            #echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker system prune -af --volumes
+             # echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker system prune -af --volumes
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
           EOF
 
