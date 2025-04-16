@@ -33,20 +33,23 @@ jobs:
             cd /media/backup/server/GM2/ || exit 1
             git pull
 
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker ps -a --filter "name=gm2_app" \
+            # Eliminar contenedores si existen
+            sudo docker ps -a --filter "name=gm2_app" \
               --filter "name=gm2_backend-spring_1" \
               --filter "name=gm2_notification-service_1" -q | xargs -r sudo docker rm -f
 
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker images | grep -E "gm2_gm2|gm2_backend-spring|gm2_notification-service" | awk '{print \$3}' | xargs -r sudo docker rmi -f
+            # Eliminar imágenes relacionadas
+            sudo docker images | grep -E "gm2_gm2|gm2_backend-spring|gm2_notification-service" | awk '{print \$3}' | xargs -r sudo docker rmi -f
 
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
+            # Levantar servicios
+            sudo docker-compose up -d --build
           EOF
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: mail.tornillosprotor.com
-          server_port: 587
+          server_port: 465
           username: pruebas@tornillosprotor.com
           password: Elian2020#
           subject: "Deploy GM2"
@@ -54,3 +57,4 @@ jobs:
           from: pruebas@tornillosprotor.com
           body: "¡Se ha desplegado la actualización en GM2 correctamente!"
           secure: true
+
