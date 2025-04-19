@@ -156,7 +156,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://equibiomedic.co:3000"); // Origen permitido
+        //configuration.addAllowedOrigin("http://equibiomedic.co:3000"); // Origen permitido
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*"); // Permitir todos los métodos (GET, POST, etc.)
         configuration.addAllowedHeader("*"); // Permitir todos los encabezados
