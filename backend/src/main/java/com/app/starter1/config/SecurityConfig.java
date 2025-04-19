@@ -1,5 +1,6 @@
 package com.app.starter1.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import com.app.starter1.config.filter.JwtTokenValidator;
 import com.app.starter1.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     @Autowired
     private final UserDetailServiceAP userDetailServiceAP;
+
+    @Value("${cors.allowed.origin}")
+    private String allowedOrigin;
 
     @Autowired
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -156,8 +160,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://equibiomedic.co:3000"); // Origen permitido
-        //configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin(allowedOrigin);
         configuration.addAllowedMethod("*"); // Permitir todos los métodos (GET, POST, etc.)
         configuration.addAllowedHeader("*"); // Permitir todos los encabezados
         configuration.setAllowCredentials(true); // Permitir cookies/credenciales
