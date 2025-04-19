@@ -126,10 +126,8 @@ services:
         ports:
             - "3000:3000"
         environment:
-            - NEXT_PUBLIC_API_URL=http://equibiomedic.co:8082
-        volumes:
-            - .:/app
-            - /app/node_modules
+            - NEXT_PUBLIC_API_URL=http://equibiomedic.co:8080
+        
         restart: unless-stopped
         networks:
             - mired
