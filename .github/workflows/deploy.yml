@@ -32,8 +32,8 @@ jobs:
             chmod 644 ~/.ssh/known_hosts
             cd /media/backup/server/GM2/ || exit 1
             git pull
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f \$(docker ps -aq)
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f \$(docker images -q)
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f $(docker ps -aq)
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rmi -f $(docker images -q)
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker network rm \$(docker network ls | grep -v "bridge\\|host\\|none" | awk '{print \$1}')
             
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
