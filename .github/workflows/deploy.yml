@@ -33,6 +33,7 @@ jobs:
             cd /media/backup/server/GM2/ || exit 1
             git pull
 
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f $(docker ps -aq)
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker ps -a --filter "name=gm2_app" \
               --filter "name=gm2_backend-spring_1" \
               --filter "name=gm2_notification-service_1" -q | xargs -r sudo docker rm -f
