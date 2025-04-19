@@ -144,19 +144,7 @@ services:
         networks:
             - mired
 
-    backup-service:
-        build:
-            context: ./backup-service
-            dockerfile: Dockerfile
-        container_name: backup-service
-        environment:
-            MYSQL_ROOT_PASSWORD: widowmaker
-            GDRIVE_API_KEY: your-google-drive-api-key-here
-        volumes:
-            - backup:/backup
-        networks:
-            - mired
-        restart: always
+
 
 volumes:
   db_data:
