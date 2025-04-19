@@ -32,9 +32,11 @@ COPY --from=builder /app/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
+# Copiar solo lo necesario
+COPY --chown=nextjs:nodejs --from=builder /app/public ./public
+COPY --chown=nextjs:nodejs --from=builder /app/.next ./.next
+COPY --chown=nextjs:nodejs --from=builder /app/node_modules ./node_modules
+COPY --chown=nextjs:nodejs --from=builder /app/package.json ./package.json
 # Environment variables must be redefined at run time
 ARG ENV_VARIABLE
 ENV ENV_VARIABLE=${ENV_VARIABLE}
@@ -48,4 +50,5 @@ ENV NEXT_PUBLIC_ENV_VARIABLE=${NEXT_PUBLIC_ENV_VARIABLE}
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# Usar el servidor integrado de Next.js
+CMD ["npx", "next", "start"]
