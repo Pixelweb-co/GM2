@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 
 // Type Imports
 import type { SystemMode } from '@core/types'
@@ -21,6 +21,8 @@ const LayoutWrapper = (props: LayoutWrapperProps) => {
   // Props
   const { systemMode, verticalLayout, horizontalLayout } = props
 
+  const [isLogin, setIsLogin] = useState(false)
+
   // Hooks
   const { settings } = useSettings()
 
@@ -29,13 +31,21 @@ const LayoutWrapper = (props: LayoutWrapperProps) => {
 
     useEffect(() => {
 
+      const validity = async  () => {
       console.log('Layout mounted validate token and user')
-      AuthManager.validateToken()
+      const logined = await AuthManager.validateToken()
+      setIsLogin( logined)
+      }
+
+      validity()
+
+
     }, [])
 
   // Return the layout based on the layout context
   return (
     <div className='flex flex-col flex-auto' data-skin={settings.skin}>
+      {!isLogin && <div style={{backgroundColor:'white',width:'100%', height:'100%', position:'absolute',zIndex:'99999'}}></div>}
       {settings.layout === 'horizontal' ? horizontalLayout : verticalLayout}
     </div>
   )

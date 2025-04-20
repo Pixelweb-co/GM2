@@ -130,6 +130,7 @@ export const AuthManager = {
     } catch (error) {
       console.error('Error durante la validación del token:', error)
       throw error
+      return false
     }
   },
 
