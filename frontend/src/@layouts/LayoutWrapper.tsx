@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import type { ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
 
 // Type Imports
 import type { SystemMode } from '@core/types'
@@ -9,6 +9,7 @@ import type { SystemMode } from '@core/types'
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
 import useLayoutInit from '@core/hooks/useLayoutInit'
+import { AuthManager } from '@/utils/authManager';
 
 type LayoutWrapperProps = {
   systemMode: SystemMode
@@ -24,6 +25,13 @@ const LayoutWrapper = (props: LayoutWrapperProps) => {
   const { settings } = useSettings()
 
   useLayoutInit(systemMode)
+
+
+    useEffect(() => {
+
+      console.log('Layout mounted validate token and user')
+      AuthManager.validateToken()
+    }, [])
 
   // Return the layout based on the layout context
   return (

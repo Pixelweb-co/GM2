@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { jwtDecode } from "jwt-decode";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 export const AuthManager = {
@@ -100,17 +100,33 @@ export const AuthManager = {
 
   async validateToken() {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/auth/validate-token`,
-        { token: localStorage.getItem('AuthToken') },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      )
+      const token = localStorage.getItem('AuthToken')
+      if (!token) {
 
-      return response.data
+        console.error('Token no encontrado')
+        localStorage.removeItem('AuthToken')
+        localStorage.removeItem('UserLogin')
+        location.href = '/login'
+        return false
+      }
+      const decodedToken: any = jwtDecode(token)
+      const expirationDate = new Date(decodedToken.exp * 1000)
+      console.log('Fecha de expiración:', expirationDate)
+      console.log('Fecha actual:', new Date())
+      console.log('Token:', token)
+      console.log('Decoded Token:', decodedToken)
+      console.log('Usuario:', decodedToken.sub)
+      console.log('Rol:', decodedToken.role)
+      const currentDate = new Date()
+      if (expirationDate < currentDate) {
+        console.error('Token expirado')
+        localStorage.removeItem('AuthToken')
+        localStorage.removeItem('UserLogin')
+        location.href = '/login'
+        return false
+      }
+
+      return true
     } catch (error) {
       console.error('Error durante la validación del token:', error)
       throw error
