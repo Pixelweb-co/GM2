@@ -58,6 +58,7 @@
     "html2canvas": "^1.4.1",
     "input-otp": "1.2.4",
     "jspdf": "^2.5.2",
+    "jwt-decode": "^4.0.0",
     "keen-slider": "6.8.6",
     "mapbox-gl": "3.5.2",
     "negotiator": "0.6.3",
