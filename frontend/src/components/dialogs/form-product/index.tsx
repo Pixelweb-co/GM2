@@ -31,6 +31,8 @@ import TabList from '@mui/lab/TabList'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { userMethods } from '@/utils/userMethods'
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+
 const schema = yup.object().shape({
   typeDevice: yup.string().notOneOf(['0'], 'El tipo de producto es obligatorio'),
   productCode: yup.string().required('El código de producto es obligatorio'),
@@ -118,13 +120,13 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       }
 
       const [typeDeviceRes, customersRes] = await Promise.all([
-        axios.get('http://localhost:8080/type-device', {
+        axios.get(`${API_BASE_URL}/type-device`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         }),
-        axios.get('http://localhost:8080/customers', {
+        axios.get(`${API_BASE_URL}/customers`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -224,7 +226,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
-      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/products/${id}` : 'http://localhost:8080/products' // Creación
+      const apiUrl = id ? `${API_BASE_URL}/products/${id}` : `${API_BASE_URL}/products` // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación

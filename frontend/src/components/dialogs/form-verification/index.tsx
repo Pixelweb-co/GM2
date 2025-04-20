@@ -40,7 +40,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast, ToastContainer } from 'react-toastify'
 
 import TabList from '@mui/lab/TabList'
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 import CustomTextField from '@/@core/components/mui/TextField'
 import axiosInstance from '@/utils/axiosInterceptor'
 import JsonTreeBuilder from './treeBuilder'
@@ -85,7 +85,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
       }
 
       const [typeDeviceRes] = await Promise.all([
-        axios.get('http://localhost:8080/type-device', {
+        axios.get(`${API_BASE_URL}/type-device`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -183,7 +183,7 @@ const [dataSend, setDataSend] = useState<any | null>(null)
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = 'post' // Actualización o Creación
-      const apiUrl = 'http://localhost:8080/plantillas-verificacion' // Creación
+      const apiUrl = `${API_BASE_URL}/plantillas-verificacion` // Creación
 
       const response = await axiosInstance({
         method: method, // Usa 'put' para actualización o 'post' para creación
