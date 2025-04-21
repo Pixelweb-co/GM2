@@ -33,9 +33,33 @@ const LayoutWrapper = (props: LayoutWrapperProps) => {
 
       const validity = async  () => {
       console.log('Layout mounted validate token and user')
+
       const logined = await AuthManager.validateToken()
-      setIsLogin( logined)
+      if (logined) {
+        console.log('Token is valid')
+        setIsLogin( logined)
       }
+
+      const interval = setInterval(async () => {
+        console.log('Interval')
+      const logined = await AuthManager.validateToken()
+
+      if (logined) {
+        console.log('Token is valid')
+        setIsLogin( logined)
+      } else {
+        console.log('Token is invalid')
+        clearInterval(interval)
+        setIsLogin( logined)
+      }
+
+      setIsLogin( logined)
+
+
+      }, 60000);
+
+    }
+
 
       validity()
 
