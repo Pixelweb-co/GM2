@@ -36,13 +36,13 @@ const RegisterV3 = ({ id }: { id: string }) => {
       }
 
       const [customersRes, rolesRes] = await Promise.all([
-        axios.get('http://localhost:8080/customers', {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/customers`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         }),
-        axios.get('http://localhost:8080/roles', {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/roles`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -205,7 +205,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
       console.log('to save', userDataS)
 
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
-      const apiUrl = 'http://localhost:8080/users/save' // Creación
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/save` // Creación
 
       const response = await axios({
         method: 'post', // Usa 'put' para actualización o 'post' para creación

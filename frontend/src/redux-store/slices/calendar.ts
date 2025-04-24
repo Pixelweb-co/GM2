@@ -14,7 +14,7 @@
   // Async Thunk para cargar eventos desde la API
   export const fetchEvents = createAsyncThunk<EventInput[]>('calendar/fetchEvents', async () => {
     try {
-      const response = await axiosInstance.get('http://localhost:8080/schedule')
+      const response = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/schedule`)
 
       const events: EventInput[] = response.data.map((schedule:any) => ({
         id: schedule.id.toString(),
@@ -111,7 +111,7 @@
     selectedEvent,
     filterCalendarLabel,
     filterAllCalendarLabels,
-    
+
   } = calendarSlice.actions
 
   export default calendarSlice.reducer

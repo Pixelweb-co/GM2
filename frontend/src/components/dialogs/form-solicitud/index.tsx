@@ -79,6 +79,8 @@ const SolicitudForm = ({
   const [editData, setEditData] = useState<any>(null)
   const [checked, setChecked] = useState<any[]>([]);
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+
   const fetchOptions = async () => {
     try {
       const token = localStorage.getItem('AuthToken')
@@ -88,19 +90,19 @@ const SolicitudForm = ({
       }
 
       const [customersRes,userRes,typeServiceRes] = await Promise.all([
-        axios.get('http://localhost:8080/customers', {
+        axios.get(`${API_BASE_URL}/customers`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         }),
-        axios.get('http://localhost:8080/users', {
+        axios.get(`${API_BASE_URL}/users`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         }),
-        axios.get('http://localhost:8080/type-service', {
+        axios.get(`${API_BASE_URL}/type-service`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -131,7 +133,7 @@ const SolicitudForm = ({
       }
 
       const [productsRes] = await Promise.all([
-        axios.get('http://localhost:8080/contratos/customer/'+idCustomer+'', {
+        axios.get(`${API_BASE_URL}/contratos/customer/${idCustomer}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -188,7 +190,7 @@ const SolicitudForm = ({
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
-      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/solicitudes/${id}` : 'http://localhost:8080/solicitudes' // Creación
+      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/solicitudes/${id}` : `${process.env.NEXT_PUBLIC_API_URL}/solicitudes` // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación

@@ -128,7 +128,7 @@ const SheduleForm = ({ open, onClose, rowSelect }: { open: boolean; onClose: () 
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
-      const response = await fetch('http://localhost:8080/schedule/create', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/schedule/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

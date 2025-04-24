@@ -116,6 +116,20 @@ services:
     restart: unless-stopped
     networks:
       - mired
+  # backup:
+  #   build: ./mysql_backup_gdrive
+  #   container_name: mysql-backup
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - DB_HOST=db
+  #     - DB_USER=root
+  #     - DB_PASSWORD=widowmaker
+  #     - GDRIVE_FOLDER_ID=TU_FOLDER_ID
+  #   volumes:
+  #     - ./mysql_backup_gdrive:/app
+  #   networks:
+  #     - mired
 
 volumes:
   db_data:

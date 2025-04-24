@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null)
   const [messages, setMessages] = useState<string[]>([])
-  const ApiUrl = 'http://localhost:8080'
+  const ApiUrl = `${process.env.NEXT_PUBLIC_API_URL}`
 
   const addMessage = (message: string) => setMessages(prev => [...prev, message])
   const clearMessages = () => setMessages([])

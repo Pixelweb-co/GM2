@@ -65,7 +65,7 @@ const ProductViewLayout = () => {
               src={
                 product.image
                   ? `${process.env.NEXT_PUBLIC_API_URL}/media/${product.image.name}`
-                  : 'http://localhost:8080/media/default.png'
+                  : `${process.env.NEXT_PUBLIC_API_URL}/media/default.png`
               }
               alt={product.productName}
               width={300}

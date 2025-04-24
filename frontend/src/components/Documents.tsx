@@ -100,7 +100,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
       }
 
       const method = 'post'; // Crear documento
-      const apiUrl = 'http://localhost:8080/document'; // Ruta de la API
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/document`; // Ruta de la API
 
       const response = await axios({
         method: method,
