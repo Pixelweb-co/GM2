@@ -61,7 +61,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
   const [customersList, setCustomersList] = useState<any[]>([])
   const [plantillasList, setPlantillasList] = useState<any[]>([])
   const [disabledAdd, setDisabledAdd] = useState(true)
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
   const [formTemplate, setFormTemplate] = useState<any[]>([])
 
   const fetchOptions = async () => {
@@ -73,7 +73,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       }
 
       const [typeDeviceRes] = await Promise.all([
-        axios.get('http://localhost:8080/type-device', {
+        axios.get(`${API_BASE_URL}/type-device`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -123,7 +123,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = 'post' // Actualización o Creación
-      const apiUrl = 'http://localhost:8080/plantillas' // Creación
+      const apiUrl = `${API_BASE_URL}/plantillas` // Creación
 
       const response = await axiosInstance({
         method: method, // Usa 'put' para actualización o 'post' para creación
@@ -190,7 +190,7 @@ const CheckListForm = ({ open, onClose, rowSelect }: any) => {
         console.error('item:', item);
 
         try {
-          const response = await axiosInstance.get(`/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
+          const response = await axiosInstance.get(`${API_BASE_URL}/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
 
           console.log('Datos recibidostp :', response.data);
 

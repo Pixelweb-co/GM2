@@ -229,7 +229,7 @@ public class UserDetailServiceAP implements UserDetailsService {
         // String confirmationUrl = "http://localhost:8080/verify-email?token=" + token;
         // emailService.sendEmail(userEntity.getEmail(), "Email Verification", "Click the link to verify your email: " + confirmationUrl);
 
-        String activationLink = "http://localhost:3000/verificate/"+userEntity.getVerificationToken();
+        String activationLink = "http://equibiomedic.co:3000/verificate/"+userEntity.getVerificationToken();
 
         String to = userEntity.getEmail();
         String subject = "Registro exitoso! "+"Bienvenido a GM2, "+nombres+' '+apellidos;
