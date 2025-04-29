@@ -33,7 +33,7 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     // Método para obtener las solicitudes del usuario asignado con estado "ABIERTO" y fecha de hoy
     List<Solicitud> findByUsuarioAsignadoIdAndStatusDescripcionAndFecha(Long usuarioId, String estado, String fecha);
 
-    @Query("SELECT s FROM Solicitud s WHERE s.equipo.id = :productId AND s.status.descripcion = 'FINALIZADA'")
+    @Query("SELECT s FROM Solicitud s WHERE s.equipo.id = :productId AND s.status.id = 3")
     List<Solicitud> findClosedRequestsByProductId(@Param("productId") Long productId);
 
     long countByEquipoId(Long equipoId);
