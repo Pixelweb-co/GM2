@@ -109,7 +109,7 @@ const Customizer = ({ breakpoint = 'lg', dir = 'ltr', disableDirection = false }
   const theme = useTheme()
   const pathName = usePathname()
   const { settings, updateSettings, resetSettings, isSettingsChanged } = useSettings()
-  const isSystemDark = useMedia('(prefers-color-scheme: dark)', false)
+  const isSystemDark = useMedia('(prefers-color-scheme: light)', false)
 
   // Vars
   let breakpointValue: CustomizerProps['breakpoint']
