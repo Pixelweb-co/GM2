@@ -78,6 +78,17 @@ const SolicitudForm = ({
   const [userList, setUsersList] = useState<UsersType[]>([])
   const [editData, setEditData] = useState<any>(null)
   const [checked, setChecked] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+
+  const filterProducts = (searchTerm: string) => {
+    console.log("search ",searchTerm)
+    console.log("products ",productsList)
+
+    const filtered = productsList.filter((product) =>
+      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
@@ -142,7 +153,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       ])
 
       setProductsList(productsRes.data.productos)
-
+      setFilteredProducts(productsRes.data.productos)
 
       return true
 
@@ -438,8 +449,13 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
               <h3>Equipos</h3>
                 <Card>
                 <CardContent>
+
+                <TextField fullWidth id='busqueda_input' label='Buscar equipo' onKeyUp={(e)=>filterProducts(e.target.value)}/>
+
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {productsList.map(value => {
+
+
+                {filteredProducts.map(value => {
                   const labelId = `checkbox-list-label-${value.id}`
                   const handleToggle = (value: any) => () => {
                     setChecked((prevChecked: any[]) =>

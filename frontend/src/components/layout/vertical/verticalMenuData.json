@@ -63,22 +63,6 @@
     ]
   },
   {
-    "label": "Parametrización",
-    "icon": "settings",
-    "roles": [
-      "SUPERADMIN"
-    ],
-    "children": [
-      {
-        "label": "Parámetros Generales",
-        "route": "/parametrizacion/generales",
-        "roles": [
-          "SUPERADMIN"
-        ]
-      }
-    ]
-  },
-  {
     "label": "Administracion",
     "icon": "settings",
     "roles": [
