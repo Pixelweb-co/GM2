@@ -1,7 +1,10 @@
+import Customizer from '@/@core/components/customizer'
 import EcommerceDashboard from '../apps/ecommerce/dashboard/page'
 
 const DashboardECommerce = () => {
-  return <EcommerceDashboard />
+  return <><EcommerceDashboard />
+  <Customizer />
+  </>
 }
 
 export default DashboardECommerce
