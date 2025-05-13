@@ -450,7 +450,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                 <Card>
                 <CardContent>
 
-                <TextField fullWidth id='busqueda_input' label='Buscar equipo' onKeyUp={(e)=>filterProducts(e.target.value)}/>
+                <TextField fullWidth id='busqueda_input' label='Buscar equipo' onKeyUp={(e)=>console.log(3)}/>
 
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
 
