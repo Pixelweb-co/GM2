@@ -5,6 +5,7 @@ public class NotificationMessage {
     private String subject;
     private String body;
     private String type;
+    private String username;
 
 
     // Getters y setters
@@ -38,5 +39,11 @@ public class NotificationMessage {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public void setUsername(String username){this.username = username;}
+
+    public String getUsername() {
+        return username;
     }
 }

@@ -92,7 +92,7 @@ const ClienteForm = ({
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
-      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/customers/${id}` : 'http://localhost:8080/customers' // Creación
+      const apiUrl = id ? `${process.env.NEXT_PUBLIC_API_URL}/customers/${id}` : `${process.env.NEXT_PUBLIC_API_URL}/customers` // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación

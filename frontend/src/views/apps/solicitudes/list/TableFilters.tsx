@@ -51,7 +51,7 @@ const TableFilters = ({
 
       if (!token) throw new Error('Token no disponible.')
 
-      const response = await axios.get('http://localhost:8080/customers', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/customers`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`

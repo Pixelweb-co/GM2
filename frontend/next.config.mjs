@@ -13,7 +13,7 @@ const nextConfig = {
       }
     ]
   },
-  images: { domains: ['localhost'], unoptimized: true },
+  images: { domains: ['localhost','equibiomedic.co'], unoptimized: true },
 }
 
 export default nextConfig

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 import dotenv from "dotenv";
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 import TypeDeviceListTable from '../../../../../views/apps/typeDevice/list/TypeDeviceListTable'
 
 import axiosInstance from '@/utils/axiosInterceptor'
@@ -13,7 +13,7 @@ import TemplateVerificationListTable from '@/views/apps/templateVerification/lis
 const getTemplatesVerification = async () => {
 
   try {
-    const response = await axiosInstance.get('/plantillas-verificacion');
+    const response = await axiosInstance.get(`${API_BASE_URL}/plantillas-verificacion`);
 
     console.log('Datos recibidosnw:', response.data);
 

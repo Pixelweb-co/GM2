@@ -58,6 +58,7 @@ public class EmailService {
 
 
         if(notification.getType().equals("recover-password")){
+            model.put("username", notification.getUsername());
             model.put("recoverLink", notification.getBody()); // O cualquier otro valor dinámico
         }
 

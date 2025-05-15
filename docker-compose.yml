@@ -1,130 +1,171 @@
 
 services:
-  gm2:
-    container_name: gm2_app
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: unless-stopped
-    networks:
-      - mired
+    db:
+        image: mysql:8.0
+        container_name: mysql
+        restart: always
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: ingenieriadb
+            MYSQL_PASSWORD: widowmaker
+            MYSQL_ROOT_PASSWORD: widowmaker 
+        volumes:
+            - persistent:/var/lib/mysql
+        networks:
+            - default
+            - kafka-net
+            - mired
 
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT_EXTERNAL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT_EXTERNAL://127.0.0.1:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - kafka-net
+    www:
+        restart: always
+        build: .
+        ports: 
+            - "80:80"
+        volumes:
+            - /media/backup/server/webApplications:/var/www/html
+            - ./apache2:/etc/apache2
+        links:
+            - db:db
+        networks:
+            - default
+            - mired
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - kafka-net
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        links: 
+            - db:db
+        ports:
+            - 8000:80
+        environment:
+            MYSQL_USER: root
+            MYSQL_PASSWORD: widowmaker
+            MYSQL_ROOT_PASSWORD: widowmaker
 
-  backend-spring:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    depends_on:
-      - kafka
-      - db
-    links:
-      - db
-    restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_PROFILES_ACTIVE: default
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: gm2
-      DB_USERNAME: admin
-      DB_PASSWORD: eqbm2025#
-    networks:
-      - kafka-net
-      - mired
+    kafka:
+        image: confluentinc/cp-kafka:7.4.0
+        ports:
+            - "9092:9092"
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT_EXTERNAL://0.0.0.0:9093
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT_EXTERNAL://127.0.0.1:9093
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        networks:
+            - kafka-net
 
-  notification-service:
-    build:
-      context: ./notifications
-      dockerfile: Dockerfile
-    depends_on:
-      - kafka
-    ports:
-      - "8081:8080"
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    networks:
-      - kafka-net
+    zookeeper:
+        image: confluentinc/cp-zookeeper:7.4.0
+        ports:
+            - "2181:2181"
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        networks:
+            - kafka-net
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.30.0
-    ports:
-      - "9000:9000"
-    environment:
-      KAFKA_BROKER_CONNECT: kafka:92
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    depends_on:
-      - kafka
-      - zookeeper
-    networks:
-      - kafka-net
+    backend-spring:
+        build:
+            context: /media/backup/server/GM2/backend
+            dockerfile: Dockerfile
+        depends_on:
+            - kafka
+            - db
+        restart: always
+        ports:
+            - "8080:8080"
+        links:
+            - db:db
+        volumes:
+            - ./backend/documents:/documents
+            - ./backend/firma_soporte:/firma_soporte
+            - ./backend/firmas/:/firmas
+            - ./backend/images:/images
+    
+        environment:
+            SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+            SPRING_PROFILES_ACTIVE: default
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: GM2
+            DB_USERNAME: root
+            DB_PASSWORD: widowmaker
+        networks:
+            - kafka-net
+            - mired
 
-  db:
-    image: mysql:8.0
-    container_name: mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gm2
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: eqbm2025#
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - kafka-net
-      - mired
+    notification-service:
+        build:
+            context: /media/backup/server/GM2/notifications
+            dockerfile: Dockerfile
+        depends_on:
+            - kafka
+        ports:
+            - "8081:8080"
+        environment:
+            SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        networks:
+            - kafka-net
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    depends_on:
-      - db
-    ports:
-      - "8082:80"
-    environment:
-      PMA_HOST: db
-      PMA_USER: admin
-      PMA_PASSWORD: eqbm2025#
-    networks:
-      - kafka-net
-      - mired
+    kafdrop:
+        image: obsidiandynamics/kafdrop:3.30.0
+        ports:
+            - "9000:9000"
+        environment:
+            KAFKA_BROKER_CONNECT: kafka:92
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        depends_on:
+            - kafka
+            - zookeeper
+        networks:
+            - kafka-net
+
+    gm2:
+        container_name: gm2_app
+        build:
+            context: /media/backup/server/GM2/frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            - NEXT_PUBLIC_API_URL=http://equibiomedic.co:8080
+        
+        restart: unless-stopped
+        networks:
+            - mired
+
+    portainer:
+        image: portainer/portainer-ce
+        container_name: portainer
+        restart: always
+        ports:
+            - "9100:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
+        networks:
+            - mired
+
+    backup-service:
+      build: ./backup-service/
+      ports: 
+        - "8084:80"
+      volumes:
+        - ./backup-service/public:/var/www/html
+      links:
+        - db
+
 
 volumes:
   db_data:
   db_data2:
+  persistent:
+  portainer_data:
+  backup:
 
 networks:
   kafka-net:

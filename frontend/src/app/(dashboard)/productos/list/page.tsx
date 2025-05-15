@@ -1,7 +1,7 @@
 'use client' // Esto indica que este archivo es un Componente del Cliente
 // Component Imports
 import { useEffect, useState } from 'react'
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 import axios from 'axios'
 import dotenv from "dotenv";
 
@@ -36,13 +36,13 @@ const ProductListApp = () => {
       const user = userMethods.getUserLogin()
 
 
-      let product_url = `${process.env.NEXT_PUBLIC_API_URL}/products`
+      let product_url = `${API_BASE_URL}/products`
 
       if (user.roles[0].roleEnum === 'ADMIN' || user.roles[0].roleEnum === 'USER') {
 
         const id_customer = user.customer.id
 
-        product_url = `${process.env.NEXT_PUBLIC_API_URL}/products/customer/${id_customer}`
+        product_url = `${API_BASE_URL}/products/customer/${id_customer}`
 
       }
 

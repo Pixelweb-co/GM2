@@ -2,7 +2,7 @@
 
 // React Imports
 import { useEffect, useState, useMemo } from 'react'
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 // MUI Imports
 import { useRouter } from 'next/navigation'
 
@@ -89,6 +89,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed
 }
 
+
+
 const DebouncedInput = ({
   value: initialValue,
   onChange,
@@ -142,7 +144,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
     try{
 
-      const res = await axiosInstance.put(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_API_URL}/products/verification/${id}`, JSON.stringify({ verification: value }), {
+      const res = await axiosInstance.put(`${API_BASE_URL}/products/verification/${id}`, JSON.stringify({ verification: value }), {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -166,7 +168,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
     try{
 
-    const res = await axiosInstance.delete(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
+    const res = await axiosInstance.delete(`${API_BASE_URL}/products/${id}`)
 
      console.log("res.data", res.data)
      errorDeleteItem("Eliminado correctamente!")

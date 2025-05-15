@@ -184,7 +184,7 @@ const MaintenanceReport = ({data}:{data:any}) => {
                     <tbody>
                         <tr>
                             <td rowSpan={3} className="w-1/10">
-                                <img src="http://localhost:8080/media/logo.jpg" alt="Logo" className="w-24 h-24 mt-2" />
+                                <img src={`${process.env.NEXT_PUBLIC_API_URL}/media/logo.jpg`} alt="Logo" className="w-24 h-24 mt-2" />
                             </td>
                             <td rowSpan={3} className="align-middle">
                                 <h5>REPORTE SERVICIO MANTENIMIENTO</h5>

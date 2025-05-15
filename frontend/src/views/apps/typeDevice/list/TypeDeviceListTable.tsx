@@ -111,6 +111,7 @@ const columnHelper = createColumnHelper<TypeDeviceTypeWithAction>()
 
 const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: TypeDeviceType[] }) => {
   // States
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
   const [rowSelection, setRowSelection] = useState<any>({ TypeDevice: '', id: '' })
   const [data, setData] = useState<TypeDeviceTypeWithAction[]>(
@@ -128,7 +129,7 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
   useEffect(() => {
     const getTemplatesVerification = async () => {
       try {
-        const response = await axiosInstance.get('/plantillas-verificacion')
+        const response = await axiosInstance.get(`${API_BASE_URL}/plantillas-verificacion`)
 
         console.log('Datos recibidosnw:', response.data)
 

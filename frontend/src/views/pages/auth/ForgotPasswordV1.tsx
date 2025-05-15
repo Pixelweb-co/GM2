@@ -18,7 +18,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 
 import axios from 'axios'
-import dotenv from "dotenv";
+import dotenv from 'dotenv'
 
 // Component Imports
 import { TextField } from '@mui/material'
@@ -73,7 +73,7 @@ const ForgotPasswordV1 = () => {
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = 'post' // Actualización o Creación
-      const apiUrl = 'http://localhost:8080/auth/forgot-password' // Creación
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password` // Creación
 
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación
@@ -99,8 +99,8 @@ const ForgotPasswordV1 = () => {
             <Logo />
           </Link>
           <div className='flex flex-col gap-1 mbe-6'>
-            <Typography variant='h4'>Olvide mi contraseña 🔒</Typography>
-            <Typography>Ingrese su email y siga las instrucciones para restablecer su contraseña.</Typography>
+            <Typography variant='h4'>Olvidé mi contraseña 🔒</Typography>
+            <Typography>Ingrese su emaily siga las instrucciones para restablecer su contraseña.</Typography>
           </div>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
             <Controller
