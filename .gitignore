@@ -10,6 +10,7 @@
 /backend/src/main/java/com/app/starter1/config/
 
 /backup-service/public/secret_client.json
+/backup-service/public/token.json
 
 /frontend/.env.local
 
