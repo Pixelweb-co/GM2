@@ -80,6 +80,12 @@ services:
             - "8080:8080"
         links:
             - db:db
+        volumes:
+            - ./backend/documents:/documents
+            - ./backend/firma_soporte:/firma_soporte
+            - ./backend/firmas/:/firmas
+            - ./backend/images:/images
+    
         environment:
             SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             SPRING_PROFILES_ACTIVE: default
@@ -144,6 +150,14 @@ services:
         networks:
             - mired
 
+    backup-service:
+      build: ./backup-service/
+      ports: 
+        - "8084:80"
+      volumes:
+        - ./backup-service/public:/var/www/html
+      links:
+        - db
 
 
 volumes:
