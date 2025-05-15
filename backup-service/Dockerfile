@@ -1,37 +1,38 @@
+FROM php:8.2-apache
 
-FROM ubuntu:20.04
-
-# Actualiza y instala las dependencias necesarias
-# Instalar dependencias previas
+# Instalar cron, MySQL client y extensiones necesarias
 RUN apt-get update && apt-get install -y \
-    libx11-xcb1 \
-    libgbm1 \
-    libasound2 \
-    libnss3 \
-    libxss1 \
-    fonts-liberation \
-    xdg-utils \
-    wget
+    default-mysql-client \
+    cron \
+    unzip \
+    git \
+    libzip-dev \
+    && docker-php-ext-install zip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Descargar e instalar Google Chrome
-RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome.deb && \
-    dpkg -i google-chrome.deb || apt-get install -f -y
-RUN apt-get update && apt-get install -y     mysql-client     cron     curl     jq     && rm -rf /var/lib/apt/lists/*
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar el SDK de Google Drive
-RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome.deb &&     dpkg -i google-chrome.deb &&     apt-get install -f
+# Habilitar mod_rewrite
+RUN a2enmod rewrite
 
-# Copiar los scripts dentro del contenedor
-COPY backup_all_databases.sh /backup/backup_all_databases.sh
-COPY upload_to_drive.sh /backup/upload_to_drive.sh
+# Copiar configuración PHP
+COPY php.ini /usr/local/etc/php/
 
-# Dar permisos de ejecución
-RUN chmod +x /backup/backup_all_databases.sh
-RUN chmod +x /backup/upload_to_drive.sh
+# Copiar cron y permisos
+COPY cronjob /etc/cron.d/cronjob
+RUN chmod 0644 /etc/cron.d/cronjob && crontab /etc/cron.d/cronjob
 
-# Configuración de cron
-COPY crontab /etc/cron.d/backup-cron
-RUN chmod 0644 /etc/cron.d/backup-cron
+# Script para iniciar apache + cron
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Ejecutar cron
-CMD ["cron", "-f"]
+# Instalar dependencias PHP (Google API Client)
+WORKDIR /var/www/html/
+COPY ./public /var/www/html/
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+RUN composer require google/apiclient:^2.0
+
+EXPOSE 80
+
+CMD ["/start.sh"]
