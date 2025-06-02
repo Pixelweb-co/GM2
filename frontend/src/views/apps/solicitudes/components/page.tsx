@@ -183,7 +183,7 @@ const ReporteForm = ({ openForm, RecordData, closeForm }: { openForm: boolean; R
 
       console.log('res', res)
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         alert('Reporte creado exitosamente')
         handleClose()
       }
