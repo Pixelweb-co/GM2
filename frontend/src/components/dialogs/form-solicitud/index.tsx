@@ -218,7 +218,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       // Procesar la respuesta
       if (response.data.result === 'success') {
         console.log('Solicitud guardado con éxito:', response.data)
-
+        onClose()
+        setOpen() // Cierra el diálogo y resetea el estado de apertura
         // Aquí puedes redirigir o mostrar un mensaje de éxito
       } else {
         console.error('Error en la respuesta:', response.data.message)

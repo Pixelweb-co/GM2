@@ -72,6 +72,7 @@ public class SignController {
 
         Optional<FirmaSoporte> firmaSoporte = firmaSoporteRepository.findByIdUsuario(id);
 
+        System.out.println(firmaSoporte);
         if (firmaSoporte.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
