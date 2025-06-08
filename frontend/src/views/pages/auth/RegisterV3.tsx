@@ -65,13 +65,14 @@ const RegisterV3 = ({ id }: { id: string }) => {
 
   useEffect(() => {
     console.log('load role admin', userMethods.isRole('SUPERADMIN'))
-
+    console.log("id", id)
+    // Cargar las opciones de clientes y roles
     fetchOptions()
   }, [])
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (id) {
+      if (id !== '') {
         try {
           const token = localStorage.getItem('AuthToken')
 
