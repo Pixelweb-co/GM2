@@ -1,5 +1,6 @@
 [
     { "dbname": "ingenieriadb" },
-    { "dbname": "dbname" },
-    {"dbname":"GM2"}
-  ]
+    { "dbname": "hardware" },
+    {"dbname":"GM2"},
+    {"dbname":"systemebm"}
+]
