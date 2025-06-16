@@ -67,10 +67,12 @@ services:
     links:
       - db:db
     volumes:
-      - ./backend/documents:/documents
-      - ./backend/firma_soporte:/firma_soporte
-      - ./backend/firmas/:/firmas
-      - ./backend/images:/images
+      - ./backend/documents:/app/documents
+      - ./backend/firma_soporte:/app/firma_soporte
+      - ./backend/firmas/:/app/firmas
+      - ./backend/images:/app/images
+      - ./backend/uploads:/app/uploads
+
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_PROFILES_ACTIVE: default

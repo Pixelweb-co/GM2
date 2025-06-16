@@ -69,6 +69,7 @@ public class DocumentStorageService implements StorageFileService{
     public Resource LoadAsResource(String filename) {
         try{
             Path file = rootLocation.resolve(filename);
+            System.out.println(file.toUri());
             Resource resource = new UrlResource((file.toUri()));
 
             if(resource.exists() || resource.isReadable()){
@@ -92,8 +93,6 @@ public class DocumentStorageService implements StorageFileService{
 
             if (Files.exists(fileToDelete)) {
                 Files.delete(fileToDelete);
-            } else {
-                throw new RuntimeException("El archivo no existe: " + filename);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error al intentar eliminar el archivo: " + filename, e);

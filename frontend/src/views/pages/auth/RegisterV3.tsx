@@ -65,13 +65,14 @@ const RegisterV3 = ({ id }: { id: string }) => {
 
   useEffect(() => {
     console.log('load role admin', userMethods.isRole('SUPERADMIN'))
-
+    console.log("id", id)
+    // Cargar las opciones de clientes y roles
     fetchOptions()
   }, [])
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (id) {
+      if (id !== '') {
         try {
           const token = localStorage.getItem('AuthToken')
 
@@ -310,7 +311,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
                   <CustomTextField
                     {...field}
                     fullWidth
-                    disabled={!!id}
+                    disabled={id !== ''? true : false}
                     label='Nombre de usuario'
                     error={Boolean(errors.username)}
                     helperText={errors.username?.message}
@@ -326,7 +327,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
                   <CustomTextField
                     {...field}
                     fullWidth
-                    disabled={!!id}
+                    disabled={id !== ''? true : false}
                     label='Correo electrónico'
                     type='email'
                     error={Boolean(errors.email)}

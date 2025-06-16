@@ -104,7 +104,9 @@ public class UserDetailServiceAP implements UserDetailsService {
         userEntity.setEnabled(true);
         userEntity.setAccountNoLocked(true);
         userEntity.setCredentialNoExpired(true);
-
+        userEntity.setApellidos("");
+        userEntity.setNombres("");
+        userEntity.setVerificationToken("");
         UserEntity savedUser = userRepository.save(userEntity);
 
 
