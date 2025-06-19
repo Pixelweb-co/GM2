@@ -17,6 +17,13 @@ const ProductViewLayout = () => {
   // Estado inicial del producto
   const [product, setProduct] = useState<any>(null)
 
+  useEffect(()=>{
+
+    console.log("form templates",formTemplate);
+
+
+  },[formTemplate])
+
   useEffect(() => {
     // Carga los datos del localStorage
     const storedData = localStorage.getItem('productview')
@@ -36,7 +43,7 @@ const ProductViewLayout = () => {
 
         console.log('Datos recibidostp :', response.data);
 
-        setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: (item.tipo).toString() })));
+        setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: '1' })));
 
       } catch (error) {
 
