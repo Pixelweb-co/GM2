@@ -65,7 +65,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
 
   useEffect(() => {
     console.log('load role admin', userMethods.isRole('SUPERADMIN'))
-    console.log("id", id)
+    alert("id"+id)
     // Cargar las opciones de clientes y roles
     fetchOptions()
   }, [])
@@ -183,6 +183,7 @@ const RegisterV3 = ({ id }: { id: string }) => {
 
   const onSubmit = async (data: any) => {
     try {
+
       const token = localStorage.getItem('AuthToken')
 
       if (!token) {
@@ -302,6 +303,8 @@ const RegisterV3 = ({ id }: { id: string }) => {
                   </CustomTextField>
                 )}
               />
+
+
 
               {/* Nombre de usuario */}
               <Controller
