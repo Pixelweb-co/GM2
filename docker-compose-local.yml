@@ -123,14 +123,14 @@ services:
     restart: unless-stopped
     networks:
       - mired
-  backup-service:
-      build: ./backup-service/
-      ports: 
-        - "8084:80"
-      volumes:
-        - ./backup-service/public:/var/www/html
-      links:
-        - db
+  # backup-service:
+  #     build: ./backup-service/
+  #     ports: 
+  #       - "8084:80"
+  #     volumes:
+  #       - ./backup-service/public:/var/www/html
+  #     links:
+  #       - db
 
 volumes:
   db_data:
