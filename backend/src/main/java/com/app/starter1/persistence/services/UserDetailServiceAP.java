@@ -107,7 +107,8 @@ public class UserDetailServiceAP implements UserDetailsService {
         userEntity.setVerificationToken("");
         UserEntity savedUser = userRepository.save(userEntity);
 
-        if (request.getId() == '0') {
+        System.out.println("id user new "+request.getId());
+        if (request.getId() == 0) {
             // Si es un nuevo usuario, generar un token de verificación
             String token = UUID.randomUUID().toString();
             userEntity.setVerificationToken(token);
