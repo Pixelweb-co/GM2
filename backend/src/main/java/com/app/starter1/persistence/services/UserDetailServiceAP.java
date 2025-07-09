@@ -51,13 +51,11 @@ public class UserDetailServiceAP implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
-
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     private final NotificationProducerService producerService;
-
 
     @Autowired
     private CustomerRepository customerRepository; // Para obtener el cliente si es necesario
@@ -67,7 +65,7 @@ public class UserDetailServiceAP implements UserDetailsService {
     }
 
     // Crear o actualizar un usuario
-    public  Map<String, Object>  createOrUpdateUser(UserCreateUpdateRequest request) throws IllegalAccessException {
+    public Map<String, Object> createOrUpdateUser(UserCreateUpdateRequest request) throws IllegalAccessException {
 
         // Validar si las contraseñas coinciden
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -93,7 +91,7 @@ public class UserDetailServiceAP implements UserDetailsService {
 
         // Crear o actualizar el usuario
         UserEntity userEntity = userRepository.findById(request.getId())
-                .orElse(new UserEntity());  // Si no existe, crear uno nuevo
+                .orElse(new UserEntity()); // Si no existe, crear uno nuevo
 
         userEntity.setUsername(request.getUsername());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -109,6 +107,27 @@ public class UserDetailServiceAP implements UserDetailsService {
         userEntity.setVerificationToken("");
         UserEntity savedUser = userRepository.save(userEntity);
 
+        System.out.println("id user new "+request.getId());
+        if (request.getId() == 0) {
+            // Si es un nuevo usuario, generar un token de verificación
+            String token = UUID.randomUUID().toString();
+            userEntity.setVerificationToken(token);
+            userRepository.save(userEntity);
+
+            String activationLink = "http://equibiomedic.co:3000/verificate/" + userEntity.getVerificationToken();
+
+            String to = userEntity.getEmail();
+            String subject = "Registro exitoso! " + "Bienvenido a GM2, " + request.getUsername();
+            String body = activationLink;
+            String type = "register";
+
+            String message = String.format(
+                    "{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to,
+                    subject, body, type, request.getUsername());
+            producerService.sendMessage("email-notifications", message);
+            System.out.println("Notificación enviada a la cola.");
+
+        }
 
         // Construir la respuesta con el formato requerido
         Map<String, Object> response = new HashMap<>();
@@ -118,30 +137,30 @@ public class UserDetailServiceAP implements UserDetailsService {
 
         return response;
 
-        }
-
-
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findUserEntityByUsername(username).orElseThrow(()-> new UsernameNotFoundException("Th username "+username+" not exists!"));
+        UserEntity userEntity = userRepository.findUserEntityByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Th username " + username + " not exists!"));
 
         List<SimpleGrantedAuthority> autorityList = new ArrayList<>();
 
-        //registrar roles en lista de autorizacion sprng security
-        userEntity.getRoles().forEach(role-> autorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+        // registrar roles en lista de autorizacion sprng security
+        userEntity.getRoles().forEach(
+                role -> autorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
 
-        userEntity.getRoles().stream().flatMap(role->role.getPermissionList().stream()).forEach(permission->autorityList.add(new SimpleGrantedAuthority(permission.getName())));
+        userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
+                .forEach(permission -> autorityList.add(new SimpleGrantedAuthority(permission.getName())));
         return new User(userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.isEnabled(),
                 userEntity.isAccountNoExpired(),
                 userEntity.isCredentialNoExpired(),
-                userEntity.isAccountNoLocked(),autorityList);
+                userEntity.isAccountNoLocked(), autorityList);
     }
 
-    public AuthResponse loginUser(LoginRequest authloginRequest){
-
+    public AuthResponse loginUser(LoginRequest authloginRequest) {
 
         String username = authloginRequest.username();
         String password = authloginRequest.password();
@@ -155,20 +174,24 @@ public class UserDetailServiceAP implements UserDetailsService {
         // Buscamos el usuario en la base de datos
         Optional<UserEntity> userEntityOptional = userRepository.findByUsername(username);
 
-        // Si no se encuentra el usuario, lanzamos BadCredentialsException con mensaje adecuado
-        UserEntity userEntity = userEntityOptional.orElseThrow(() -> new BadCredentialsException("The username " + username + " not exists!"));
+        // Si no se encuentra el usuario, lanzamos BadCredentialsException con mensaje
+        // adecuado
+        UserEntity userEntity = userEntityOptional
+                .orElseThrow(() -> new BadCredentialsException("The username " + username + " not exists!"));
 
         // Devolvemos la respuesta con el usuario y el token
-        AuthResponse authResponse = new AuthResponse(username, "User logged in successfully", accessToken, true, userEntity);
+        AuthResponse authResponse = new AuthResponse(username, "User logged in successfully", accessToken, true,
+                userEntity);
 
         return authResponse;
     }
 
-    public Authentication authenticate(String username, String password){
+    public Authentication authenticate(String username, String password) {
         // Intentamos cargar los detalles del usuario
         UserDetails userDetails = this.loadUserByUsername(username);
 
-        // Si no se encuentra el usuario, lanzamos BadCredentialsException con mensaje adecuado
+        // Si no se encuentra el usuario, lanzamos BadCredentialsException con mensaje
+        // adecuado
         if (userDetails == null) {
             throw new BadCredentialsException("Invalid username or password");
         }
@@ -179,9 +202,9 @@ public class UserDetailServiceAP implements UserDetailsService {
         }
 
         // Si todo es correcto, devolvemos el token de autenticación
-        return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(),
+                userDetails.getAuthorities());
     }
-
 
     public AuthResponse createUser(AuthCreateUserRequest authCreateUserRequest) throws IllegalAccessException {
 
@@ -202,7 +225,8 @@ public class UserDetailServiceAP implements UserDetailsService {
             throw new IllegalArgumentException("The email '" + email + "' is already in use.");
         }
 
-        Set<RoleEntity> roleEntityList = roleRepository.findRoleEntitiesByRoleEnumIn(rolesRequest).stream().collect(Collectors.toSet());
+        Set<RoleEntity> roleEntityList = roleRepository.findRoleEntitiesByRoleEnumIn(rolesRequest).stream()
+                .collect(Collectors.toSet());
 
         if (roleEntityList.isEmpty()) {
             throw new IllegalAccessException("The roles specified do not exist.");
@@ -229,25 +253,27 @@ public class UserDetailServiceAP implements UserDetailsService {
         userRepository.save(userEntity);
 
         // String confirmationUrl = "http://localhost:8080/verify-email?token=" + token;
-        // emailService.sendEmail(userEntity.getEmail(), "Email Verification", "Click the link to verify your email: " + confirmationUrl);
+        // emailService.sendEmail(userEntity.getEmail(), "Email Verification", "Click
+        // the link to verify your email: " + confirmationUrl);
 
-        String activationLink = "http://equibiomedic.co:3000/verificate/"+userEntity.getVerificationToken();
+        String activationLink = "http://equibiomedic.co:3000/verificate/" + userEntity.getVerificationToken();
 
         String to = userEntity.getEmail();
-        String subject = "Registro exitoso! "+"Bienvenido a GM2, "+nombres+' '+apellidos;
-        String body =  activationLink;
+        String subject = "Registro exitoso! " + "Bienvenido a GM2, " + nombres + ' ' + apellidos;
+        String body = activationLink;
         String type = "register";
 
-
-
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to, subject, body,type,username);
+        String message = String.format(
+                "{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to, subject,
+                body, type, username);
         producerService.sendMessage("email-notifications", message);
         System.out.println("Notificación enviada a la cola.");
 
         ArrayList<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 
         // Roles
-        userCreated.getRoles().forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+        userCreated.getRoles().forEach(
+                role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
 
         // Permisos
         userCreated.getRoles()
@@ -256,14 +282,17 @@ public class UserDetailServiceAP implements UserDetailsService {
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
 
         SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userCreated.getUsername(), userCreated.getPassword(), authorityList);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userCreated.getUsername(),
+                userCreated.getPassword(), authorityList);
 
         String accessToken = jwtUtils.CreateToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse(userCreated.getUsername(), "User created successfully. Please verify your email.", accessToken, true,userCreated);
+        AuthResponse authResponse = new AuthResponse(userCreated.getUsername(),
+                "User created successfully. Please verify your email.", accessToken, true, userCreated);
 
         return authResponse;
     }
+
     public String validateVerificationToken(String token) {
         UserEntity user = userRepository.findByVerificationToken(token).orElse(null);
         if (user == null) {
@@ -282,40 +311,39 @@ public class UserDetailServiceAP implements UserDetailsService {
     }
 
     public void sendResetPasswordEmail(String email) {
-            // Buscar usuario por email
+        // Buscar usuario por email
         UserEntity user = userRepository.findUserEntityByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el correo: " + email));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el correo: " + email));
 
-            // Generar token único (UUID o similar)
+        // Generar token único (UUID o similar)
         String token = UUID.randomUUID().toString();
         user.setRecoveryToken(token);
 
-            // Guardar el token en la base de datos
+        // Guardar el token en la base de datos
         userRepository.save(user);
 
-            // Lógica para enviar el correo con el token
+        // Lógica para enviar el correo con el token
         String resetLink = "http://localhost:3000/reset-password/" + token;
-            // Enviar correo con el enlace
+        // Enviar correo con el enlace
 
         String to = user.getEmail();
         String subject = "GM2 Recuperación de contraseña";
-        String body =  resetLink;
+        String body = resetLink;
         String type = "recover-password";
 
-
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to, subject, body,type);
+        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to,
+                subject, body, type);
         producerService.sendMessage("email-notifications", message);
         System.out.println("Notificación enviada a la cola.");
-
 
     }
 
     public void resetPassword(String token, String newPassword) {
-            // Buscar usuario por el token
+        // Buscar usuario por el token
         UserEntity user = userRepository.findByRecoveryToken(token)
-                    .orElseThrow(() -> new RuntimeException("Token inválido o expirado."));
+                .orElseThrow(() -> new RuntimeException("Token inválido o expirado."));
 
-            // Actualizar la contraseña
+        // Actualizar la contraseña
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setRecoveryToken(""); // Eliminar el token después de usarlo
         userRepository.save(user);

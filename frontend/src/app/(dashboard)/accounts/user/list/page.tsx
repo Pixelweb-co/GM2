@@ -10,6 +10,8 @@ import UserList from '@views/apps/user/list'
 import { userMethods } from '@/utils/userMethods'
 import { AuthManager } from '@/utils/authManager'
 
+
+
 const getUserData = async () => {
   console.log('userList ', process.env.NEXT_PUBLIC_API_URL)
 
