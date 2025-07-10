@@ -50,7 +50,7 @@ public class EmailService {
     private String loadTemplate(NotificationMessage notification) throws Exception {
         // Definir el modelo de datos para cada tipo
         Map<String, Object> model = new HashMap<>();
-        model.put("name", notification.getTo());
+        model.put("name", notification.getUsername());
 
         if(notification.getType().equals("register")){
             model.put("activateLink", notification.getBody()); // O cualquier otro valor dinámico
