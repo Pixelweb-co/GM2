@@ -32,7 +32,7 @@ public class EmailService {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true); // true indica que el contenido es HTML
 
-            helper.setFrom("gm2@cloudfly.com.co");
+            helper.setFrom("gm2@yunismedical.com");
             helper.setTo(notification.getTo());
             helper.setSubject(notification.getSubject());
             helper.setText(body, true); // El segundo parámetro true indica que el cuerpo es HTML
