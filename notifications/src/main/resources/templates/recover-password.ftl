@@ -40,7 +40,7 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h2>Recuperación de Contraseña</h2>
+            <h2>GM2 Recuperación de Contraseña</h2>
         </div>
         <div class="email-body">
             <p>Hola ${username} recibimos una solicitud para recuperar tu contraseña. Si no solicitaste este cambio, por favor ignora este mensaje.</p>
