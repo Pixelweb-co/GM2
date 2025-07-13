@@ -173,7 +173,7 @@ if (!empty($backupFiles)) {
         $content = file_get_contents($filePath);
 
         $file = $service->files->create($fileMetadata, [
-            'data' => $content,
+            'data' => $content, 
             'mimeType' => 'application/zip',
             'uploadType' => 'multipart',
             'fields' => 'id'
