@@ -96,8 +96,9 @@ foreach ($databases as $db) {
     $backupFile = "uploads/backup_{$dbname}_" . date("Ymd_His") . ".sql";
     $fullPath = "/var/www/html/$backupFile";
 
+    // Usamos shell_exec() para capturar el error y la salida de mysqldump
     $cmd = sprintf(
-        'mysqldump -h%s -u%s -p%s %s > %s',
+        'mysqldump -h%s -u%s -p%s %s > %s 2>&1',  // Redirigir errores a la salida estándar
         escapeshellarg('db'),
         escapeshellarg('root'),
         escapeshellarg('widowmaker'),
@@ -107,16 +108,21 @@ foreach ($databases as $db) {
 
     echo "Ejecutando comando: $cmd<br>";
 
-    system($cmd, $retval);
-
-    echo "retval: $retval<br>";
-
-    if ($retval !== 0) {
-        echo "Error creando backup de $dbname<br>";
+    // Capturamos la salida completa, incluyendo errores
+    $output = shell_exec($cmd);
+    
+    if ($output === null) {
+        echo "Error al ejecutar mysqldump. No se puede conectar a la base de datos o el comando falló.<br>";
         continue;
     }
 
-    echo $retval === 0 ? "Backup creado: $backupFile<br>" : "Error creando backup de $dbname<br>";
+    // Comprobamos si el archivo .sql fue creado correctamente
+    if (!file_exists($fullPath)) {
+        echo "Error creando backup de la base de datos $dbname. Salida de mysqldump: $output<br>";
+        continue;
+    }
+
+    echo "Backup creado: $backupFile<br>";
 
     // Comprimir el archivo SQL en un ZIP
     $zipFile = $fullPath . '.zip';
@@ -132,7 +138,7 @@ foreach ($databases as $db) {
     echo "Archivo comprimido: $zipFile<br>";
 
     // Agregar archivo comprimido a la lista
-    if ($retval === 0) {
+    if ($retvalZip === 0) {
         $backupFiles[] = $zipFile;
     }
 }
@@ -184,3 +190,4 @@ if (!empty($backupFiles)) {
 }
 
 ?>
+ 
