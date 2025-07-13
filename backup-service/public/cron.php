@@ -2,6 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+// Función para obtener el ID de la carpeta "backup" en Google Drive
 function obtenerIdCarpetaBackup($service) {
     $folderName = 'backup';
 
@@ -28,6 +29,7 @@ function obtenerIdCarpetaBackup($service) {
     }
 }
 
+// Función para subir archivos a Google Drive
 function subirAGoogleDrive($pathArchivo, $nombreEnDrive) {
     $client = new Google_Client();
     $client->setAuthConfig('/var/www/html/secret_client.json');
@@ -63,7 +65,7 @@ function subirAGoogleDrive($pathArchivo, $nombreEnDrive) {
 
     $file = $service->files->create($fileMetadata, [
         'data' => $content,
-        'mimeType' => 'application/sql',
+        'mimeType' => 'application/zip',
         'uploadType' => 'multipart',
         'fields' => 'id'
     ]);
@@ -82,7 +84,8 @@ if (!is_array($databases)) {
     die("El contenido de databases.json no es válido.");
 }
 
-// Recorrer las bases de datos y hacer backup
+// Crear los archivos de backup primero
+$backupFiles = [];
 foreach ($databases as $db) {
     if (!isset($db['dbname'])) {
         echo "Registro inválido en databases.json<br>";
@@ -105,19 +108,79 @@ foreach ($databases as $db) {
     echo "Ejecutando comando: $cmd<br>";
 
     system($cmd, $retval);
-    
+
     echo "retval: $retval<br>";
-    
+
     if ($retval !== 0) {
         echo "Error creando backup de $dbname<br>";
         continue;
     }
+
     echo $retval === 0 ? "Backup creado: $backupFile<br>" : "Error creando backup de $dbname<br>";
 
-    if ($retval === 0) {
-        subirAGoogleDrive($fullPath, basename($backupFile));
+    // Comprimir el archivo SQL en un ZIP
+    $zipFile = $fullPath . '.zip';
+    $cmdZip = sprintf('zip %s %s', escapeshellarg($zipFile), escapeshellarg($fullPath));
+    echo "Ejecutando compresión: $cmdZip<br>";
+    system($cmdZip, $retvalZip);
+
+    if ($retvalZip !== 0) {
+        echo "Error comprimiendo archivo: $zipFile<br>";
+        continue;
     }
-    echo "<br>";
+
+    echo "Archivo comprimido: $zipFile<br>";
+
+    // Agregar archivo comprimido a la lista
+    if ($retval === 0) {
+        $backupFiles[] = $zipFile;
+    }
+}
+
+// Subir los archivos comprimidos a Google Drive
+if (!empty($backupFiles)) {
+    $client = new Google_Client();
+    $client->setAuthConfig('/var/www/html/secret_client.json');
+    $client->addScope(Google_Service_Drive::DRIVE_FILE);
+    $client->setAccessType('offline');
+
+    $tokenPath = '/var/www/html/token.json';
+    if (file_exists($tokenPath)) {
+        $accessToken = json_decode(file_get_contents($tokenPath), true);
+        $client->setAccessToken($accessToken);
+    } else {
+        die('Token no encontrado. Ejecuta auth.php primero.');
+    }
+
+    if ($client->isAccessTokenExpired()) {
+        if ($client->getRefreshToken()) {
+            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+            file_put_contents($tokenPath, json_encode($client->getAccessToken()));
+        } else {
+            die('No se puede refrescar el token. Ejecuta auth.php nuevamente.');
+        }
+    }
+
+    $service = new Google_Service_Drive($client);
+    $folderId = obtenerIdCarpetaBackup($service);
+
+    foreach ($backupFiles as $filePath) {
+        $fileMetadata = new Google_Service_Drive_DriveFile([
+            'name' => basename($filePath),
+            'parents' => [$folderId]
+        ]);
+
+        $content = file_get_contents($filePath);
+
+        $file = $service->files->create($fileMetadata, [
+            'data' => $content,
+            'mimeType' => 'application/zip',
+            'uploadType' => 'multipart',
+            'fields' => 'id'
+        ]);
+
+        echo "Archivo subido a Google Drive (backup), ID: " . $file->id . "<br>";
+    }
 }
 
 ?>
