@@ -13,6 +13,7 @@ import lombok.*;
 @Table(name = "schedule")
 @Getter
 @Setter
+
 public class Schedule {
 
     @Id
