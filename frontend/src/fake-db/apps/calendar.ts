@@ -21,7 +21,14 @@ export const events: EventInput[] = [
     end: nextDay,
     allDay: false,
     extendedProps: {
-      calendar: 'Equipos'
+      calendar: 'Equipos',
+      guests: [],
+      description: 'Evento de prueba',
+      nombreCliente: 'Cliente 1',
+      nombreProducto: 'Producto 1',
+      brand: 'Marca 1',
+      model: 'Modelo 1',
+      licencePlate: 'ABC123'
     }
   },
   {

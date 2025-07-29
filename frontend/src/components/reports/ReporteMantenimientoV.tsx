@@ -12,6 +12,7 @@ import html2canvas from 'html2canvas';
 
 import { userMethods } from '@/utils/userMethods';
 import SignatureDialog from '../dialogs/SignatureDialog';
+import axiosInstance from '@/utils/axiosInterceptor';
 
 
 
@@ -154,19 +155,19 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
 
 
-      const [CheckeoT] = await Promise.all([
+      // const [CheckeoT] = await Promise.all([
 
 
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/checkeo/${data.idSolicitud}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        })
-      ])
+      //   axios.get(`${process.env.NEXT_PUBLIC_API_URL}/checkeo/${data.idSolicitud}`, {
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       Authorization: `Bearer ${token}`
+      //     }
+      //   })
+      // ])
 
-      console.log("tch",CheckeoT.data)
-      setTcheckeo(CheckeoT.data)
+      // console.log("tch",CheckeoT.data)
+      // setTcheckeo(CheckeoT.data)
 
 
 
@@ -175,6 +176,26 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
       console.error('Error al obtener datos:', error)
     }
   }
+
+     const getTemplates = async (item:any) => {
+        console.clear();
+        console.error('item:', item);
+  
+        try {
+          const response = await axiosInstance.get(`/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
+  
+          const templates = response.data.map((item:any) => ({ nom: item.nom, tipo: '1' }));
+  
+          console.log('plantillas v :', templates);
+  
+      setTcheckeo(templates);
+  
+        } catch (error) {
+  
+          console.error('Error al obtener los datos:', error);
+        }
+  
+      }
 
   useEffect(() => {
 
@@ -224,6 +245,8 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
     if(plantillaV){
       getCheckeoData(plantillaV.id)
     }
+
+    getTemplates(data.equipo)
 
   },[plantillaV])
 
@@ -395,8 +418,8 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
                         return (<tr key={index}>
 
-                            <td className="w-2/6 p-2">{item.nombre}</td>
-                            <td className="w-2/6 p-2">{item.valor}</td>
+                            <td className="w-2/6 p-2">{item.nom}</td>
+                            <td className="w-2/6 p-2">SI{item.valor}</td>
 
                         </tr>)
 

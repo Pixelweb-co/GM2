@@ -41,9 +41,11 @@ const ProductViewLayout = () => {
       try {
         const response = await axiosInstance.get(`/plantillas?marca=${item.brand}&modelo=${item.model}&tipoElement=${item.productType}`);
 
-        console.log('Datos recibidostp :', response.data);
+        const templates = response.data.map((item:any) => ({ nom: item.nom, tipo: '1' }));
 
-        setFormTemplate(response.data.map((item:any) => ({ nom: item.nom, tipo: '1' })));
+        console.log('plantillas v :', templates);
+
+        setFormTemplate(templates);
 
       } catch (error) {
 

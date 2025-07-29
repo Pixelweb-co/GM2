@@ -1,4 +1,4 @@
-package com.app.starter1.persistence.dto;
+package com.app.starter1.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
