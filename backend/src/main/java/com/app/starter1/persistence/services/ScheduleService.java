@@ -1,5 +1,12 @@
 package com.app.starter1.persistence.services;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.app.starter1.dto.ScheduleProductClientDTO;
+import com.app.starter1.dto.ScheduleProductClientProjection;
+import com.app.starter1.persistence.services.CustomerService;
+
+import com.app.starter1.dto.ScheduleDto;
 import com.app.starter1.dto.ScheduleRequest;
 import com.app.starter1.persistence.entity.Schedule;
 import com.app.starter1.persistence.entity.Product;
@@ -21,6 +28,8 @@ public class ScheduleService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired CustomerService customerService;
 
     public void createSchedules(ScheduleRequest scheduleRequest) {
         // Buscar el dispositivo por ID
@@ -44,7 +53,23 @@ public class ScheduleService {
         }
     }
 
-    public List<Schedule> getAllSchedules() {
-        return scheduleRepository.findAllSchedulesWithDevice();
+
+
+    public List<ScheduleProductClientProjection> getAllSchedulesWithProductAndCustomer() {
+        return scheduleRepository.findAllScheduleWithProductAndClient();
     }
+
+    public boolean setInactiveById(Long id) {
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+
+        if (optionalSchedule.isPresent()) {
+            Schedule schedule = optionalSchedule.get();
+            schedule.setStatus(Schedule.Status.valueOf("INACTIVE"));
+            scheduleRepository.save(schedule);
+            return true;
+        }
+
+        return false;
+    }
+
 }

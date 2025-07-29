@@ -6,7 +6,7 @@
   // Type Imports
   import type { CalendarType } from '@/types/apps/calendarTypes'
 
-  type CalendarFiltersType = 'Equipos' | 'Solicitudes';
+  type CalendarFiltersType = 'Equipos';
 
   // Data Imports
   import axiosInstance from '@/utils/axiosInterceptor'
@@ -16,17 +16,30 @@
     try {
       const response = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/schedule`)
 
+      console.log("sh data ",response.data);
+      
+
       const events: EventInput[] = response.data.map((schedule:any) => ({
         id: schedule.id.toString(),
         url: '',
-        title: schedule.device.productName, // Nombre del producto asociado
+        status:schedule.status,
+        title: schedule.productName, // Nombre del producto asociado
         start: schedule.date, // Fecha del evento
         end: new Date(new Date(schedule.date).setDate(new Date(schedule.date).getDate() + 1)).toISOString().split('T')[0], // Siguiente día
         allDay: false,
         extendedProps: {
-          calendar: 'Equipos'
+          calendar: 'Equipos',
+          guests: [],
+          description: '',
+          nombreCliente: schedule.nombreCliente, // Nombre del cliente asociado
+          nombreProducto: schedule.nombreProducto, // Nombre del producto asociado
+          brand: schedule.brand, // Marca del producto
+          model: schedule.model, // Modelo del producto
+          licencePlate: schedule.placaProducto // Placa del producto
         }
       }))
+
+      console.log("events frm ",events);
 
       return events
     } catch (error) {
@@ -40,7 +53,7 @@
     events: [],
     filteredEvents: [],
     selectedEvent: null,
-    selectedCalendars:['Equipos', 'Solicitudes'] as CalendarFiltersType[],
+    selectedCalendars:['Equipos'] as CalendarFiltersType[],
     loading: false, // Agregado para manejar el estado de carga
     error: null as string | null
   }
@@ -79,7 +92,7 @@
         state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
       },
       filterAllCalendarLabels: (state, action: PayloadAction<boolean>) => {
-        state.selectedCalendars = action.payload ? ['Equipos', 'Solicitudes'] : []
+        state.selectedCalendars = action.payload ? ['Equipos'] : []
         state.filteredEvents = filterEventsUsingCheckbox(state.events, state.selectedCalendars)
       }
     },

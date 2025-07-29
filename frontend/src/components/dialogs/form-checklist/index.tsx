@@ -41,7 +41,7 @@ const schema = yup.object().shape({
   productType: yup.string().notRequired(),
   marca: yup.string().required('La marca es obligatoria'),
   modelo: yup.string().required('El modelo es obligatorio'),
-  nombreChequeo: yup.string().required('El nombre del chequeo es obligatorio'),
+  nombreChequeo: yup.string().notRequired(),
   tipoElement: yup.string().required('El tipo de elemento es obligatorio')
 })
 
@@ -339,7 +339,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                 console.log('editData', editData)
 
                 setFormTemplate([...formTemplate, { nom: editData.nombreChequeo}])
-
+                setValue('nombreChequeo', '')
                 setEditData({ ...editData, nombreChequeo: '' })
 
               }}

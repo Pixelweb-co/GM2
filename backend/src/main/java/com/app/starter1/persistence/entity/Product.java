@@ -120,9 +120,11 @@ public class Product {
     @OneToOne(targetEntity = Image.class,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Image image;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_contrato")
-    private Contrato contrato;
+    @Column(name = "id_contrato")
+//
+//    @manytoone(fetch = fetchtype.lazy, cascade = cascadetype.all)
+//    @joincolumn(name = "id_contrato")s
+    private String contrato;
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Schedule> schedules;

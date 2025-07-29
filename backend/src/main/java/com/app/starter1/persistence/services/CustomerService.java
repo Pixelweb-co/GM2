@@ -110,10 +110,17 @@ public class CustomerService {
         return contratoRepository.save(contrato);
     }
 
+
+
+
     // DELETE CONTRACT
     public void deleteContrato(Long contratoId) {
         Contrato contrato = contratoRepository.findById(contratoId)
                 .orElseThrow(() -> new EntityNotFoundException("Contract not found with ID: " + contratoId));
         contratoRepository.delete(contrato);
+    }
+
+    public Customer getById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
 }
