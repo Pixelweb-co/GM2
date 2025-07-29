@@ -330,9 +330,12 @@ public class UserDetailServiceAP implements UserDetailsService {
         String subject = "GM2 Recuperación de contraseña";
         String body = resetLink;
         String type = "recover-password";
+        String username = user.getUsername();
 
-        String message = String.format("{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\"}", to,
-                subject, body, type);
+        String message = String.format(
+                "{\"to\":\"%s\",\"subject\":\"%s\",\"body\":\"%s\",\"type\":\"%s\",\"username\":\"%s\"}", to, subject,
+                body, type, username);
+
         producerService.sendMessage("email-notifications", message);
         System.out.println("Notificación enviada a la cola.");
 

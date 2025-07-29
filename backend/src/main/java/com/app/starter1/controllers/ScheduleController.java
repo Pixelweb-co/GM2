@@ -1,6 +1,9 @@
 package com.app.starter1.controllers;
 
 
+import com.app.starter1.dto.ScheduleDto;
+import com.app.starter1.dto.ScheduleProductClientDTO;
+import com.app.starter1.dto.ScheduleProductClientProjection;
 import com.app.starter1.dto.ScheduleRequest;
 import com.app.starter1.persistence.entity.Schedule;
 import com.app.starter1.persistence.repository.ScheduleRepository;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/schedule")
@@ -28,13 +32,32 @@ public class ScheduleController  {
         return scheduleRepository.findByDeviceId(deviceId);
     }
 
+
+
     @GetMapping
-    public ResponseEntity<List<Schedule>> findAll(){
-
-        List<Schedule> schedules = scheduleService.getAllSchedules();
-
+    public ResponseEntity<List<ScheduleProductClientProjection>> findAll() {
+        List<ScheduleProductClientProjection> schedules = scheduleService.getAllSchedulesWithProductAndCustomer();
         return ResponseEntity.ok(schedules);
     }
+
+
+// Endpoint para programar un mantenimiento (crear un schedule)
+@PostMapping("/set_mantenimiento")
+public ResponseEntity<?> setMantenimiento(@RequestBody Map<String, Long> requestBody) {
+    Long id = requestBody.get("id");
+
+    if (id == null) {
+        return ResponseEntity.badRequest().body(Map.of("result", "error", "message", "ID es requerido"));
+    }
+
+    boolean updated = scheduleService.setInactiveById(id);
+
+    if (updated) {
+        return ResponseEntity.ok(Map.of("result", "success", "message", "Estado actualizado correctamente"));
+    } else {
+        return ResponseEntity.status(404).body(Map.of("result", "error", "message", "Schedule no encontrado"));
+    }
+}
 
     // Endpoint para programar un mantenimiento (crear un schedule)
     @PostMapping("/create")

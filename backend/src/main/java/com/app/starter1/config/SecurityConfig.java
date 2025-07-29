@@ -128,6 +128,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.DELETE, "/schedule/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
 
+
                     //plantilla verficacion
 
                     http.requestMatchers(HttpMethod.GET, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL");

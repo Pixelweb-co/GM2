@@ -1,5 +1,6 @@
 package com.app.starter1.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -59,7 +60,7 @@ public class Customer {
     }
 
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private Contrato contrato = new Contrato();
-
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Contrato contrato;
 }

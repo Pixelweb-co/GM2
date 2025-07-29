@@ -1,12 +1,14 @@
 package com.app.starter1.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerDTO {
@@ -21,7 +23,6 @@ public class CustomerDTO {
     private String type;
     private Boolean status;
     private LocalDate dateRegister;
-
-
-    // Getters y setters aquí
+    private Long contratoId; // Solo referencia al contrato, evita inicialización perezosa
 }
+

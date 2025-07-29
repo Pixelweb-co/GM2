@@ -32,6 +32,8 @@ import type { SolicitudType } from '@/types/apps/solicitudType'
 
 import CustomTextField from '@/@core/components/mui/TextField'
 import type { UsersType } from '@/types/apps/userType'
+import { userMethods } from '@/utils/userMethods'
+import Typography from '@mui/material/Typography'
 
 
 interface Solicitud {
@@ -299,8 +301,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
         <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <h3>Datos de la solicitud</h3>
-              <Controller
+              <Typography variant="h3">Datos de la solicitud</Typography>
+              
+              {userMethods.isRole('SUPERADMIN') && <Controller
                 name='entidad'
                 control={control}
                 render={({ field }) => (
@@ -331,7 +334,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                     ))}
                   </CustomTextField>
                 )}
-              />
+              />}
 
 
             <Controller

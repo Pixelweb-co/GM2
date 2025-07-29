@@ -170,14 +170,14 @@ const ProductsListTable = ({ reload, tableData }: any) => {
 
     const res = await axiosInstance.delete(`${API_BASE_URL}/products/${id}`)
 
-     console.log("res.data", res.data)
-     errorDeleteItem("Eliminado correctamente!")
+     //console.log("res.data", res.data)
+     setErrorDeleteItem("Eliminado correctamente!")
 
      reload(true)
 
   } catch (error:any) {
     console.log('Eliminar el producto:', error)
-    setErrorDeleteItem(error.response.data)
+    setErrorDeleteItem(" Este equipo no se puede eliminar, tiene mantenimientos/solicitudes programados")
 
   }
 
