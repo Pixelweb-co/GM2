@@ -1,6 +1,6 @@
-FROM php:8.0.0-apache
-
-ARG DEBIAN_FRONTEND=noninteractive
+#FROM php:8.0.0-apache
+FROM php:8.2-cli
+#ARG DEBIAN_FRONTEND=noninteractive
 
 #RUN apt-get update \
 #    && apt-get install -y sendmail libpng-dev libzip-dev zlib1g-dev libonig-dev libjpeg62-turbo-dev libfreetype6-dev jpegoptim optipng pngquant gifsicle libmagickwand-dev \
