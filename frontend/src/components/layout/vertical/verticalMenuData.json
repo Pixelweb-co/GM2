@@ -6,7 +6,8 @@
     "roles": [
       "SUPERADMIN",
       "ADMIN",
-      "BIOMEDICAL"
+      "BIOMEDICAL",
+      "USER"
     ]
   },
   {
