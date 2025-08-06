@@ -1,5 +1,5 @@
 #FROM php:8.0.0-apache
-FROM php:8.2-cli
+#FROM php:8.2-cli
 #ARG DEBIAN_FRONTEND=noninteractive
 
 #RUN apt-get update \
@@ -7,11 +7,17 @@ FROM php:8.2-cli
 #    && rm -rf /var/lib/apt/lists/*
 
 
-RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
+#RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
+#    && docker-php-ext-install gd mysqli mbstring zip pdo pdo_mysql
 
+#RUN a2enmod rewrite
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
-    && docker-php-ext-install gd mysqli mbstring zip pdo pdo_mysql
+# Imagen base de PHP 8 con Apache
+FROM php:8.2-apache
 
+# Instalar extensiones necesarias
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Habilitar mod_rewrite de Apache
 RUN a2enmod rewrite
