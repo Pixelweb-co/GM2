@@ -264,4 +264,50 @@ public class SolicitudService {
     public List<MonthlyCount> getMonthlyCounts(int year){
         return solicitudRepository.countByMonth(year);
     }
+
+    public List<SolicitudResponseDTO> getSolicitudesEnProcesoPorUsuario(Long idUsuario) {
+        List<Solicitud> solicitudes = solicitudRepository.findByUsuarioAsignadoIdAndStatusDescripcion(idUsuario, "EN PROCESO");
+        return solicitudes.stream()
+                .map(solicitud -> SolicitudResponseDTO.builder()
+                        .idSolicitud(solicitud.getIdSolicitud())
+                        .fecha(solicitud.getFecha())
+                        .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
+                        .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
+                        .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
+                        .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
+                        .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
+                        .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
+                        .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
+                        .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
+                        .build())
+                .toList();
+    }
+
+    public List<SolicitudResponseDTO> getSolicitudesFinalizadasPorUsuario(Long idUsuario) {
+        List<Solicitud> solicitudes = solicitudRepository.findByUsuarioAsignadoIdAndStatusDescripcion(idUsuario, "FINALIZADA");
+        return solicitudes.stream()
+                .map(solicitud -> SolicitudResponseDTO.builder()
+                        .idSolicitud(solicitud.getIdSolicitud())
+                        .fecha(solicitud.getFecha())
+                        .hora(solicitud.getHora())
+                        .descripcion(solicitud.getDescription())
+                        .idEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getId() : null)
+                        .nombreEquipo(solicitud.getEquipo() != null ? solicitud.getEquipo().getProductName() : null)
+                        .nombreTipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getDescripcion() : null)
+                        .nombreEntidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getName() : null)
+                        .nombreEstadoSolicitud(solicitud.getStatus() != null ? solicitud.getStatus().getDescripcion() : null)
+                        .asig(solicitud.getUsuarioAsignado() != null ? solicitud.getUsuarioAsignado() : null)
+                        .status(solicitud.getStatus() != null ? solicitud.getStatus() : null)
+                        .entidad(solicitud.getCustomer() != null ? solicitud.getCustomer().getId() : null)
+                        .tipoServicio(solicitud.getTypeService() != null ? solicitud.getTypeService().getId() : null)
+                        .build())
+                .toList();
+    }
+
+    public List<StatusCount> getStatusCountsInMonth(int year, int month){
+        return solicitudRepository.countByStatusInMonth(year, month);
+    }
 }

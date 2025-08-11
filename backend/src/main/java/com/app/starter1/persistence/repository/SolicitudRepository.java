@@ -45,4 +45,14 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
         ORDER BY month
     """, nativeQuery = true)
     List<MonthlyCount> countByMonth(@Param("year") int year);
+
+    @Query(value = """
+        SELECT es.desc_estado_sol AS status, COUNT(*) AS total
+        FROM solicitudes s
+        JOIN estado_solicitud es ON es.id_estado_sol = s.status
+        WHERE YEAR(STR_TO_DATE(s.fecha, '%Y-%m-%d')) = :year
+          AND MONTH(STR_TO_DATE(s.fecha, '%Y-%m-%d')) = :month
+        GROUP BY es.desc_estado_sol
+    """, nativeQuery = true)
+    List<StatusCount> countByStatusInMonth(@Param("year") int year, @Param("month") int month);
 }
