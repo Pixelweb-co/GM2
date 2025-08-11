@@ -2,14 +2,12 @@ package com.app.starter1.persistence.repository;
 
 import com.app.starter1.dto.SolicitudDTO;
 import com.app.starter1.persistence.entity.Solicitud;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
@@ -37,4 +35,14 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     List<Solicitud> findClosedRequestsByProductId(@Param("productId") Long productId);
 
     long countByEquipoId(Long equipoId);
+
+    // Conteo por mes del año especificado (asumiendo s.fecha formato 'YYYY-MM-DD' o 'YYYY/MM/DD' o 'YYYYMMDD')
+    @Query(value = """
+        SELECT MONTH(STR_TO_DATE(s.fecha, '%Y-%m-%d')) AS month, COUNT(*) AS total
+        FROM solicitudes s
+        WHERE YEAR(STR_TO_DATE(s.fecha, '%Y-%m-%d')) = :year
+        GROUP BY MONTH(STR_TO_DATE(s.fecha, '%Y-%m-%d'))
+        ORDER BY month
+    """, nativeQuery = true)
+    List<MonthlyCount> countByMonth(@Param("year") int year);
 }

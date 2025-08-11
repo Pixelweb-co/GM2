@@ -15,10 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.app.starter1.persistence.services.UserDetailServiceAP;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,8 +31,6 @@ public class SecurityConfig {
     JwtUtils jwtUtils;
     @Autowired
     private final AuthenticationConfiguration authenticationConfiguration;
-    @Autowired
-    private final UserDetailServiceAP userDetailServiceAP;
 
     @Value("${cors.allowed.origin}")
     private String allowedOrigin;
@@ -42,9 +38,8 @@ public class SecurityConfig {
     @Autowired
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, UserDetailServiceAP userDetailServiceAP, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.authenticationConfiguration = authenticationConfiguration;
-        this.userDetailServiceAP = userDetailServiceAP;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
@@ -135,6 +130,9 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.PUT, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.POST, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
                     http.requestMatchers(HttpMethod.DELETE, "/plantillas-verificacion/**").hasAnyRole("SUPERADMIN","BIOMEDICAL");
+
+                    // dashboard overview (lectura)
+                    http.requestMatchers(HttpMethod.GET, "/dashboard/**").hasAnyRole("SUPERADMIN","ADMIN","BIOMEDICAL","USER");
 
                     //libreria de medios
                     http.requestMatchers(HttpMethod.POST, "/media/**").permitAll();

@@ -260,4 +260,8 @@ public class SolicitudService {
 
         return solicitud;
     }
+
+    public List<MonthlyCount> getMonthlyCounts(int year){
+        return solicitudRepository.countByMonth(year);
+    }
 }

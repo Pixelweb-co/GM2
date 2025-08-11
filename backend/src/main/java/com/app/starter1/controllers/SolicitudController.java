@@ -3,11 +3,11 @@ package com.app.starter1.controllers;
 import com.app.starter1.dto.SolicitudDTO;
 import com.app.starter1.dto.SolicitudResponseDTO;
 import com.app.starter1.persistence.entity.Solicitud;
+import com.app.starter1.persistence.repository.MonthlyCount;
 import com.app.starter1.persistence.services.SolicitudService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +108,9 @@ public class SolicitudController {
         }
     }
     
-
+    @GetMapping("/por-mes")
+    public ResponseEntity<List<MonthlyCount>> getPorMes(@RequestParam(name = "year", required = false) Integer year){
+        int y = (year != null) ? year : LocalDate.now().getYear();
+        return ResponseEntity.ok(solicitudService.getMonthlyCounts(y));
+    }
 }
