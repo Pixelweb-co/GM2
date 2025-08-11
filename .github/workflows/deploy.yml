@@ -40,7 +40,10 @@ jobs:
 
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker images | grep -E "gm2_gm2|gm2_backend-spring|gm2_notification-service" | awk '{print \$3}' | xargs -r sudo docker rmi -f
 
+            echo "${secrets.SUDO_PASSWORD}" | sudo -S docker system prune -f
+
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
+          
           EOF
 
       - name: Send notification email
