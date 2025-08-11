@@ -121,6 +121,18 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
   const [loadForm, setOpenForm] = useState(false)
   const [loadFormCheck, setLoadFormCheck] = useState<any | null>(null)
   const [verificationTemplates, setVerificationTemplates] = useState<any[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const getTemplateName = (id: any) => {
+    const strId = id == null ? '' : String(id)
+    if (!strId || strId === '0') return 'No asignada'
+    const found = verificationTemplates.find(t => String(t?.id) === strId)
+    return found?.templateName || 'No asignada'
+  }
 
   useEffect(() => {
     console.log('from table type service ', rowSelection)
@@ -234,6 +246,19 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
         )
       }),
 
+      // New read-only column showing assigned template name
+      columnHelper.accessor('plantillaVerificacion', {
+        header: 'Plantilla asignada',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            <Typography color='text.primary' className='font-medium'>
+              {getTemplateName(row.original.plantillaVerificacion)}
+            </Typography>
+          </div>
+        )
+      }),
+
+      // Existing editable selector to change the assignment
       columnHelper.accessor('typeDevice', {
         header: 'Plantilla de verificación',
         cell: ({ row }) => (
@@ -242,21 +267,16 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
               <FormControl variant='standard' fullWidth>
 
                 <Select
-                defaultValue='0'
-                value={row.original.plantillaVerificacion ? row.original.plantillaVerificacion: '0'}
-
-                onChange={(e)=>setTemplate(row.original.id,e.target.value)}
-
+                  value={row.original.plantillaVerificacion ? String(row.original.plantillaVerificacion) : '0'}
+                  onChange={(e)=>setTemplate(row.original.id, e.target.value)}
                 >
-                  <MenuItem value={0}>No asignada</MenuItem>
+                  <MenuItem value={'0'}>No asignada</MenuItem>
 
-                  {verificationTemplates.length > 0 && verificationTemplates.map((item: any, index: any) => {
-                    return (
-                      <MenuItem key={index + 1} value={item.id}>
-                        {item.templateName}
-                      </MenuItem>
-                    )
-                  })}
+                  {mounted && verificationTemplates.map((item: any) => (
+                    <MenuItem key={String(item.id)} value={String(item.id)}>
+                      {item.templateName}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
@@ -301,7 +321,7 @@ const TypeDeviceListTable = ({ reload, tableData }: { reload?: any; tableData?: 
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data]
+    [data, verificationTemplates]
   )
 
   const table = useReactTable({

@@ -642,35 +642,36 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                       )}
                     />
 
-                    <Controller
-                      name='customer'
-                      control={control}
-                      render={({ field }) => (
-                        <CustomTextField
-                          {...field}
-                          select
-                          hidden={userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')}
-                          fullWidth
-                          value={editData?.customer ? editData?.customer : '1'}
-                          onChange={e => {
-                            setEditData({ ...editData, customer: e.target.value })
-                            setValue('customer', e.target.value)
-                          }}
-                          label='Cliente'
-                          error={Boolean(errors.customer)}
-                          helperText={errors.customer?.message}
-                        >
-                           <MenuItem key={0} value={'0'}>
-                                Seleccionar ...
-                              </MenuItem>
-                          {customersList.map(item => (
-                            <MenuItem key={item.id} value={item.id}>
-                              {item.name}
+                    {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) && (
+                      <Controller
+                        name='customer'
+                        control={control}
+                        render={({ field }) => (
+                          <CustomTextField
+                            {...field}
+                            select
+                            fullWidth
+                            value={editData?.customer ? editData?.customer : '1'}
+                            onChange={e => {
+                              setEditData({ ...editData, customer: e.target.value })
+                              setValue('customer', e.target.value)
+                            }}
+                            label='Cliente'
+                            error={Boolean(errors.customer)}
+                            helperText={errors.customer?.message}
+                          >
+                            <MenuItem key={0} value={'0'}>
+                              Seleccionar ...
                             </MenuItem>
-                          ))}
-                        </CustomTextField>
-                      )}
-                    />
+                            {customersList.map(item => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </CustomTextField>
+                        )}
+                      />
+                    )}
 
                     <Controller
                       name='location'
