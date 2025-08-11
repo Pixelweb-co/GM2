@@ -16,6 +16,7 @@ import InvoiceListTable from '@views/apps/ecommerce/dashboard/InvoiceListTable'
 import SolicitudesDonut from '@/views/apps/ecommerce/dashboard/SolicitudesEstadosDonut'
 import EstadisticasGenerales from '@/views/apps/ecommerce/dashboard/EstadisticasGeneralesCard'
 import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
+import RequestsByMonthBar from '@views/apps/ecommerce/dashboard/RequestsByMonthBar'
 
 // Data Imports
 //import { getInvoiceData } from '@/app/server/actions'
@@ -55,7 +56,8 @@ const EcommerceDashboard = async () => {
       <ListaTrabajo />
       </Grid>
       <Grid item xs={12} xl={8}>
-        <RevenueReport />
+        {/* <RevenueReport /> */}
+        <RequestsByMonthBar />
       </Grid>
 
     </Grid>

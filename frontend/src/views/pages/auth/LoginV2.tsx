@@ -126,15 +126,25 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
               return false
             }
 
-            router.push('/home') // Redirigir al usuario al home después de login exitoso
+            // Redirección por roles
+            const roles = result.userEntity.roles || []
+            const hasRole = (role: string) => roles.some((r: any) => r.roleEnum === role)
+
+            if (hasRole('SUPERADMIN') || hasRole('ADMIN')) {
+              router.push('/home')
+            } else if (hasRole('USER') || hasRole('BIOMEDICAL') || hasRole('BIOEDICAL')) {
+              router.push('/accounts/user/view')
+            } else {
+              router.push('/home')
+            }
 
             return true
 
         }
       }
     } catch (error: any) {
-      console.error('Error during login:', error.response.data.message)
-      setError(error.response.data.message)
+      console.error('Error during login:', error.response?.data?.message || error.message)
+      setError(error.response?.data?.message || 'Error de autenticación')
       setSuccess(false)
     }
   }

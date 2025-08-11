@@ -81,15 +81,44 @@ const SolicitudForm = ({
   const [editData, setEditData] = useState<any>(null)
   const [checked, setChecked] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('')
+ 
+  const selectedProducts = React.useMemo(() => (
+    Array.isArray(productsList)
+      ? productsList.filter((p: any) => checked.includes(p?.id))
+      : []
+  ), [productsList, checked])
 
   const filterProducts = (searchTerm: string) => {
-    console.log("search ",searchTerm)
-    console.log("products ",productsList)
+    const term = (searchTerm ?? '').toLowerCase().trim()
 
-    const filtered = productsList.filter((product) =>
-      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    if (!Array.isArray(productsList)) {
+      setFilteredProducts([])
+      return
+    }
+
+    if (!term) {
+      // When no term, show all except selected
+      setFilteredProducts(productsList.filter((p: any) => !checked.includes(p?.id)))
+      return
+    }
+
+    const filtered = productsList.filter((product: any) => {
+      const name = String(product?.productName ?? '').toLowerCase()
+      const brand = String(product?.brand ?? '').toLowerCase()
+      const model = String(product?.model ?? '').toLowerCase()
+      const plate = String(product?.licensePlate ?? product?.serial ?? '').toLowerCase()
+
+      return (
+        name.includes(term) ||
+        brand.includes(term) ||
+        model.includes(term) ||
+        plate.includes(term)
+      )
+    })
+
+    // Exclude selected from filtered list
+    setFilteredProducts(filtered.filter((p: any) => !checked.includes(p?.id)))
   }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -154,8 +183,24 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
         })
       ])
 
-      setProductsList(productsRes.data.productos)
-      setFilteredProducts(productsRes.data.productos)
+      const productos = Array.isArray(productsRes?.data?.productos) ? productsRes.data.productos : []
+      setProductsList(productos)
+      // Reaplicar filtro si ya hay término
+      if ((searchTerm ?? '').trim().length >= 2) {
+        const term = (searchTerm ?? '').toString().toLowerCase().trim()
+        if (term.length >= 2) {
+         setFilteredProducts(productos.filter((p:any)=>
+           String(p?.productName ?? '').toLowerCase().includes(term) ||
+           String(p?.brand ?? '').toLowerCase().includes(term) ||
+           String(p?.model ?? '').toLowerCase().includes(term) ||
+           String(p?.licensePlate ?? p?.serial ?? '').toLowerCase().includes(term)
+         ).filter((p:any)=> !checked.includes(p?.id)))
+        } else {
+         setFilteredProducts(productos.filter((p:any)=> !checked.includes(p?.id)))
+        }
+      } else {
+        setFilteredProducts(productos.filter((p:any)=> !checked.includes(p?.id)))
+      }
 
       return true
 
@@ -168,6 +213,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
   useEffect(() => {
     fetchOptions()
   }, [])
+
+  // Recompute filtered list when selection or products change
+  useEffect(() => {
+    const len = (searchTerm ?? '').toString().trim().length
+    if (len >= 2) {
+      filterProducts(searchTerm)
+    } else {
+      setFilteredProducts(Array.isArray(productsList) ? productsList.filter((p:any)=> !checked.includes(p?.id)) : [])
+    }
+  }, [checked, productsList])
 
   const {
     control,
@@ -200,6 +255,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
         throw new Error('Token no disponible. Por favor, inicia sesión nuevamente.')
       }
 
+      // Filtrar solo IDs pertenecientes al cliente actualmente cargado
+      const currentIds = new Set((Array.isArray(productsList) ? productsList : []).map((p:any) => String(p?.id)))
+      const selectedIds = (Array.isArray(checked) ? checked : []).filter((id:any) => currentIds.has(String(id)))
+
       // Si tienes un ID, significa que estás actualizando el usuario, de lo contrario, creas uno nuevo
 
       const method = id ? 'put' : 'post' // Actualización o Creación
@@ -208,7 +267,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const response = await axios({
         method: method, // Usa 'put' para actualización o 'post' para creación
         url: apiUrl,
-        data: {...data, productsToInsert:checked,status:1},
+        data: {...data, productsToInsert:selectedIds, status:1},
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
@@ -303,7 +362,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
             <Grid item xs={12} sm={6}>
               <Typography variant="h3">Datos de la solicitud</Typography>
               
-              {userMethods.isRole('SUPERADMIN') && <Controller
+              {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) && <Controller
                 name='entidad'
                 control={control}
                 render={({ field }) => (
@@ -316,8 +375,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                     value={editData?.entidad ? editData?.entidad : '1'}
                     onChange={e => {
                       setEditData({ ...editData, entidad: e.target.value })
-                      setValue('entidad', e.target.value)
-                      fetchProducts(e.target.value)
+setValue('entidad', e.target.value)
+setSearchTerm('')
+setChecked([])
+fetchProducts(e.target.value)
                     }}
                     label='Cliente'
                     error={Boolean(errors.entidad)}
@@ -396,9 +457,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                     className='mt-2'
                     select
                     fullWidth
-                    value={editData?.asig.id ? editData?.asig.id : '0'}
+                    value={editData?.asig?.id ? editData?.asig?.id : '0'}
                     onChange={e => {
-                      setEditData({ ...editData, asig: {...editData.asig, id: e.target.value }})
+                      setEditData({ ...editData, asig: {...(editData?.asig || {}), id: e.target.value }})
                       setValue('asig', e.target.value)
 
                     }}
@@ -454,17 +515,70 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
                 <Card>
                 <CardContent>
 
-                <TextField fullWidth id='busqueda_input' label='Buscar equipo' onKeyUp={(e)=>console.log(3)}/>
+                <TextField
+                  fullWidth
+                  id='busqueda_input'
+                  label='Buscar equipo'
+                  placeholder='Escribe al menos 2 caracteres'
+                  value={searchTerm}
+                  onChange={(e) => {
+                    const term = (e.target.value ?? '').toString()
+                    setSearchTerm(term)
+                    if ((term ?? '').toString().trim().length >= 2) {
+                       filterProducts(term)
+                     } else {
+                       setFilteredProducts(Array.isArray(productsList) ? productsList.filter((p:any)=> !checked.includes(p?.id)) : [])
+                     }
+                   }}
+                 />
+
+
+                {/* Lista de seleccionados */}
+                {selectedProducts.length > 0 && (
+                  <>
+                    <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>Seleccionados</Typography>
+                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                      {selectedProducts.map(value => {
+                        const labelId = `checkbox-list-label-selected-${value.id}`
+                        const handleToggle = (val: any) => () => {
+                          const idVal = val?.id
+                          setChecked((prevChecked: any[]) =>
+                            prevChecked.includes(idVal) ? prevChecked.filter((item) => item !== idVal) : [...prevChecked, idVal]
+                          )
+                        }
+                        return (
+                          <ListItem key={`selected-${value.id}`} disablePadding>
+                            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                              <ListItemIcon>
+                                {!id && (
+                                  <Checkbox
+                                    edge='start'
+                                    checked={checked.includes(value.id)}
+                                    tabIndex={-1}
+                                    inputProps={{ 'aria-labelledby': labelId }}
+                                  />
+                                )}
+                              </ListItemIcon>
+                              <ListItemText id={labelId} primary={`${value.productName}`} />
+                            </ListItemButton>
+                          </ListItem>
+                        )
+                      })}
+                    </List>
+                    <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>Resultados</Typography>
+                  </>
+                )}
 
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
 
 
                 {filteredProducts.map(value => {
-                  const labelId = `checkbox-list-label-${value.id}`
-                  const handleToggle = (value: any) => () => {
+                   const labelId = `checkbox-list-label-${value.id}`
+                  const handleToggle = (val: any) => () => {
+                    const idVal = val?.id
                     setChecked((prevChecked: any[]) =>
-                      prevChecked.includes(value) ? prevChecked.filter((item) => item !== value) : [...prevChecked, value]
-                    );
+                      prevChecked.includes(idVal) ? prevChecked.filter((item) => item !== idVal) : [...prevChecked, idVal]
+                    )
                   };
 
                 if(rowSelect.idSolicitud && value.id === editData.idEquipo){
@@ -476,7 +590,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
                       disablePadding
                     >
-                      <ListItemButton role={undefined} onClick={handleToggle(value.id)} dense>
+                      <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
                         <ListItemIcon>
                           {!id && <Checkbox
                             edge='start'
@@ -492,6 +606,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
                 }
 
+
                 if(!rowSelect.idSolicitud){
                   return (
                     <ListItem
@@ -499,7 +614,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
                       disablePadding
                     >
-                      <ListItemButton role={undefined} onClick={handleToggle(value.id)} dense>
+                      <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
                         <ListItemIcon>
                           {!id && <Checkbox
                             edge='start'

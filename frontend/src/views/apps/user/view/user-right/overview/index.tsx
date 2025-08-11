@@ -8,6 +8,9 @@ import UserActivityTimeLine from './UserActivityTimeline'
 import InvoiceListTable from './InvoiceListTable'
 import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
 
+// Utils
+import { userMethods } from '@/utils/userMethods'
+
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.NEXT_PUBLIC_API_URL` variable in the
@@ -27,15 +30,15 @@ import ListaTrabajo from '@/views/apps/ecommerce/dashboard/ListaTrabajo'
 } */
 
 const OverViewTab =  () => {
-
-  const invoiceData:any = []
+  const canSeeWorklist = userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')
 
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12}>
-      <ListaTrabajo />
-      </Grid>
-
+      {canSeeWorklist && (
+        <Grid item xs={12}>
+          <ListaTrabajo />
+        </Grid>
+      )}
     </Grid>
   )
 }

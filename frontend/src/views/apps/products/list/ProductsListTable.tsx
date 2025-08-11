@@ -298,22 +298,26 @@ const ProductsListTable = ({ reload, tableData }: any) => {
               <i className='tabler-eye text-textSecondary' />
             </IconButton>
             </Tooltip>
-            <Tooltip title='Editar'>
-            <IconButton
-              onClick={() => {
-                console.log('row', row.original)
-                setRowSelection(row.original)
-                setLoadForm(true)
-              }}
-            >
-              <i className='tabler-edit text-textSecondary' />
-            </IconButton>
-            </Tooltip>
-            <Tooltip title='Eliminar'>
-            <IconButton onClick={() => deleteItem(row.original.id)}>
-              <i className='tabler-trash text-textSecondary' />
-            </IconButton>
-            </Tooltip>
+            {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) ? (
+              <Tooltip title='Editar'>
+                <IconButton
+                  onClick={() => {
+                    console.log('row', row.original)
+                    setRowSelection(row.original)
+                    setLoadForm(true)
+                  }}
+                >
+                  <i className='tabler-edit text-textSecondary' />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) ? (
+              <Tooltip title='Eliminar'>
+                <IconButton onClick={() => deleteItem(row.original.id)}>
+                  <i className='tabler-trash text-textSecondary' />
+                </IconButton>
+              </Tooltip>
+            ) : null}
             {userMethods.isRole("SUPERADMIN") && (
               <>
 
@@ -432,6 +436,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
               Importar
             </Button> */}
 
+            {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) && (
             <Button
               onClick={() => {
                 setLoadForm(true)
@@ -472,6 +477,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             >
               Agregar producto
             </Button>
+            )}
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -594,6 +600,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
  {programacionModal && <ProgramacionMantenimiento
         open={programacionModal}
         onClose={() => setProgramacionModal(false)}
+        onSuccess={() => reload(true)}
         rowSelect={rowSelection}
       />}
 
