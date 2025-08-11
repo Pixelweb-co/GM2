@@ -3,11 +3,12 @@ package com.app.starter1.controllers;
 import com.app.starter1.dto.SolicitudDTO;
 import com.app.starter1.dto.SolicitudResponseDTO;
 import com.app.starter1.persistence.entity.Solicitud;
+import com.app.starter1.persistence.repository.MonthlyCount;
+import com.app.starter1.persistence.repository.StatusCount;
 import com.app.starter1.persistence.services.SolicitudService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +109,31 @@ public class SolicitudController {
         }
     }
     
+    @GetMapping("/por-mes")
+    public ResponseEntity<List<MonthlyCount>> getPorMes(@RequestParam(name = "year", required = false) Integer year){
+        int y = (year != null) ? year : LocalDate.now().getYear();
+        return ResponseEntity.ok(solicitudService.getMonthlyCounts(y));
+    }
 
+    @Transactional
+    @GetMapping("/worklist/in-process/{id_usuario}")
+    public ResponseEntity<List<SolicitudResponseDTO>> getSolicitudesEnProceso(@PathVariable("id_usuario") Long idUsuario) {
+        return ResponseEntity.ok(solicitudService.getSolicitudesEnProcesoPorUsuario(idUsuario));
+    }
+
+    @Transactional
+    @GetMapping("/worklist/closed/{id_usuario}")
+    public ResponseEntity<List<SolicitudResponseDTO>> getSolicitudesFinalizadas(@PathVariable("id_usuario") Long idUsuario) {
+        return ResponseEntity.ok(solicitudService.getSolicitudesFinalizadasPorUsuario(idUsuario));
+    }
+
+    @GetMapping("/resumen-mensual")
+    public ResponseEntity<List<StatusCount>> getResumenMensual(
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month", required = false) Integer month
+    ){
+        int y = (year != null) ? year : LocalDate.now().getYear();
+        int m = (month != null) ? month : LocalDate.now().getMonthValue();
+        return ResponseEntity.ok(solicitudService.getStatusCountsInMonth(y, m));
+    }
 }

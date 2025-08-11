@@ -1,11 +1,17 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { userMethods } from '@/utils/userMethods'
 
 const CustomerName = () => {
-  const loguedUser = userMethods.getUserLogin()
+  const [name, setName] = useState('')
 
-  return <b>{(loguedUser && loguedUser.customer?.name) || ''}</b>
+  useEffect(() => {
+    const loguedUser = userMethods.getUserLogin()
+    setName((loguedUser && loguedUser.customer?.name) || '')
+  }, [])
+
+  return <b suppressHydrationWarning>{name}</b>
 }
 
 export default CustomerName

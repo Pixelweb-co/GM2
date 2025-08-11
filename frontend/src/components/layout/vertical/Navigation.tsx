@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 
 // Next Imports
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 
 // MUI Imports
 import { styled, useColorScheme, useTheme } from '@mui/material/styles'
@@ -14,7 +15,8 @@ import type { Mode, SystemMode } from '@core/types'
 
 // Component Imports
 import VerticalNav, { NavHeader, NavCollapseIcons } from '@menu/vertical-menu'
-import VerticalMenu from './VerticalMenu'
+// import VerticalMenu from './VerticalMenu'
+const VerticalMenu = dynamic(() => import('./VerticalMenu'), { ssr: false })
 import Logo from '@components/layout/shared/Logo'
 
 // Hook Imports

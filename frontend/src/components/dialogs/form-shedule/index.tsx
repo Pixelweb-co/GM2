@@ -36,7 +36,7 @@ const schema = yup.object().shape({
 });
 
 
-const SheduleForm = ({ open, onClose, rowSelect }: { open: boolean; onClose: () => void; rowSelect: any }) => {
+const SheduleForm = ({ open, onClose, rowSelect, onSuccess }: { open: boolean; onClose: () => void; rowSelect: any; onSuccess?: () => void }) => {
   const [fechas, setFechas] = useState<any[]>([])
   const [checked, setChecked] = useState<number[]>([])
 
@@ -143,6 +143,7 @@ const SheduleForm = ({ open, onClose, rowSelect }: { open: boolean; onClose: () 
       if (response.ok) {
         alert('Mantenimiento programado con éxito')
         onClose()
+        if (onSuccess) onSuccess()
       } else {
         alert('Error al programar el mantenimiento')
       }

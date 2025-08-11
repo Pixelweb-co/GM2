@@ -23,21 +23,27 @@ const TableFilters = ({
   setData: (data: SolicitudType[]) => void
   tableData?: SolicitudType[]
 }) => {
-  // Estados
-  const [status, setStatus] = useState<string | ''>('') // Estado para filtrar por estado (activo/inactivo)
+  // Filtro por ESTADO mostrado en la lista (ABIERTA / FINALIZADA)
+  const [status, setStatus] = useState<string | ''>('')
   const [customers, setCustomers] = useState<any[]>([])
   const [userLoginRole, setUserLoginRole] = useState<string | null>(null)
-  const [customer, setCustomer] = useState<string>('')
+  const [customer, setCustomer] = useState<string>('') 
 
   useEffect(() => {
-    if (!tableData || !Array.isArray(tableData)) return // Verificar si tableData es un array
+    if (!tableData || !Array.isArray(tableData)) return
 
     const filteredData = tableData.filter((solicitud: any) => {
-      const matchStatus = status !== '' ? solicitud.status === status : '1' // Comparar el estado
+      const stateName = String(
+        solicitud?.nombreEstadoSolicitud ?? // Valor mostrado en la columna
+        solicitud?.estado ??
+        solicitud?.estadoSolicitud ??
+        solicitud?.status?.nombre ??
+        ''
+      ).toUpperCase()
+
+      const matchStatus = status !== '' ? stateName === String(status).toUpperCase() : true
 
       const matchCustomer = userLoginRole === 'SUPERADMIN' && customer ? solicitud.entidad === customer : true
-
-      console.log('mst', matchCustomer)
 
       return matchStatus && matchCustomer
     })
@@ -96,8 +102,8 @@ const TableFilters = ({
             SelectProps={{ displayEmpty: true }}
           >
             <MenuItem value=''>Todos los estados</MenuItem>
-            <MenuItem value='1'>Activo</MenuItem>
-            <MenuItem value='0'>Inactivo</MenuItem>
+            <MenuItem value='ABIERTA'>ABIERTA</MenuItem>
+            <MenuItem value='FINALIZADA'>FINALIZADA</MenuItem>
           </CustomTextField>
         </Grid>
 

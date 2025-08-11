@@ -3,6 +3,9 @@
 // Next Imports
 import dynamic from 'next/dynamic'
 
+// React
+import { useEffect, useMemo, useState } from 'react'
+
 // MUI Imports
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
@@ -12,14 +15,48 @@ import { useTheme } from '@mui/material/styles'
 // Third-party Imports
 import type { ApexOptions } from 'apexcharts'
 
+// Utils
+import axiosInstance from '@/utils/axiosInterceptor'
+
 // Styled Component Imports
 const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
 
-const series = [32, 41, 41, 70]
+type StatusCount = { status: string; total: number }
 
 const SolicitudesDonut = () => {
-  // Hook
   const theme = useTheme()
+  const [data, setData] = useState<StatusCount[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const res = await axiosInstance.get<StatusCount[]>('/solicitudes/resumen-mensual', { params: { year, month } })
+        setData(res.data || [])
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSummary()
+  }, [year, month])
+
+  const series = useMemo(() => {
+    const map: Record<string, number> = { Abiertas: 0, 'En proceso': 0, Cerradas: 0, Canceladas: 0 }
+    data.forEach(d => {
+      const key = (d.status || '').toUpperCase()
+      if (key.includes('ABIER')) map.Abiertas += Number(d.total || 0)
+      else if (key.includes('PROCES')) map['En proceso'] += Number(d.total || 0)
+      else if (key.includes('FINAL') || key.includes('CERRA')) map.Cerradas += Number(d.total || 0)
+      else if (key.includes('CANCEL')) map.Canceladas += Number(d.total || 0)
+    })
+    return [map.Abiertas, map['En proceso'], map.Cerradas, map.Canceladas]
+  }, [data])
+
+  const total = series.reduce((a, b) => a + b, 0)
 
   // Vars
   const textSecondary = 'var(--mui-palette-text-secondary)'
@@ -37,20 +74,8 @@ const SolicitudesDonut = () => {
     tooltip: { enabled: true, theme: 'false' },
     dataLabels: { enabled: false },
     labels: ['Abiertas', 'En proceso', 'Cerradas', 'Canceladas'],
-    states: {
-      hover: {
-        filter: { type: 'none' }
-      },
-      active: {
-        filter: { type: 'none' }
-      }
-    },
-    grid: {
-      padding: {
-        top: -22,
-        bottom: -18
-      }
-    },
+    states: { hover: { filter: { type: 'none' } }, active: { filter: { type: 'none' } } },
+    grid: { padding: { top: -22, bottom: -18 } },
     plotOptions: {
       pie: {
         customScale: 0.8,
@@ -59,11 +84,7 @@ const SolicitudesDonut = () => {
           size: '73%',
           labels: {
             show: true,
-            name: {
-              offsetY: 25,
-              color: textSecondary,
-              fontFamily: theme.typography.fontFamily
-            },
+            name: { offsetY: 25, color: textSecondary, fontFamily: theme.typography.fontFamily },
             value: {
               offsetY: -15,
               fontWeight: 500,
@@ -85,18 +106,8 @@ const SolicitudesDonut = () => {
       }
     },
     responsive: [
-      {
-        breakpoint: theme.breakpoints.values.xl,
-        options: {
-          chart: { width: 200, height: 237 }
-        }
-      },
-      {
-        breakpoint: theme.breakpoints.values.md,
-        options: {
-          chart: { width: 150, height: 199 }
-        }
-      }
+      { breakpoint: theme.breakpoints.values.xl, options: { chart: { width: 200, height: 237 } } },
+      { breakpoint: theme.breakpoints.values.md, options: { chart: { width: 150, height: 199 } } }
     ]
   }
 
@@ -109,11 +120,12 @@ const SolicitudesDonut = () => {
             <Typography>Reporte mensual</Typography>
           </div>
           <div className='flex flex-col items-start'>
-            <Typography variant='h3'>0</Typography>
+            <Typography variant='h3'>{loading ? '—' : total}</Typography>
             <div className='flex items-center gap-1'>
               <i className='tabler-chevron-up text-success text-xl'></i>
               <Typography color='success.main' component='span'>
-               0%
+                {/* Placeholder de porcentaje mensual (si luego calculamos delta) */}
+                0%
               </Typography>
             </div>
           </div>
