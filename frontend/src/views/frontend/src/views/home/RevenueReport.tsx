@@ -1,5 +1,5 @@
 import React from 'react';
-import RequestsByMonthBar from '../reports/RequestsByMonthBar';
+import RequestsByMonthBar from '@/views/apps/ecommerce/dashboard/RequestsByMonthBar';
 
 const RevenueReport = () => {
   return (
