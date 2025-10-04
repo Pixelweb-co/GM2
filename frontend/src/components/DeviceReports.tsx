@@ -67,7 +67,7 @@ function DeviceReports({product_id}:{product_id:any}) {
   return (
     <>
     <Card>
-    <CardHeader title='Reportes de Mantenimiento' />
+    <CardHeader title='Reportes de Mantenimiento y Calibración' />
     <CardContent>
       <Box display='flex' flexWrap='wrap' gap={1}>
       {reportes.map((reporte,index) => (

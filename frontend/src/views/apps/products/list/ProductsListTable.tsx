@@ -207,46 +207,39 @@ const ProductsListTable = ({ reload, tableData }: any) => {
           />
         )
       },
+
       columnHelper.accessor('productName', {
         header: 'Nombre',
         cell: ({ row }) => (
-          <div className='flex items-center gap-4'>
-            <div className='flex flex-col'>
-              <Typography color='text.primary' className='font-medium'>
-                {row.original.productName}
-              </Typography>
-            </div>
-          </div>
-        )
-      }),
-      columnHelper.accessor('model', {
-        header: 'Modelo',
-
-        cell: ({ row }) => (
-          <Typography className='font-medium' color='text.primary'>
-            {row.original.model}
+          <Typography color='text.primary' className='font-medium'>
+            {row.original.productName}
           </Typography>
         )
       }),
       columnHelper.accessor('brand', {
         header: 'Marca',
-
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
             {row.original.brand}
           </Typography>
         )
       }),
-
+      columnHelper.accessor('model', {
+        header: 'Modelo',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.model}
+          </Typography>
+        )
+      }),
       columnHelper.accessor('productCode', {
-        header: 'Serial',
+        header: 'Serie',
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
             {row.original.productCode}
           </Typography>
         )
       }),
-
       columnHelper.accessor('licensePlate', {
         header: 'Placa',
         cell: ({ row }) => (
@@ -256,21 +249,173 @@ const ProductsListTable = ({ reload, tableData }: any) => {
         )
       }),
       columnHelper.accessor('location', {
-        header: 'Sede',
+        header: 'Ubicación',
         cell: ({ row }) => (
           <Typography className='font-medium' color='text.primary'>
             {row.original.location}
           </Typography>
         )
       }),
+      columnHelper.accessor('invimaRegister', {
+        header: 'Invima',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.invimaRegister}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('origin', {
+        header: 'Riesgo',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.origin}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('typeDevice', {
+        header: 'Tipo de producto',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.typeDevice}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('productClass', {
+        header: 'Clase',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.productClass}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('classification', {
+        header: 'Clasificación',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.classification}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('status', {
+        header: 'Estado',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.status}
+          </Typography>
+        )
+      }),
 
+      columnHelper.accessor('voltage', {
+        header: 'Voltaje',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.voltage}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('power', {
+        header: 'Potencia',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.power}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('frequency', {
+        header: 'Frecuencia',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.frequency}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('amperage', {
+        header: 'Amperaje',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.amperage}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('purchaseDate', {
+        header: 'Fecha de compra',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.purchaseDate}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('bookValue', {
+        header: 'Valor libro',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.bookValue}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('supplier', {
+        header: 'Proveedor',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.supplier}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('warranty', {
+        header: 'Garantía',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.warranty}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('warrantyStartDate', {
+        header: 'Inicio garantía',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.warrantyStartDate}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('warrantyEndDate', {
+        header: 'Fin garantía',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.warrantyEndDate}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('manual', {
+        header: 'Manual',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.manual}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('periodicity', {
+        header: 'Periodicidad',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.periodicity}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('placement', {
+        header: 'Ubicación específica',
+        cell: ({ row }) => (
+          <Typography className='font-medium' color='text.primary'>
+            {row.original.placement}
+          </Typography>
+        )
+      }),
       columnHelper.accessor('action', {
         header: 'Action',
         cell: ({ row }) => (
           <div className='flex items-center'>
 
 
-          {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL')) &&
+          {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) &&
             <Tooltip title='Lista de checkeo'>
             <IconButton
               onClick={() => {
@@ -283,7 +428,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
             </Tooltip>
             }
 
-            <Tooltip title='Ficha técnica'>
+            <Tooltip title='Hoja de vida'>
             <IconButton
               onClick={() => {
                 localStorage.removeItem('productview')
@@ -318,7 +463,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
                 </IconButton>
               </Tooltip>
             ) : null}
-            {userMethods.isRole("SUPERADMIN") && (
+            {(userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) ? (
               <>
 
               <Tooltip title="Programación de mantenimiento">
@@ -344,7 +489,7 @@ const ProductsListTable = ({ reload, tableData }: any) => {
                   </Tooltip>}
 </>
 
-            )}
+            ):null}
           </div>
         ),
         enableSorting: false
@@ -372,6 +517,36 @@ const ProductsListTable = ({ reload, tableData }: any) => {
     initialState: {
       pagination: {
         pageSize: 10
+      },
+      columnVisibility: {
+        productName: true,    // Nombre
+        brand: true,         // Marca
+        model: true,         // Modelo
+        productCode: true,   // Serie
+        licensePlate: false, // Placa
+        location: false,     // Ubicación
+        invimaRegister: false, // Invima
+        origin: false,       // Riesgo
+        select: true,        // Checkbox column
+        action: true,        // Action column
+        productType: false,      // Tipo de producto
+        productClass: false,     // Clase
+        classification: false,    // Clasificación
+        status: false,           // Estado
+
+        voltage: false,          // Voltaje
+        power: false,           // Potencia
+        frequency: false,        // Frecuencia
+        amperage: false,         // Amperaje
+        purchaseDate: false,     // Fecha de compra
+        bookValue: false,        // Valor libro
+        supplier: false,         // Proveedor
+        warranty: false,         // Garantía
+        warrantyStartDate: false, // Inicio garantía
+        warrantyEndDate: false,   // Fin garantía
+        manual: false,           // Manual
+        periodicity: false,      // Periodicidad
+        placement: false         // Ubicación específica
       }
     },
     enableRowSelection: true, //enable row selection for all rows
