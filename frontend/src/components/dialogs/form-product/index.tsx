@@ -722,7 +722,7 @@ const ProductForm = ({ open, onClose, rowSelect }: any) => {
                         <CustomTextField
                           {...field}
                           fullWidth
-                          label='Procedencia'
+                          label='Clasificación del riesgo'
                           error={Boolean(errors.origin)}
                           helperText={errors.origin?.message}
                         />

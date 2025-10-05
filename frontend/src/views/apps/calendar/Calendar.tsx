@@ -168,7 +168,13 @@ const Calendar = (props: CalenderProps) => {
       }
 
       jsEvent.preventDefault()
-      
+
+      let text = "Deseas confirmar el mantenimiento?";
+       if (confirm(text) != true) {
+        return
+       }
+
+
           try {
             const token = localStorage.getItem('AuthToken')
       

@@ -19,6 +19,7 @@ import axios from 'axios';
 import dotenv from "dotenv";
 
 import ConfirmationDialog from './dialogs/ConfirmationDialog';
+import { userMethods } from '@/utils/userMethods';
 
 interface DocumentsProps {
   product_id: any;
@@ -29,10 +30,34 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
   const [tag, setTag] = useState<string>('');
   const [isReport, setIsReport] = useState<boolean>(false);
   const [documents, setDocuments] = useState<any[]>([]);
+  const [reportDocuments, setReportDocuments] = useState<any[]>([]);
+  const [normalDocuments, setNormalDocuments] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState('')
+  const [name, setName] = useState('');
+  const [canMarkAsReport, setCanMarkAsReport] = useState(false);
 
   const router = useRouter();
+
+  // Función para separar documentos en reportes y no reportes
+  const separateDocuments = (docs: any[]) => {
+    if (!Array.isArray(docs)) {
+      console.error('separateDocuments recibió datos inválidos:', docs);
+      return;
+    }
+    console.log('Separando documentos:', docs);
+    
+    const reports = docs.filter(doc => {
+      console.log('Documento siendo evaluado:', doc, 'report value:', doc.report);
+      return doc.report === true;
+    });
+    const normal = docs.filter(doc => doc.report === false);
+    
+    console.log('Reportes encontrados:', reports.length, 'documentos');
+    console.log('Documentos normales:', normal.length, 'documentos');
+    
+    setReportDocuments(reports);
+    setNormalDocuments(normal);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -63,7 +88,10 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
           })
         ])
 
-        setDocuments(documentsRes.data)
+        console.log('Documentos recibidos del backend:', documentsRes.data);
+        
+        setDocuments(documentsRes.data);
+        separateDocuments(documentsRes.data);
 
         return true
       } catch (error) {
@@ -78,16 +106,30 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
   const handleUpload = async () => {
     if (!file) {
       alert('Por favor, selecciona un archivo.');
-
       return;
     }
 
     const formData = new FormData();
+    
+    console.log('Preparando datos para enviar:', {
+      file: file.name,
+      tag,
+      isReport,
+      product_id
+    });
 
     formData.append('file', file);
     formData.append('tag', tag);
-    formData.append('isReport', String(isReport));
-    formData.append('product_id', product_id);
+    formData.append('report', isReport.toString());
+    formData.append('product_id', String(product_id));
+    
+    // Debug para ver qué se está enviando
+    console.log('Enviando al backend:', {
+      file: file,
+      tag: tag,
+      report: isReport,
+      product_id: product_id
+    });
 
     try {
 
@@ -112,10 +154,13 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         }
       });
 
+      console.log('Respuesta del backend:', response.data);
+      console.log('Valor de report enviado:', formData.get('report'));
+
       alert('Archivo cargado exitosamente');
-      console.log('Respuesta:', response.data);
 
       setDocuments(response.data);
+      separateDocuments(response.data);
 
       // Resetear el estado después de la carga
       setFile(null);
@@ -219,33 +264,65 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         </CardContent>
       </Card>
 
-      {/* Card para listar documentos */}
-      <Card>
-        <CardHeader title="Documentos relacionados" />
+      {/* Card para reportes */}
+      <Card sx={{ mb: 4, mt:4 }}>
+        <CardHeader title="Reportes" />
         <CardContent>
-
           <Grid container spacing={2}>
-            {documents.map((document) => (
+            {reportDocuments.map((document) => (
               <Grid item xs={3} key={document.id}>
-
-
-
-                  <Chip
-          label={document.name}
-          color='primary'
-          variant='tonal'
-          onClick={() => {
-
-            window.open(`${process.env.NEXT_PUBLIC_API_URL}/document/${document.name}`, '_blank');
-          }}
-          onDelete={()=>handleDeleteConfirm(document.name)}
-          deleteIcon={<i className='tabler-trash-x' />}
-        />
-
-
-
+                
+                <Chip
+                  label={document.tag}
+                  color='success'
+                  variant='tonal'
+                  onClick={() => {
+                    window.open(`${process.env.NEXT_PUBLIC_API_URL}/document/${document.name}`, '_blank');
+                  }}
+                  onDelete={() => (userMethods.isRole('SUPERADMIN') || userMethods.isRole('BIOMEDICAL') || userMethods.isRole('ADMIN')) ? handleDeleteConfirm(document.name) : null }
+                  deleteIcon={<i className='tabler-trash-x' />}
+                  title={document.name}
+                />
               </Grid>
             ))}
+            {reportDocuments.length === 0 && (
+              <Grid item xs={12}>
+                <Typography variant="body2" color="textSecondary">
+                  No hay reportes disponibles
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {/* Card para documentos normales */}
+      <Card>
+        <CardHeader title="Documentos" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {normalDocuments.map((document) => (
+              <Grid item xs={3} key={document.id}>
+                <Chip
+                  label={document.tag}
+                  color='primary'
+                  variant='tonal'
+                  onClick={() => {
+                    window.open(`${process.env.NEXT_PUBLIC_API_URL}/document/${document.name}`, '_blank');
+                  }}
+                  onDelete={() => handleDeleteConfirm(document.name)}
+                  deleteIcon={<i className='tabler-trash-x' />}
+                  title={document.name}
+                />
+              </Grid>
+            ))}
+            {normalDocuments.length === 0 && (
+              <Grid item xs={12}>
+                <Typography variant="body2" color="textSecondary">
+                  No hay documentos disponibles
+                </Typography>
+              </Grid>
+            )}
           </Grid>
         </CardContent>
       </Card>
