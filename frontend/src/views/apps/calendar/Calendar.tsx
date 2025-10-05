@@ -169,7 +169,7 @@ const Calendar = (props: CalenderProps) => {
 
       jsEvent.preventDefault()
 
-      let text = "Deseas confirmar el mantenimiento?";
+      const text = "Deseas confirmar el mantenimiento?";
        if (confirm(text) != true) {
         return
        }
