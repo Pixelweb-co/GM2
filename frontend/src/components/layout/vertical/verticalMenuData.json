@@ -35,7 +35,9 @@
     "route": "/calendar",
     "roles": [
       "SUPERADMIN",
-      "BIOMEDICAL"
+      "BIOMEDICAL",
+      "ADMIN",
+      "USER"
     ]
   },
   {
@@ -52,13 +54,6 @@
         "roles": [
           "SUPERADMIN",
           "ADMIN"
-        ]
-      },
-      {
-        "label": "Roles",
-        "route": "/accounts/roles/list",
-        "roles": [
-          "SUPERADMIN"
         ]
       }
     ]

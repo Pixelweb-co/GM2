@@ -8,6 +8,7 @@ import { Grid, Card, CardHeader, CardContent, Typography, TextField, Button, Box
 import axiosInstance from '@/utils/axiosInterceptor'
 import Documents from '@/components/Documents'
 import DeviceReports from '@/components/DeviceReports'
+import CheckIcon from '@mui/icons-material/Check';
 
 const ProductViewLayout = () => {
 
@@ -241,7 +242,7 @@ const ProductViewLayout = () => {
           <CardHeader title='Protocolo de Mantenimiento' />
           <CardContent>
             {formTemplate.length > 0 && formTemplate.map((item, index) => (
-              <Alert severity='info' key={index} sx={{marginBottom:2}}>{item.nom}</Alert>
+              <Alert style={{ borderWidth: '0px', color:'#1b1a1a',textTransform:'capitalize'}} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity='info' key={index} sx={{marginBottom:2}}>{item.nom}</Alert>
 
             ))}
           </CardContent>
