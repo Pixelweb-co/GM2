@@ -266,7 +266,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
 
       {/* Card para reportes */}
       <Card sx={{ mb: 4, mt:4 }}>
-        <CardHeader title="Reportes" />
+        <CardHeader title="Documentos de Reporte" />
         <CardContent>
           <Grid container spacing={2}>
             {reportDocuments.map((document) => (

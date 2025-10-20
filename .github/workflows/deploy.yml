@@ -33,15 +33,12 @@ jobs:
             cd /media/backup/server/GM2/ || exit 1
             git pull
 
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker system prune -a
+
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker stop $(docker ps -aq)
+       
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker rm -f $(docker ps -aq)
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker ps -a --filter "name=gm2_app" \
-              --filter "name=gm2_backend-spring_1" \
-              --filter "name=gm2_notification-service_1" -q | xargs -r sudo docker rm -f
-
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker images | grep -E "gm2_gm2|gm2_backend-spring|gm2_notification-service" | awk '{print \$3}' | xargs -r sudo docker rmi -f
-
-            echo "${secrets.SUDO_PASSWORD}" | sudo -S docker system prune -f
-
+       
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose up -d --build
           
           EOF

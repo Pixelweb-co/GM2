@@ -129,7 +129,7 @@ const ProductViewLayout = () => {
 
               <Grid item xs={4} sm={4}>
               <Typography>
-              <strong>Procedencia:</strong> {product.origin}
+              <strong>Riesgo:</strong> {product.origin}
             </Typography>
               </Grid>
 
