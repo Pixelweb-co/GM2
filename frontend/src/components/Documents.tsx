@@ -222,7 +222,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
     <>
       {/* Card para subir documentos */}
       <Card>
-        <CardHeader title="Documentos Anexos" />
+        <CardHeader title="Agregar Documentos" />
         <CardContent>
           <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
             {/* Input para cargar archivos */}
