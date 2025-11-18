@@ -16,6 +16,11 @@
 /backend/src/main/resources/application.yml
 /backend/src/main/java/com/app/starter1/config/
 
+
+
+/backup-service/public/*.sql
+
+
 /backup-service/public/secret_client.json
 /backup-service/public/token.json
 
