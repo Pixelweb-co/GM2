@@ -39,7 +39,7 @@ services:
             # Docker provider
             - "--providers.docker=true"
             - "--providers.docker.exposedbydefault=false"
-            - "--providers.docker.network=mired"
+            - "--providers.docker.network=gm2_mired"
 
             # ACME / Let's Encrypt (resolver 'le')
             - "--certificatesresolvers.le.acme.email=web@equibiomedic.co"
