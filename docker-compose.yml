@@ -200,11 +200,19 @@ services:
         ports:
             - "3000:3000"
         environment:
-            - NEXT_PUBLIC_API_URL=http://equibiomedic.co:8080
+            - NEXT_PUBLIC_API_URL=https://api.equibiomedic.co
         
-        restart: unless-stopped
+        restart: always
         networks:
             - mired
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.gm2.rule=Host(`gm2.equibiomedic.co`)"
+            - "traefik.http.routers.gm2.entrypoints=websecure"
+            - "traefik.http.routers.gm2.tls.certresolver=le"
+            - "traefik.http.services.gm2.loadbalancer.server.port=3000"
+
+
 
     portainer:
         image: portainer/portainer-ce
