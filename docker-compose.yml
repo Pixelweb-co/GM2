@@ -44,6 +44,8 @@ services:
         - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
         - "--certificatesresolvers.le.acme.httpchallenge=true"
         - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+        environment:
+        - DOCKER_API_VERSION=1.44
         volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /media/backup/server/GM2/traefik:/letsencrypt
