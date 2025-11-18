@@ -66,31 +66,16 @@ services:
             - "traefik.http.routers.www.rule=Host(`www.equibiomedic.co`)"
             - "traefik.http.routers.www.entrypoints=websecure"
             - "traefik.http.routers.www.tls.certresolver=le"
-<<<<<<< HEAD
-            - "traefik.http.services.www.loadbalancer.server.port=80"
-
-            # equibiomedic.co -> redirige a https://www.equibiomedic.co
-            - "traefik.http.routers.www-root.rule=Host(`equibiomedic.co`)"
-            - "traefik.http.routers.www-root.entrypoints=websecure" 
-=======
             - "traefik.http.services.www.loadbalancer.server.port=84"
-
             # equibiomedic.co -> redirige a https://www.equibiomedic.co
             - "traefik.http.routers.www-root.rule=Host(`equibiomedic.co`)"
             - "traefik.http.routers.www-root.entrypoints=websecure"
->>>>>>> 64d13a90f69e5c80f10ea19f89c978c8e690de12
             - "traefik.http.routers.www-root.tls=true"
             - "traefik.http.routers.www-root.tls.certresolver=le"
             - "traefik.http.routers.www-root.middlewares=redirect-to-www"
-
             # Middleware de redirección (http y https) equibiomedic.co -> https://www.equibiomedic.co
             - 'traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://equibiomedic\.co(.*)'
-<<<<<<< HEAD
-            - 'traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$$1'
-=======
             - 'traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$1'
->>>>>>> 64d13a90f69e5c80f10ea19f89c978c8e690de12
-            
             - 'traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true'
 
 
