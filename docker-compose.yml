@@ -18,7 +18,7 @@ services:
             - mired
 
     traefik:
-        image: traefik:v3.1
+        image: traefik:latest
         container_name: traefik
         restart: always
         ports:
@@ -44,7 +44,7 @@ services:
         - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
         - "--certificatesresolvers.le.acme.httpchallenge=true"
         - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-        
+
         environment:
         - DOCKER_API_VERSION=1.44
         volumes:
