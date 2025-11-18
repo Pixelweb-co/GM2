@@ -75,7 +75,7 @@ services:
             - "traefik.http.routers.www-root.middlewares=redirect-to-www"
             # Middleware de redirección (http y https) equibiomedic.co -> https://www.equibiomedic.co
             - 'traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://equibiomedic\.co(.*)'
-            - 'traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$1'
+            - 'traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$$1'
             - 'traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true'
 
 
