@@ -44,6 +44,7 @@ services:
         - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
         - "--certificatesresolvers.le.acme.httpchallenge=true"
         - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+        
         environment:
         - DOCKER_API_VERSION=1.44
         volumes:
