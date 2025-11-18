@@ -31,7 +31,7 @@ services:
             # EntryPoints
             - "--entrypoints.web.address=:80"
             - "--entrypoints.websecure.address=:443"
-            # 👇 IMPORTANTE: quita la redirección global http->https
+            #  IMPORTANTE: quita la redirección global http->https
             #   porque rompe el HTTP-01 challenge de Let's Encrypt
             # - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
             # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
@@ -51,7 +51,7 @@ services:
             - DOCKER_API_VERSION=1.44
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - /media/backup/server/GM2/traefik:/letsencrypt
+            - /var/lib/traefik:/letsencrypt
         networks:
             - mired
 
