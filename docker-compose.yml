@@ -22,36 +22,38 @@ services:
         container_name: traefik
         restart: always
         ports:
-        - "80:80"
-        - "443:443"
+            - "80:80"
+            - "443:443"
         command:
-        - "--log.level=DEBUG"
-        - "--api.dashboard=true"
+            - "--log.level=DEBUG"
+            - "--api.dashboard=true"
 
-        # EntryPoints
-        - "--entrypoints.web.address=:80"
-        - "--entrypoints.websecure.address=:443"
-        - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-        - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+            # EntryPoints
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+            # 👇 IMPORTANTE: quita la redirección global http->https
+            #   porque rompe el HTTP-01 challenge de Let's Encrypt
+            # - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+            # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
 
-        # Docker provider
-        - "--providers.docker=true"
-        - "--providers.docker.exposedbydefault=false"
-        - "--providers.docker.network=mired"
+            # Docker provider
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=mired"
 
-        # ACME / Let's Encrypt (resolver 'le')
-        - "--certificatesresolvers.le.acme.email=web@equibiomedic.co"
-        - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-        - "--certificatesresolvers.le.acme.httpchallenge=true"
-        - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+            # ACME / Let's Encrypt (resolver 'le')
+            - "--certificatesresolvers.le.acme.email=web@equibiomedic.co"
+            - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+            - "--certificatesresolvers.le.acme.httpchallenge=true"
+            - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
 
         environment:
-        - DOCKER_API_VERSION=1.44
+            - DOCKER_API_VERSION=1.44
         volumes:
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-        - /media/backup/server/GM2/traefik:/letsencrypt
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /media/backup/server/GM2/traefik:/letsencrypt
         networks:
-        - mired
+            - mired
 
 
     www:
@@ -66,20 +68,34 @@ services:
             - mired
         labels:
             - "traefik.enable=true"
+
+            # Router HTTPS principal: www.equibiomedic.co
             - "traefik.http.routers.www.rule=Host(`www.equibiomedic.co`)"
             - "traefik.http.routers.www.entrypoints=websecure"
+            - "traefik.http.routers.www.tls=true"
             - "traefik.http.routers.www.tls.certresolver=le"
             - "traefik.http.services.www.loadbalancer.server.port=84"
+
+            # Router HTTP solo para redirigir a HTTPS
+            - "traefik.http.routers.www-http.rule=Host(`www.equibiomedic.co`)"
+            - "traefik.http.routers.www-http.entrypoints=web"
+            - "traefik.http.routers.www-http.middlewares=redirect-to-https"
+
             # equibiomedic.co -> redirige a https://www.equibiomedic.co
             - "traefik.http.routers.www-root.rule=Host(`equibiomedic.co`)"
             - "traefik.http.routers.www-root.entrypoints=websecure"
             - "traefik.http.routers.www-root.tls=true"
             - "traefik.http.routers.www-root.tls.certresolver=le"
             - "traefik.http.routers.www-root.middlewares=redirect-to-www"
-            # Middleware de redirección (http y https) equibiomedic.co -> https://www.equibiomedic.co
-            - 'traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://equibiomedic\.co(.*)'
-            - 'traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$$1'
-            - 'traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true'
+
+            # Middleware: equibiomedic.co -> https://www.equibiomedic.co
+            - "traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://equibiomedic\\.co(.*)"
+            - "traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$$1"
+            - "traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true"
+
+            # Middleware: http -> https para www.equibiomedic.co
+            - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
 
 
     phpmyadmin:
