@@ -28,6 +28,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << 'EOF'
             cd /media/backup/server/GM2/ || exit 1
+            git switch main
             git pull
 
             # Solo tocar el stack de PRODUCCIÓN
