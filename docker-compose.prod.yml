@@ -53,6 +53,18 @@ services:
       - /var/lib/traefik:/letsencrypt
     networks:
       - mired
+  bind9:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: bind9
+    restart: always
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    volumes:
+      - ./bind/named.conf:/etc/bind/named.conf
+      - ./bind/zones:/var/lib/bind
+    networks:
+      - mired
 
   www:
     restart: always
