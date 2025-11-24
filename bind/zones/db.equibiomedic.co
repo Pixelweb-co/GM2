@@ -9,11 +9,12 @@ $TTL 3600
 ; Servidores de nombres
     IN NS  ns1.equibiomedic.co.
 ; opcional si quieres declarar ns2 en el futuro
-;   IN NS  ns2.equibiomedic.co.
+   IN NS  ns2.equibiomedic.co.
 
-; A records principales (pon aquí tu IP pública)
+; A records principales
 @               IN A   181.205.220.122
 ns1             IN A   181.205.220.122
+ns2             IN A   181.205.220.122
 www             IN A   181.205.220.122
 gm2             IN A   181.205.220.122
 api             IN A   181.205.220.122
