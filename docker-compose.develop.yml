@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  db_develop:
+    image: mysql:8.0
+    container_name: mysql_develop
+    restart: always
+    ports:
+      - "3307:3306"              # no choca con prod (3306)
+    environment:
+      MYSQL_DATABASE: GM2_develop
+      MYSQL_USER: root
+      MYSQL_PASSWORD: widowmaker
+      MYSQL_ROOT_PASSWORD: widowmaker
+    volumes:
+      - persistent_develop:/var/lib/mysql
+    networks:
+      - kafka-net
+      - mired
+
+  backend-spring_develop:
+    build:
+      context: /media/backup/server/GM2/backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db_develop
+      - kafka
+    restart: always
+    ports:
+      - "8082:8080"              # prod 8080, dev 8082 en el host
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_PROFILES_ACTIVE: default
+      DB_HOST: db_develop
+      DB_PORT: 3306
+      DB_DATABASE: GM2_develop
+      DB_USERNAME: root
+      DB_PASSWORD: widowmaker
+    networks:
+      - kafka-net
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-dev.rule=Host(`api-dev.equibiomedic.co`)"
+      - "traefik.http.routers.api-dev.entrypoints=websecure"
+      - "traefik.http.routers.api-dev.tls.certresolver=le"
+      - "traefik.http.services.api-dev.loadbalancer.server.port=8080"
+
+  gm2_develop:
+    container_name: gm2_app_develop
+    build:
+      context: /media/backup/server/GM2/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"              # prod 3000, dev 3001
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api-dev.equibiomedic.co
+    restart: always
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gm2-dev.rule=Host(`gm2-dev.equibiomedic.co`)"
+      - "traefik.http.routers.gm2-dev.entrypoints=websecure"
+      - "traefik.http.routers.gm2-dev.tls.certresolver=le"
+      - "traefik.http.services.gm2-dev.loadbalancer.server.port=3000"
+
+volumes:
+  persistent_develop:
+
+networks:
+  kafka-net:
+    external: true
+    name: gm2_kafka-net
+  mired:
+    external: true
+    name: gm2_mired
