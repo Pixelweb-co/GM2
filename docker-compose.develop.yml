@@ -61,7 +61,7 @@ services:
     build:
       context: /media/backup/server/GM2/backend
       dockerfile: Dockerfile
-    depends_on:
+    depends_on: 
       - db_develop
       - kafka-dev
     restart: always
