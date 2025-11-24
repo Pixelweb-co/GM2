@@ -27,6 +27,8 @@ services:
     command:
       - "--log.level=DEBUG"
       - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "8089:8080"  # <--- AÑADIR ESTA
 
       # EntryPoints
       - "--entrypoints.web.address=:80"
