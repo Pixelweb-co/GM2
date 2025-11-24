@@ -1,12 +1,12 @@
-name: Deploy GM2 Prod
+name: Deploy GM2 Develop
 
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
-  deploy-prod:
+  deploy-develop:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,27 +24,27 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Deploy PROD to server
+      - name: Deploy DEVELOP stack to server
         run: |
           ssh -o StrictHostKeyChecking=no -p 5434 server@equibiomedic.co << 'EOF'
             cd /media/backup/server/GM2/ || exit 1
-            git switch main
+            git switch develop
             git pull
 
-            # Solo tocar el stack de PRODUCCIÓN
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.prod.yml down
-            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.prod.yml up -d --build
+            # Solo tocamos los servicios de DESARROLLO
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.develop.yml down
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.develop.yml up -d --build
           EOF
 
-      - name: Send notification email (prod)
+      - name: Send notification email (develop)
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: mail.tornillosprotor.com
           server_port: 465
           username: pruebas@tornillosprotor.com
           password: Elian2020#
-          subject: "Deploy GM2 - PROD"
+          subject: "Deploy GM2 - DEVELOP"
           to: egbmaster2007@gmail.com
           from: pruebas@tornillosprotor.com
-          body: "¡Se ha desplegado la actualización de PRODUCCIÓN de GM2 correctamente!"
+          body: "¡Se ha desplegado la rama DEVELOP de GM2 correctamente!"
           secure: true
