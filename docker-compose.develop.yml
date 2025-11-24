@@ -1,6 +1,9 @@
 version: "3.9"
 
 services:
+  # ================================
+  #  DB DESARROLLO
+  # ================================
   db_develop:
     image: mysql:8.0
     container_name: mysql_develop
@@ -15,29 +18,71 @@ services:
     volumes:
       - persistent_develop:/var/lib/mysql
     networks:
-      - kafka-net
+      - kafka-net-dev
       - mired
 
+  # ================================
+  #  ZOOKEEPER DESARROLLO
+  # ================================
+  zookeeper-dev:
+    image: confluentinc/cp-zookeeper:7.4.0
+    restart: always
+    ports:
+      - "22181:2181"             # distinto a prod (2181->2181)
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-net-dev
+
+  # ================================
+  #  KAFKA DESARROLLO
+  # ================================
+  kafka-dev:
+    image: confluentinc/cp-kafka:7.4.0
+    restart: always
+    ports:
+      - "9094:9092"              # distinto a prod (9092->9092)
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-dev:2181
+      KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka-dev:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka-net-dev
+
+  # ================================
+  #  BACKEND SPRING DESARROLLO
+  # ================================
   backend-spring_develop:
     build:
       context: /media/backup/server/GM2/backend
       dockerfile: Dockerfile
     depends_on:
       - db_develop
-      - kafka
+      - kafka-dev
     restart: always
     ports:
-      - "8082:8080"              # prod 8080, dev 8082 en el host
+      - "8082:8080"              # prod 8080, dev 8082
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-dev:9092
       SPRING_PROFILES_ACTIVE: default
       DB_HOST: db_develop
       DB_PORT: 3306
       DB_DATABASE: GM2_develop
       DB_USERNAME: root
       DB_PASSWORD: widowmaker
+    volumes:
+      - ./backend/documents:/app/documents
+      - ./backend/firma_soporte:/app/firma_soporte
+      - ./backend/firmas/:/app/firmas
+      - ./backend/images:/app/images
+      - ./backend/uploads:/app/uploads
     networks:
-      - kafka-net
+      - kafka-net-dev
       - mired
     labels:
       - "traefik.enable=true"
@@ -46,6 +91,9 @@ services:
       - "traefik.http.routers.api-dev.tls.certresolver=le"
       - "traefik.http.services.api-dev.loadbalancer.server.port=8080"
 
+  # ================================
+  #  FRONTEND GM2 DESARROLLO
+  # ================================
   gm2_develop:
     container_name: gm2_app_develop
     build:
@@ -69,9 +117,11 @@ volumes:
   persistent_develop:
 
 networks:
-  kafka-net:
-    external: true
-    name: gm2_kafka-net
+  # Red interna SOLO para Kafka/Zoo/DB de dev
+  kafka-net-dev:
+    driver: bridge
+
+  # Red compartida con Traefik de PRODUCCIÓN
   mired:
     external: true
     name: gm2_mired
