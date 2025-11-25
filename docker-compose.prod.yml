@@ -64,7 +64,7 @@ services:
       - ./bind/named.conf:/etc/bind/named.conf
       - ./bind/zones:/var/lib/bind
     networks:
-      - miredup
+      - mired
 
   www:
     restart: always
