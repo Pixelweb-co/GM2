@@ -97,6 +97,9 @@ services:
     build:
       context: /media/backup/server/GM2/frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://apidev.equibiomedic.co
+        - NEXT_FRONTEND_URL=https://gm2dev.equibiomedic.co
     environment:
       - NEXT_PUBLIC_API_URL=https://apidev.equibiomedic.co
       - NEXT_FRONTEND_URL=https://gm2dev.equibiomedic.co
