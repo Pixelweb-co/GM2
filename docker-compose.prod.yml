@@ -213,9 +213,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
+    args:
       - NEXT_PUBLIC_API_URL=https://api.equibiomedic.co
       - NEXT_FRONTEND_URL=https://gm2.equibiomedic.co
+
     restart: always
     networks:
       - mired
