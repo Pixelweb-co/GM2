@@ -162,12 +162,13 @@ services:
       - ./backend/uploads:/app/uploads
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_PROFILES_ACTIVE: prod
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: GM2
       DB_USERNAME: root
       DB_PASSWORD: widowmaker
+      CORS_ALLOWED_ORIGIN: https://gm2.equibiomedic.co,https://www.equibiomedic.co
     networks:
       - kafka-net
       - mired
