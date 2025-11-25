@@ -211,11 +211,12 @@ services:
     build:
       context: /media/backup/server/GM2/frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    args:
+      args:
       - NEXT_PUBLIC_API_URL=https://api.equibiomedic.co
       - NEXT_FRONTEND_URL=https://gm2.equibiomedic.co
+    ports:
+      - "3000:3000"
+    
 
     restart: always
     networks:
