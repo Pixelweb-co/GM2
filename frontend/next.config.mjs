@@ -13,7 +13,7 @@ const nextConfig = {
       }
     ]
   },
-  images: { domains: ['localhost','equibiomedic.co'], unoptimized: true },
+  images: { domains: ['localhost','gm2.equibiomedic.co','gm2dev.equibiomedic.co'], unoptimized: true },
 }
 
 export default nextConfig

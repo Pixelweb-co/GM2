@@ -168,6 +168,7 @@ services:
       DB_DATABASE: GM2
       DB_USERNAME: root
       DB_PASSWORD: widowmaker
+      NEXT_FRONTEND_URL: https://gm2.equibiomedic.co
       CORS_ALLOWED_ORIGIN: https://gm2.equibiomedic.co,https://www.equibiomedic.co
     networks:
       - kafka-net
@@ -214,6 +215,7 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=https://api.equibiomedic.co
+      - NEXT_FRONTEND_URL=https://gm2.equibiomedic.co
     restart: always
     networks:
       - mired
