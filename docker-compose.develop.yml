@@ -71,6 +71,7 @@ services:
       DB_DATABASE: GM2_develop
       DB_USERNAME: root
       DB_PASSWORD: widowmaker
+      NEXT_FRONTEND_URL: https://gm2dev.equibiomedic.co
       CORS_ALLOWED_ORIGIN: http://localhost:3000,https://gm2dev.equibiomedic.co
     volumes:
       - ./backend/documents:/app/documents
@@ -98,6 +99,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - NEXT_PUBLIC_API_URL=https://apidev.equibiomedic.co
+      - NEXT_FRONTEND_URL=https://gm2dev.equibiomedic.co
     restart: always
     networks:
       - mired
