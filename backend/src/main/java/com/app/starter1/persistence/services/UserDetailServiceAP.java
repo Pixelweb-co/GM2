@@ -33,10 +33,15 @@ import org.springframework.context.annotation.Lazy;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Service
 public class UserDetailServiceAP implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDetailServiceAP.class);
+
+    public String FRONT_URL = System.getenv("NEXT_FRONTEND_URL");
+
 
     @Autowired
     @Lazy
@@ -114,7 +119,7 @@ public class UserDetailServiceAP implements UserDetailsService {
             userEntity.setVerificationToken(token);
             userRepository.save(userEntity);
 
-            String activationLink = "http://equibiomedic.co:3000/verificate/" + userEntity.getVerificationToken();
+            String activationLink = this.FRONT_URL + "/verificate/" + userEntity.getVerificationToken();
 
             String to = userEntity.getEmail();
             String subject = "Registro exitoso! " + "Bienvenido a GM2, " + request.getUsername();
@@ -256,7 +261,8 @@ public class UserDetailServiceAP implements UserDetailsService {
         // emailService.sendEmail(userEntity.getEmail(), "Email Verification", "Click
         // the link to verify your email: " + confirmationUrl);
 
-        String activationLink = "http://equibiomedic.co:3000/verificate/" + userEntity.getVerificationToken();
+       
+        String activationLink = this.FRONT_URL + "/verificate/" + userEntity.getVerificationToken();
 
         String to = userEntity.getEmail();
         String subject = "Registro exitoso! " + "Bienvenido a GM2, " + nombres + ' ' + apellidos;
