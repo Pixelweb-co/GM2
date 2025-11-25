@@ -58,13 +58,13 @@ services:
     container_name: bind9
     restart: always
     ports:
-      - "181.205.220.122:53:53/udp" 
-      - "181.205.220.122:53:53/tcp" 
+      - "53:53/udp" 
+      - "53:53/tcp" 
     volumes:
       - ./bind/named.conf:/etc/bind/named.conf
       - ./bind/zones:/var/lib/bind
     networks:
-      - mired
+      - miredup
 
   www:
     restart: always
