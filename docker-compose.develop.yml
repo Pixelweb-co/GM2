@@ -65,12 +65,13 @@ services:
     restart: always
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-dev:9092
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_PROFILES_ACTIVE: dev
       DB_HOST: db_develop
       DB_PORT: 3306
       DB_DATABASE: GM2_develop
       DB_USERNAME: root
       DB_PASSWORD: widowmaker
+      CORS_ALLOWED_ORIGIN: http://localhost:3000,https://gm2dev.equibiomedic.co
     volumes:
       - ./backend/documents:/app/documents
       - ./backend/firma_soporte:/app/firma_soporte
