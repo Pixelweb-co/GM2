@@ -74,11 +74,11 @@ services:
       NEXT_FRONTEND_URL: https://gm2dev.equibiomedic.co
       CORS_ALLOWED_ORIGIN: http://localhost:3000,https://gm2dev.equibiomedic.co
     volumes:
-      - ./backend/documents:/app/documents
-      - ./backend/firma_soporte:/app/firma_soporte
-      - ./backend/firmas/:/app/firmas
-      - ./backend/images:/app/images
-      - ./backend/uploads:/app/uploads
+      - ./media/documents:/app/documents
+      - ./media/firma_soporte:/app/firma_soporte
+      - ./media/firmas/:/app/firmas
+      - ./media/images:/app/images
+      - ./media/uploads:/app/uploads
     networks:
       - kafka-net-dev
       - mired
