@@ -66,7 +66,7 @@ public ResponseEntity<?> setMantenimiento(@RequestBody Map<String, Long> request
             scheduleService.createSchedules(scheduleRequest);
             return ResponseEntity.ok("Mantenimientos programados correctamente");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al programar mantenimientos");
+            return ResponseEntity.status(500).body("Error al programar mantenimientos"+e.getMessage());
         }
     }
 }
