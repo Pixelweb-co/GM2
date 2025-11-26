@@ -3,35 +3,74 @@ import type { SVGAttributes } from 'react'
 
 const Logo = (props: SVGAttributes<SVGElement>) => {
   return (
-    <svg width='1.4583em' height='1em' viewBox='0 0 35 24' fill='none' xmlns='http://www.w3.org/2000/svg' {...props}>
-      <path
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M0.00188479 0V7.47707C0.00188479 7.47707 -0.145285 9.83135 2.161 11.8242L14.9358 23.9961L21.5792 23.9107L20.5136 10.7809L17.9947 7.82497L10.0778 0H0.00188479Z'
-        fill='currentColor'
-      />
-      <path
-        opacity='0.06'
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M8.39807 17.9307L13.6581 3.53127L18.059 7.91564L8.39807 17.9307Z'
-        fill='#161616'
-      />
-      <path
-        opacity='0.06'
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M8.81183 17.3645L15.2093 5.06165L18.0926 7.94695L8.81183 17.3645Z'
-        fill='#161616'
-      />
-      <path
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M8.47955 17.8436L25.8069 0H34.9091V7.50963C34.9091 7.50963 34.7195 10.0128 33.4463 11.3517L21.5808 24H14.9387L8.47955 17.8436Z'
-        fill='currentColor'
-      />
-    </svg>
-  )
+    
+    <svg
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  width="65"
+  height="54"    
+  viewBox="0 0 140 140"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <defs>
+    <radialGradient id="outerGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0d9ad1"/>
+      <stop offset="100%" stop-color="#005a88"/>
+    </radialGradient>
+  <radialGradient id="middleGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#74d5e8"/>
+      <stop offset="100%" stop-color="#00838f"/>
+    </radialGradient>
+
+    <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe95a"/>
+      <stop offset="100%" stop-color="#ff9800"/>
+    </radialGradient>
+
+    <filter id="lineShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="140" height="140" fill="none"/>
+
+  <circle cx="70" cy="70" r="65" fill="url(#outerGradient)" />
+
+  <circle cx="70" cy="70" r="48" fill="url(#middleGradient)" opacity="0.9"/>
+
+  <circle cx="70" cy="70" r="35" fill="url(#middleGradient)" opacity="0.9"/>
+
+  <circle cx="70" cy="70" r="22" fill="url(#centerGradient)" />
+
+  <g filter="url(#lineShadow)">
+    <path
+      d="
+        M10 68
+        H45
+        L52 56
+        L59 78
+        L67 28
+        L73 104
+        L82 54
+        L90 68
+        H130
+        L130 76
+        H90
+        L82 62
+        L73 112
+        L67 36
+        L59 86
+        L52 64
+        L45 76
+        H10
+        Z
+      "
+      fill="#ffffff"
+    />
+  </g>
+</svg>
+
+      )
 }
 
 export default Logo
