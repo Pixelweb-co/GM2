@@ -17,6 +17,8 @@ const ProductViewLayout = () => {
 
   // Estado inicial del producto
   const [product, setProduct] = useState<any>(null)
+  const [reportDocs, setReportDocs] = useState<any[]>([])
+  const [deleteConfirmDocument, setDeleteConfirmDocument] = useState<string | null>(null);
 
   useEffect(()=>{
 
@@ -250,14 +252,19 @@ const ProductViewLayout = () => {
       </Grid>
 
       <Grid item xs={12} md={12}>
-          <Documents product_id={product.id} />
+          <Documents product_id={product.id} reportDocs={(data)=>setReportDocs(data)} toDelete={deleteConfirmDocument}/>
 
 
       </Grid>
 
       <Grid item xs={12} md={12}>
-       <DeviceReports product_id={product.id}/>
+       <DeviceReports product_id={product.id} reportDocs={reportDocs} handleDeleteConfirm={(document_name) => {
+        // Implement the delete confirmation logic here
+        console.log('Delete confirmed for document:', document_name);
 
+        setDeleteConfirmDocument(document_name);
+
+       }} /> 
 
       </Grid>
 {/*

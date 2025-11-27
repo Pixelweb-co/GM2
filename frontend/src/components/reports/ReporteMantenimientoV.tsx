@@ -13,6 +13,7 @@ import html2canvas from 'html2canvas';
 import { userMethods } from '@/utils/userMethods';
 import SignatureDialog from '../dialogs/SignatureDialog';
 import axiosInstance from '@/utils/axiosInterceptor';
+import Logo from '@/@core/svg/Logo';
 
 
 
@@ -28,7 +29,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
   const [tcheckeo, setTcheckeo] = useState([])
   const [plantillaV,setPlantillaV] = useState<any | null>(null)
   const [plantillaVdata, setPlantillaVdata] = useState([])
-
+  const [nombreRecive,setNombreRecive]=useState<string>('');
 
   const downloadPDF = async (componentId: string, pdfFileName: string = 'MaintenanceReport.pdf') => {
     const input = document.getElementById(componentId);
@@ -96,7 +97,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
   const handleSaveSignature = (file:any) => {
     console.log("Archivo guardado:", file);
-    fetchOptions(data)
+    setNombreRecive(file)
   };
 
 
@@ -152,6 +153,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
 
 
       setFirmaSolicitud(firmaSolicitudRes.data.firma)
+      setNombreRecive(firmaSolicitudRes.data.nombreCompleto)
 
 
 
@@ -280,7 +282,8 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                     <tbody>
                         <tr>
                             <td rowSpan={3} className="w-1/10">
-                                <img src={`${process.env.NEXT_PUBLIC_API_URL}/media/logo.jpg`} alt="Logo" className="w-24 h-24 mt-2" />
+                             <Logo width={24} height={24} />
+                          
                             </td>
                             <td rowSpan={3} className="align-middle">
                                 <h5>REPORTE SERVICIO MANTENIMIENTO</h5>
@@ -401,8 +404,9 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                 </div>
             </div>
 
+                  
 
-            {data.tipoServicio === 1 && <div className="w-4/5 p-2 mx-auto">
+            {data.tipoServicio === data.tipoServicio && <div className="w-4/5 p-2 mx-auto">
                 <div className="border rounded shadow-md">
                 <div className="bg-gray-200 font-bold p-2">LISTA DE CHECKEO</div>
                     <div >
@@ -516,7 +520,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
                             <th>Ingeniero</th>
                             <td>{data.asig.nombres} {data.asig.apellidos}</td>
                             <th>Recibe</th>
-                            <td></td>
+                            <td>{nombreRecive}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -527,7 +531,7 @@ const ReporteMantenimientoV = ({data}:{data:any}) => {
         open={dialogOpen}
         solicitud_id={data.idSolicitud}
         onClose={handleCloseDialog}
-        onSave={handleSaveSignature}
+        onSave={(nombreCompleto:string) => handleSaveSignature(nombreCompleto)}
       />
 
 

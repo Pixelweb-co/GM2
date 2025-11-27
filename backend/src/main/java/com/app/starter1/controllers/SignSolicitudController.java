@@ -81,6 +81,7 @@ public class SignSolicitudController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<FirmaSolicitud> saveFirma(
             @RequestPart("solicitud_id") String solicitudjson,
+            @RequestPart("nombre_completo") String nombreCompleto,  
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {
 
@@ -92,6 +93,7 @@ public class SignSolicitudController {
         System.out.println("id sol firma "+solicitudFirmaRequest.getId_solicitud().toString());
         firmaSolicitud.setFirma(path);
         firmaSolicitud.setIdSolicitud(solicitudFirmaRequest.getId_solicitud());
+        firmaSolicitud.setNombreCompleto(nombreCompleto);
         FirmaSolicitud firmaSaved = firmaSolicitudRepository.save(firmaSolicitud);
 
         return ResponseEntity.ok(firmaSaved);

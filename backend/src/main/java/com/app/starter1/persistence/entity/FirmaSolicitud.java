@@ -21,5 +21,7 @@ public class FirmaSolicitud {
 
     private String firma;
 
+    private String nombreCompleto;
+
 }
 
