@@ -1,26 +1,23 @@
 $TTL 3600
 @   IN SOA ns1.equibiomedic.co. admin.equibiomedic.co. (
-        2025112401 ; Serial (YYYYMMDDnn)
+        2025120201 ; Serial (YYYYMMDDnn) – súbelo cuando cambies algo
         3600       ; Refresh
         900        ; Retry
         604800     ; Expire
         86400 )    ; Minimum
+;
 
 ; Servidores de nombres
     IN NS  ns1.equibiomedic.co.
-; opcional si quieres declarar ns2 en el futuro
-   IN NS  ns2.equibiomedic.co.
+    IN NS  ns2.equibiomedic.co.
 
-; A records principales
-@               IN A   181.205.220.122
-ns1             IN A   181.205.220.122
-ns2             IN A   181.205.220.122
-www             IN A   181.205.220.122
-gm2             IN A   181.205.220.122
-api             IN A   181.205.220.122
-gm2dev         IN A   181.205.220.122
-apidev         IN A   181.205.220.122
-traefik         IN A   181.205.220.122
-
-; Ejemplo CNAME si quieres que algo apunte a otro nombre
-; app             IN CNAME gm2.equibiomedic.co.
+; Registros A
+@           IN A   181.205.220.122
+ns1         IN A   181.205.220.122
+ns2         IN A   181.205.220.122
+www         IN A   181.205.220.122
+gm2         IN A   181.205.220.122
+api         IN A   181.205.220.122
+gm2dev      IN A   181.205.220.122
+apidev      IN A   181.205.220.122
+traefik     IN A   181.205.220.122
