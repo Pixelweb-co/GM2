@@ -16,7 +16,7 @@
 /backend/src/main/resources/application.yml
 /backend/src/main/java/com/app/starter1/config/
 
-/media/
+/media/ 
 
 /backup-service/public/*.sql
 
