@@ -1,0 +1,209 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ingenieriadb
+      MYSQL_PASSWORD: widowmaker
+      MYSQL_ROOT_PASSWORD: widowmaker
+    volumes:
+      - persistent:/var/lib/mysql
+    networks:
+      - kafka-net
+      - mired
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8089:8080"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      
+      # EntryPoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+
+      # Docker provider
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=gm2_mired"
+
+      # ACME / Let's Encrypt (resolver 'le')
+      - "--certificatesresolvers.le.acme.email=web@equibiomedic.co"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.httpchallenge=true"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+
+    environment:
+      - DOCKER_API_VERSION=1.44
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/traefik:/letsencrypt
+    networks:
+      - mired
+
+  bind9:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: bind9
+    restart: always
+    ports:
+      - "53:53/udp" 
+      - "53:53/tcp" 
+    volumes:
+      - ./bind/named.conf:/etc/bind/named.conf
+      - ./bind/zones:/var/lib/bind
+    networks:
+      - mired
+
+  www:
+    restart: always
+    build: .
+    volumes:
+      - /media/backup/server/webApplications:/var/www/html
+      - ./apache2:/etc/apache2
+    links:
+      - db:db
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+
+      # Router HTTPS principal: www.equibiomedic.co
+      - "traefik.http.routers.www.rule=Host(`www.equibiomedic.co`)"
+      - "traefik.http.routers.www.entrypoints=websecure"
+      - "traefik.http.routers.www.tls=true"
+      - "traefik.http.routers.www.tls.certresolver=le"
+      - "traefik.http.services.www.loadbalancer.server.port=84"
+
+      # Router HTTP solo para redirigir a HTTPS
+      - "traefik.http.routers.www-http.rule=Host(`www.equibiomedic.co`)"
+      - "traefik.http.routers.www-http.entrypoints=web"
+      - "traefik.http.routers.www-http.middlewares=redirect-to-https"
+
+      # equibiomedic.co -> redirige a https://www.equibiomedic.co
+      - "traefik.http.routers.www-root.rule=Host(`equibiomedic.co`)"
+      - "traefik.http.routers.www-root.entrypoints=websecure"
+      - "traefik.http.routers.www-root.tls=true"
+      - "traefik.http.routers.www-root.tls.certresolver=le"
+      - "traefik.http.routers.www-root.middlewares=redirect-to-www"
+
+      # Middleware: equibiomedic.co -> https://www.equibiomedic.co
+      - "traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://equibiomedic\\.co(.*)"
+      - "traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.equibiomedic.co$$1"
+      - "traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true"
+
+      # Middleware: http -> https para www.equibiomedic.co
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    links:
+      - db:db
+    ports:
+      - 8000:80
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: widowmaker
+      MYSQL_ROOT_PASSWORD: widowmaker
+    networks:
+      - mired
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT_EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT_EXTERNAL://127.0.0.1:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-net
+
+  notification-service:
+    build:
+      context: /media/backup/server/GM2/notifications
+      dockerfile: Dockerfile
+    container_name: notification-service
+    restart: always
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - kafka-net
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.30.0
+    container_name: kafdrop
+    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKER_CONNECT: kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - kafka
+      - zookeeper
+    networks:
+      - kafka-net
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    ports:
+      - "9100:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - mired
+
+volumes:
+  db_data:
+  db_data2:
+  persistent:
+  portainer_data:
+  backup:
+
+networks:
+  kafka-net:
+    name: gm2_kafka-net
+    driver: bridge
+  mired:
+    name: gm2_mired
+    driver: bridge
