@@ -12,6 +12,8 @@ import com.app.starter1.persistence.entity.Schedule;
 import com.app.starter1.persistence.entity.Product;
 import com.app.starter1.persistence.repository.ScheduleRepository;
 import com.app.starter1.persistence.repository.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,10 +33,26 @@ public class ScheduleService {
 
     @Autowired CustomerService customerService;
 
+    @Transactional
+    public void deleteByDeviceId(Long deviceId) {
+        scheduleRepository.deleteByDeviceId(deviceId);
+    }
+
+    @Transactional
     public void createSchedules(ScheduleRequest scheduleRequest) {
         // Buscar el dispositivo por ID
         Product device = productRepository.findById(scheduleRequest.getDeviceId())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        System.out.println("device "+scheduleRequest.getDeviceId());
+        //eliminamos todos la programacion actual del producto
+
+        Long deviceId = device.getId();
+        // 1) Borrar programación previa
+        long deleted = scheduleRepository.deleteByDeviceId(deviceId);
+        System.out.println("Schedules eliminados para device " + deviceId + ": " + deleted);
+
+        System.out.println("eliminaos");
 
         for (String fecha : scheduleRequest.getFechas()) {
             // Verificar si ya existe un Schedule para este dispositivo y fecha

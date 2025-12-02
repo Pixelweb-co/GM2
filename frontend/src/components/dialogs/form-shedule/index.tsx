@@ -62,6 +62,23 @@ const SheduleForm = ({ open, onClose, rowSelect, onSuccess }: { open: boolean; o
     }
   }, [fechas])
 
+  useEffect(() => {
+
+    const fechasGeneradas:any[] = [];
+    
+    if(rowSelect && rowSelect.schedules){
+      console.log('rowSelect changed pg:', rowSelect.schedules);
+
+      rowSelect.schedules.forEach((schedule: any) => {
+        fechasGeneradas.push({ fecha: schedule.date, id_servicio: rowSelect.id })
+      })
+
+      setFechas(fechasGeneradas)
+    }
+
+
+  }, [rowSelect])
+
   // Función para generar las fechas entre la fecha de inicio y la fecha de fin
   const generarFechasServicio = (fechaInicio: string, fechaFin: string, numVeces: number, idServicio: number) => {
     console.log('Generando fechas con:', { fechaInicio, fechaFin, numVeces, idServicio })

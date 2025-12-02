@@ -3,11 +3,14 @@ package com.app.starter1.persistence.repository;
 import com.app.starter1.dto.ScheduleProductClientProjection;
 import com.app.starter1.persistence.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.app.starter1.dto.ScheduleProductClientDTO;
 
 import com.app.starter1.dto.ScheduleDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,11 +18,15 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     // Método para encontrar todos los schedules por el dispositivo
-    List<Schedule> findByDeviceId(Long deviceId);
+    List<Schedule> findByDevice_Id(Long deviceId);
 
     // Método para encontrar un schedule por su fecha
     List<Schedule> findByDate(String date);
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "DELETE FROM schedule WHERE device = :deviceId", nativeQuery = true)
+    int deleteByDeviceId(@Param("deviceId") Long deviceId);
 
     // Método para verificar si ya existe un Schedule con el mismo dispositivo y fecha
     boolean existsByDeviceIdAndDate(Long deviceId, String date);

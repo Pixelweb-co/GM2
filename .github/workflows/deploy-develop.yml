@@ -34,6 +34,7 @@ jobs:
             # Solo tocamos los servicios de DESARROLLO
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.develop.yml down
             echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker-compose -f docker-compose.develop.yml up -d --build
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S docker system prune -f
           EOF
 
       - name: Send notification email (develop)
