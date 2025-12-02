@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class SolicitudFirmaRequest {
     private Long id_solicitud;
+    private String nombreCompleto;
 
 }
 

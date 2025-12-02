@@ -23,9 +23,11 @@ import { userMethods } from '@/utils/userMethods';
 
 interface DocumentsProps {
   product_id: any;
+  reportDocs: (data: any[]) => void;
+  toDelete: string | null;
 }
 
-const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
+const Documents: React.FC<DocumentsProps> = ({ product_id,reportDocs, toDelete }) => {
   const [file, setFile] = useState<File | null>(null);
   const [tag, setTag] = useState<string>('');
   const [isReport, setIsReport] = useState<boolean>(false);
@@ -50,6 +52,9 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
       console.log('Documento siendo evaluado:', doc, 'report value:', doc.report);
       return doc.report === true;
     });
+
+
+    
     const normal = docs.filter(doc => doc.report === false);
     
     console.log('Reportes encontrados:', reports.length, 'documentos');
@@ -57,6 +62,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
     
     setReportDocuments(reports);
     setNormalDocuments(normal);
+    reportDocs(documents);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +73,13 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
 
 
 
+  useEffect(() => {
+    if(toDelete){
+      handleDeleteConfirm(toDelete)
+    }
+
+
+  }, [toDelete]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -209,6 +222,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         prevDocuments.filter((doc) => doc.name !== name)
       );
       setOpen(false)
+      reportDocs(documents);
 
     } catch (error) {
       console.error('Error al eliminar el documento:', error);
@@ -264,7 +278,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
         </CardContent>
       </Card>
 
-      {/* Card para reportes */}
+      {/* Card para reportes
       <Card sx={{ mb: 4, mt:4 }}>
         <CardHeader title="Documentos de Reporte" />
         <CardContent>
@@ -294,7 +308,7 @@ const Documents: React.FC<DocumentsProps> = ({ product_id }) => {
             )}
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Card para documentos normales */}
       <Card>

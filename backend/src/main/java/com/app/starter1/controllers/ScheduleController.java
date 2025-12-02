@@ -29,7 +29,7 @@ public class ScheduleController  {
     // Endpoint para obtener los schedules de un dispositivo específico
     @GetMapping("/device/{deviceId}")
     public List<Schedule> getSchedulesByDevice(@PathVariable Long deviceId) {
-        return scheduleRepository.findByDeviceId(deviceId);
+        return scheduleRepository.findByDevice_Id(deviceId);
     }
 
 
@@ -66,7 +66,7 @@ public ResponseEntity<?> setMantenimiento(@RequestBody Map<String, Long> request
             scheduleService.createSchedules(scheduleRequest);
             return ResponseEntity.ok("Mantenimientos programados correctamente");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al programar mantenimientos");
+            return ResponseEntity.status(500).body("Error al programar mantenimientos"+e.getMessage());
         }
     }
 }

@@ -9,6 +9,7 @@ import {
   Tabs,
   Tab,
   Box,
+  TextField,
 } from "@mui/material";
 
 import SignatureCanvas from "react-signature-canvas";
@@ -22,6 +23,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
   const [activeTab, setActiveTab] = useState(0);
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [nombreCompleto, setNombreCompleto] = useState("");
 
   // Limpiar firma del canvas
   const clearSignature = () => {
@@ -45,11 +47,12 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
   };
 
   // Enviar archivo al endpoint
-  const sendFileToEndpoint = async (file:any) => {
+  const sendFileToEndpoint = async (file:any,nombreCompleto:string) => {
     const formData = new FormData();
 
     formData.append("file", file);
     formData.append("solicitud_id", JSON.stringify({id_solicitud:solicitud_id}));
+    formData.append("nombre_completo", nombreCompleto);
 
 
 
@@ -83,7 +86,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
           console.log('firma guardado con éxito:', response.data)
 
 
-          setTimeout(()=>onSave(),500)
+          setTimeout(()=>onSave(nombreCompleto),500)
           onClose()
 
           // Aquí puedes redirigir o mostrar un mensaje de éxito
@@ -102,7 +105,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
     };
 
   // Guardar firma desde el canvas
-  const handleSaveCanvas = () => {
+  const handleSaveCanvas = (nombreCompleto:string) => {
 
     if (signatureRef.current?.isEmpty()) {
 
@@ -118,14 +121,14 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
       if (blob) {
         const file = new File([blob], fileName, { type: "image/png" });
 
-        sendFileToEndpoint(file);
+        sendFileToEndpoint(file, nombreCompleto);
 
       }
     });
   };
 
   // Guardar archivo cargado
-  const handleSaveUploadedFile = () => {
+  const handleSaveUploadedFile = (nombreCompleto:string) => {
 
     const file = fileInputRef.current?.files?.[0];
 
@@ -135,7 +138,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
       return;
     }
 
-    sendFileToEndpoint(file);
+    sendFileToEndpoint(file, nombreCompleto);
   };
 
   // Efecto para manejar la cámara al abrir o cerrar el diálogo
@@ -156,7 +159,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
         </Tabs>
         <Box mt={2}>
           {activeTab === 0 && (
-            <div>
+            <div className="flex flex-column">
               <SignatureCanvas
                 ref={signatureRef}
                 penColor="black"
@@ -168,7 +171,7 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
                 }}
               />
               <Button onClick={clearSignature}>Limpiar</Button>
-              <Button onClick={handleSaveCanvas} disabled={signatureRef.current?.isEmpty()}>
+              <Button onClick={() => handleSaveCanvas(nombreCompleto)} disabled={signatureRef.current?.isEmpty()}>
                 Agregar Firma
               </Button>
             </div>
@@ -182,12 +185,25 @@ const SignatureDialog = ({ open, onClose, solicitud_id,onSave }:{open:boolean,on
                 onChange={handleFileUpload}
               />
               {previewImage && <img src={previewImage} alt="Previsualización" style={{ maxWidth: "100%", marginTop: 10 }} />}
-              <Button onClick={handleSaveUploadedFile} disabled={!previewImage}>
+              <Button onClick={() => handleSaveUploadedFile(nombreCompleto)} disabled={!previewImage}>
                 Agregar Imagen
               </Button>
             </div>
           )}
           {error && <p style={{ color: "red", marginTop: 10 }}>{error}</p>}
+        </Box>
+        <Box mt={2}>
+          <p>Nota: Asegúrese de que la firma o imagen sea clara y legible.</p>
+          <TextField
+            sx={{marginTop:2}}
+            fullWidth
+            label="Nombre Completo"
+            value={nombreCompleto}
+            onChange={(e) => setNombreCompleto(e.target.value)}
+            rows={1}
+            variant="outlined"
+            placeholder="Escribe tu nombre completo aquí..."
+          />
         </Box>
       </DialogContent>
       <DialogActions>
