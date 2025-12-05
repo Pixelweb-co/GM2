@@ -1,0 +1,220 @@
+04-Dec-2025 17:24:34.424 no longer listening on 127.0.0.1#53
+04-Dec-2025 17:24:34.424 no longer listening on 172.19.0.7#53
+04-Dec-2025 17:24:34.425 no longer listening on ::1#53
+04-Dec-2025 17:24:34.425 shutting down
+04-Dec-2025 17:24:34.425 stopping command channel on 127.0.0.1#953
+04-Dec-2025 17:24:34.425 stopping command channel on ::1#953
+04-Dec-2025 17:24:34.449 exiting
+04-Dec-2025 17:24:35.096 managed-keys-zone: loaded serial 24
+04-Dec-2025 17:24:35.107 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 17:24:35.107 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 17:24:35.110 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 17:24:35.111 client @0x79141fe48090 172.19.0.1#53444: received notify for zone 'equibiomedic.co'
+04-Dec-2025 17:24:35.113 all zones loaded
+04-Dec-2025 17:24:35.114 running
+04-Dec-2025 17:24:35.114 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 17:24:35.115 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 17:24:35.115 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 17:24:35.115 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 17:24:35.116 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 17:24:35.117 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 17:24:35.117 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 17:24:35.117 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 17:24:36.314 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 17:24:36.328 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 17:24:36.329 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 17:24:36.487 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 18:02:49.393 no longer listening on 127.0.0.1#53
+04-Dec-2025 18:02:49.394 no longer listening on 172.19.0.7#53
+04-Dec-2025 18:02:49.394 no longer listening on ::1#53
+04-Dec-2025 18:02:49.395 shutting down
+04-Dec-2025 18:02:49.395 stopping command channel on 127.0.0.1#953
+04-Dec-2025 18:02:49.395 stopping command channel on ::1#953
+04-Dec-2025 18:02:49.418 exiting
+04-Dec-2025 18:02:50.068 managed-keys-zone: loaded serial 25
+04-Dec-2025 18:02:50.085 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 18:02:50.085 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 18:02:50.088 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 18:02:50.089 all zones loaded
+04-Dec-2025 18:02:50.089 running
+04-Dec-2025 18:02:50.090 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 18:02:50.090 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 18:02:50.091 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 18:02:50.091 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 18:02:50.091 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 18:02:50.091 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 18:02:50.092 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 18:02:50.092 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 18:02:50.092 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 18:02:50.092 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 18:02:50.093 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 18:02:50.093 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 18:02:50.093 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 18:02:50.103 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 18:02:50.104 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 18:12:47.378 timed out resolving 'sl/ANY/IN': 8.8.8.4#53
+04-Dec-2025 18:12:48.581 timed out resolving 'sl/ANY/IN': 8.8.8.8#53
+04-Dec-2025 18:12:48.581 network unreachable resolving 'sl/ANY/IN': 2001:7fd::1#53
+04-Dec-2025 18:12:48.582 network unreachable resolving 'sl/ANY/IN': 2001:500:12::d0d#53
+04-Dec-2025 18:12:48.582 network unreachable resolving 'sl/ANY/IN': 2001:500:a8::e#53
+04-Dec-2025 18:12:49.950 timed out resolving 'ns2.neoip.com/A/IN': 8.8.8.4#53
+04-Dec-2025 18:12:49.950 timed out resolving 'ns2.neoip.com/AAAA/IN': 8.8.8.4#53
+04-Dec-2025 18:12:49.951 timed out resolving 'ns1.neoip.com/A/IN': 8.8.8.4#53
+04-Dec-2025 18:12:49.951 timed out resolving 'ns1.neoip.com/AAAA/IN': 8.8.8.4#53
+04-Dec-2025 18:12:51.431 timed out resolving 'sl/DS/IN': 8.8.8.4#53
+04-Dec-2025 18:23:01.811 no longer listening on 127.0.0.1#53
+04-Dec-2025 18:23:01.813 no longer listening on 172.19.0.7#53
+04-Dec-2025 18:23:01.815 no longer listening on ::1#53
+04-Dec-2025 18:23:01.820 shutting down
+04-Dec-2025 18:23:01.820 stopping command channel on 127.0.0.1#953
+04-Dec-2025 18:23:01.824 stopping command channel on ::1#953
+04-Dec-2025 18:23:01.884 exiting
+04-Dec-2025 20:31:02.364 managed-keys-zone: loaded serial 26
+04-Dec-2025 20:31:02.388 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 20:31:02.389 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 20:31:02.389 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 20:31:02.391 client @0x7efc5e615090 172.19.0.1#60587: received notify for zone 'equibiomedic.co'
+04-Dec-2025 20:31:02.391 all zones loaded
+04-Dec-2025 20:31:02.392 running
+04-Dec-2025 20:31:02.394 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 20:31:02.394 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 20:31:02.394 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 20:31:02.395 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 20:31:02.395 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 20:31:02.395 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 20:31:02.395 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 20:31:02.396 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 20:31:02.396 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 20:31:02.396 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 20:31:02.396 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 20:31:02.396 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 20:31:02.397 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 20:31:03.596 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 20:31:03.610 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 20:31:03.612 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 20:31:03.688 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 20:46:30.922 no longer listening on 127.0.0.1#53
+04-Dec-2025 20:46:30.928 no longer listening on 172.19.0.4#53
+04-Dec-2025 20:46:30.935 no longer listening on ::1#53
+04-Dec-2025 20:46:30.938 shutting down
+04-Dec-2025 20:46:30.938 stopping command channel on 127.0.0.1#953
+04-Dec-2025 20:46:30.938 stopping command channel on ::1#953
+04-Dec-2025 20:46:30.992 exiting
+04-Dec-2025 20:50:41.236 managed-keys-zone: loaded serial 27
+04-Dec-2025 20:50:41.256 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 20:50:41.257 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 20:50:41.257 all zones loaded
+04-Dec-2025 20:50:41.257 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 20:50:41.258 running
+04-Dec-2025 20:50:41.258 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 20:50:41.258 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 20:50:41.259 client @0x7dff40228090 172.19.0.1#60706: received notify for zone 'equibiomedic.co'
+04-Dec-2025 20:50:41.259 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 20:50:41.259 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 20:50:41.260 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 20:50:41.260 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 20:50:41.260 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 20:50:41.261 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 20:50:41.261 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 20:50:41.261 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 20:50:41.262 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 20:50:41.262 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 20:50:41.262 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 20:50:41.271 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 20:50:41.272 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 21:04:56.401 no longer listening on 127.0.0.1#53
+04-Dec-2025 21:04:56.402 no longer listening on 172.19.0.5#53
+04-Dec-2025 21:04:56.402 no longer listening on ::1#53
+04-Dec-2025 21:04:56.403 shutting down
+04-Dec-2025 21:04:56.403 stopping command channel on 127.0.0.1#953
+04-Dec-2025 21:04:56.403 stopping command channel on ::1#953
+04-Dec-2025 21:04:56.456 exiting
+04-Dec-2025 21:12:39.522 managed-keys-zone: loaded serial 28
+04-Dec-2025 21:12:39.542 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 21:12:39.542 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 21:12:39.543 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 21:12:39.545 client @0x71907ea48090 172.19.0.1#44632: received notify for zone 'equibiomedic.co'
+04-Dec-2025 21:12:39.545 all zones loaded
+04-Dec-2025 21:12:39.545 running
+04-Dec-2025 21:12:39.546 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 21:12:39.547 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 21:12:39.547 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 21:12:39.547 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 21:12:39.547 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 21:12:39.547 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 21:12:39.548 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 21:12:39.548 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 21:12:39.548 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 21:12:39.548 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 21:12:39.549 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 21:12:39.549 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 21:12:39.549 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 21:12:40.747 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 21:12:40.765 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 21:12:40.768 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 21:12:41.715 timed out resolving './DNSKEY/IN': 8.8.8.4#53
+04-Dec-2025 21:33:01.286 no longer listening on 127.0.0.1#53
+04-Dec-2025 21:33:01.289 no longer listening on 172.19.0.2#53
+04-Dec-2025 21:33:01.291 no longer listening on ::1#53
+04-Dec-2025 21:33:01.293 shutting down
+04-Dec-2025 21:33:01.294 stopping command channel on 127.0.0.1#953
+04-Dec-2025 21:33:01.294 stopping command channel on ::1#953
+04-Dec-2025 21:33:01.342 exiting
+04-Dec-2025 21:33:04.723 managed-keys-zone: loaded serial 29
+04-Dec-2025 21:33:04.744 /var/lib/bind/db.equibiomedic.co:23: file does not end with newline
+04-Dec-2025 21:33:04.745 zone equibiomedic.co/IN: loaded serial 2025120201
+04-Dec-2025 21:33:04.747 zone equibiomedic.co/IN: sending notifies (serial 2025120201)
+04-Dec-2025 21:33:04.748 client @0x7faf8a615090 172.19.0.1#37814: received notify for zone 'equibiomedic.co'
+04-Dec-2025 21:33:04.749 all zones loaded
+04-Dec-2025 21:33:04.749 running
+04-Dec-2025 21:33:04.752 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 21:33:04.753 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 21:33:04.754 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+04-Dec-2025 21:33:04.754 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 21:33:04.754 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 21:33:04.754 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 21:33:04.754 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 21:33:04.755 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 21:33:04.755 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 21:33:04.756 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 21:33:04.756 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 21:33:04.756 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 21:33:04.756 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 21:33:04.765 managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 21:33:04.765 managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+04-Dec-2025 21:54:41.459 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 21:54:41.459 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 21:54:42.660 timed out resolving 'sl/ANY/IN': 8.8.8.4#53
+04-Dec-2025 22:49:25.666 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
+04-Dec-2025 22:49:25.666 network unreachable resolving './NS/IN': 2001:500:1::53#53
+04-Dec-2025 22:49:25.667 network unreachable resolving './NS/IN': 2001:500:2d::d#53
+04-Dec-2025 22:49:25.667 network unreachable resolving './NS/IN': 2001:500:a8::e#53
+04-Dec-2025 22:49:25.668 network unreachable resolving './NS/IN': 2001:500:2::c#53
+04-Dec-2025 22:49:25.668 network unreachable resolving './NS/IN': 2001:7fe::53#53
+04-Dec-2025 22:49:25.668 network unreachable resolving './NS/IN': 2001:500:2f::f#53
+04-Dec-2025 22:49:25.669 network unreachable resolving './NS/IN': 2001:7fd::1#53
+04-Dec-2025 22:49:25.669 network unreachable resolving './NS/IN': 2001:500:9f::42#53
+04-Dec-2025 22:49:25.669 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
+04-Dec-2025 22:49:25.670 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+04-Dec-2025 22:49:25.670 network unreachable resolving './NS/IN': 2001:dc3::35#53
+04-Dec-2025 22:49:25.670 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
+05-Dec-2025 04:44:27.529 client @0x7faf8b416c90 209.38.98.197#17520 (equibiomedic.co): transfer of 'equibiomedic.co/IN': AXFR started (serial 2025120201)
+05-Dec-2025 04:44:27.529 client @0x7faf8b416c90 209.38.98.197#17520 (equibiomedic.co): transfer of 'equibiomedic.co/IN': AXFR ended: 1 messages, 13 records, 336 bytes, 0.001 secs (336000 bytes/sec) (serial 2025120201)
+05-Dec-2025 04:44:28.152 client @0x7faf8c01a490 209.38.98.197#17536 (equibiomedic.co): transfer of 'equibiomedic.co/IN': AXFR started (serial 2025120201)
+05-Dec-2025 04:44:28.152 client @0x7faf8c01a490 209.38.98.197#17536 (equibiomedic.co): transfer of 'equibiomedic.co/IN': AXFR ended: 1 messages, 13 records, 336 bytes, 0.001 secs (336000 bytes/sec) (serial 2025120201)
+05-Dec-2025 05:20:46.772 timed out resolving 'ip.parrotdns.com/A/IN': 8.8.8.4#53
+05-Dec-2025 05:20:47.987 timed out resolving 'parrotdns.com/DS/IN': 8.8.8.4#53
+05-Dec-2025 05:21:00.713 timed out resolving 'ip.parrotdns.com/A/IN': 8.8.8.4#53
+05-Dec-2025 07:19:17.065 timed out resolving 'www.google.com/A/IN': 8.8.8.4#53
+05-Dec-2025 12:11:29.506 validating dhitc.com/A: no valid signature found
+05-Dec-2025 12:11:29.507 validating dhitc.com/NS: no valid signature found
+05-Dec-2025 12:11:29.507 validating dhitc.com/SOA: no valid signature found
+05-Dec-2025 12:11:29.507 validating dhitc.com/MX: no valid signature found
+05-Dec-2025 12:11:29.508 validating dhitc.com/TXT: no valid signature found
+05-Dec-2025 12:11:29.508 validating dhitc.com/NSEC: no valid signature found
+05-Dec-2025 12:11:29.509 validating dhitc.com/TYPE65534: no valid signature found
