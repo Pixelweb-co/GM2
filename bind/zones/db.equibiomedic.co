@@ -12,12 +12,12 @@ $TTL 3600
     IN NS  ns2.equibiomedic.co.
 
 ; Registros A
-@           IN A   181.205.220.122
-ns1         IN A   181.205.220.122
-ns2         IN A   181.205.220.122
-www         IN A   181.205.220.122
-gm2         IN A   181.205.220.122
-api         IN A   181.205.220.122
-gm2dev      IN A   181.205.220.122
-apidev      IN A   181.205.220.122
-traefik     IN A   181.205.220.122
+@           IN A   181.205.220.123
+ns1         IN A   181.205.220.123
+ns2         IN A   181.205.220.123
+www         IN A   181.205.220.123
+gm2         IN A   181.205.220.123
+api         IN A   181.205.220.123
+gm2dev      IN A   181.205.220.123
+apidev      IN A   181.205.220.123
+traefik     IN A   181.205.220.123
