@@ -72,8 +72,6 @@ services:
     volumes:
       - /media/backup/server/webApplications:/var/www/html
       - ./apache2:/etc/apache2
-    links:
-      - db:db
     networks:
       - mired
     labels:
@@ -111,8 +109,6 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     restart: always
-    links:
-      - db:db
     ports:
       - 8000:80
     environment:
