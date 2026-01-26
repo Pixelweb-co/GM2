@@ -18,7 +18,7 @@
 
 /media/ 
 
-/backup-service/public/uploads/*.sql
+/backup-service/public/uploads/
 /backup-service/public/token.json
 
 
