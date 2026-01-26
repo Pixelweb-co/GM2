@@ -22,7 +22,9 @@
 /backup-service/public/token.json
 
 
-
+.env
+.env.chatwoot
+bind/zones/.f*
 
 /backup-service/public/secret_client.json
 /backup-service/public/token.json
